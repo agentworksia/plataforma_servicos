@@ -6,13 +6,10 @@ import type { PaymentProvider } from "./types";
 export * from "./types";
 
 function criarProvider(): PaymentProvider {
-  switch (env.PAYMENT_PROVIDER) {
-    case "fake":
-      return new FakePaymentProvider();
-    default:
-      // Quando o provider real for escolhido, implementar PaymentProvider e plugar aqui.
-      throw new Error(`PAYMENT_PROVIDER "${env.PAYMENT_PROVIDER}" ainda não implementado.`);
-  }
+  const provider = env.PAYMENT_PROVIDER ?? "fake";
+  if (provider === "fake") return new FakePaymentProvider();
+  // Quando o provider real for escolhido, implementar PaymentProvider e plugar aqui.
+  throw new Error(`PAYMENT_PROVIDER "${provider}" ainda não implementado.`);
 }
 
 export const payments: PaymentProvider = criarProvider();
