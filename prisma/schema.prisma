@@ -1,0 +1,587 @@
+// Schema da plataforma de serviços de limpeza (Curitiba + RMC).
+// Multi-cidade desde o schema: tudo que é geográfico passa por ServiceArea / campos cidade+uf.
+// Valores monetários são sempre Int em centavos (BRL) para evitar erro de ponto flutuante.
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Role {
+  CLIENTE
+  PROFISSIONAL
+  ADMIN
+}
+
+enum ProfessionalStatus {
+  PENDENTE
+  APROVADA
+  REPROVADA
+  SUSPENSA
+}
+
+enum ClientType {
+  PF
+  PJ
+}
+
+enum ServiceType {
+  DIARIA_PADRAO
+  PASSADORIA
+  POS_OBRA
+  CORPORATIVA
+}
+
+enum Recurrence {
+  AVULSA
+  SEMANAL
+  QUINZENAL
+  MENSAL
+}
+
+enum BookingStatus {
+  AGUARDANDO_PROFISSIONAL
+  AGENDADO
+  EM_ANDAMENTO
+  CONCLUIDO
+  CANCELADO
+}
+
+enum OfferStatus {
+  PENDENTE
+  ACEITA
+  RECUSADA
+  EXPIRADA
+}
+
+enum PaymentMethod {
+  PIX
+  CARTAO
+}
+
+enum PaymentStatus {
+  PENDENTE
+  PAGO_RETIDO
+  LIBERADO
+  REEMBOLSADO
+  PARCIALMENTE_REEMBOLSADO
+  FALHOU
+}
+
+enum PayoutStatus {
+  PENDENTE
+  LIBERADO
+  PAGO
+  CANCELADO
+}
+
+enum AvailabilityExceptionType {
+  BLOQUEIO
+  EXTRA
+}
+
+enum DocumentType {
+  IDENTIDADE
+  COMPROVANTE_ENDERECO
+  CERTIDAO_ANTECEDENTES
+  OUTRO
+}
+
+enum LeadStatus {
+  NOVO
+  CONTATADO
+  CONVERTIDO
+  DESCARTADO
+}
+
+// ---------------------------------------------------------------------------
+// Auth.js (NextAuth v5) — modelos exigidos pelo @auth/prisma-adapter
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+
+  role         Role    @default(CLIENTE)
+  telefone     String?
+  passwordHash String?
+
+  aceiteTermosEm      DateTime?
+  aceitePrivacidadeEm DateTime?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  accounts            Account[]
+  sessions            Session[]
+  clientProfile       ClientProfile?
+  professionalProfile ProfessionalProfile?
+
+  @@map("users")
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ---------------------------------------------------------------------------
+// Perfis
+// ---------------------------------------------------------------------------
+
+model ClientProfile {
+  id                String     @id @default(cuid())
+  userId            String     @unique
+  tipo              ClientType @default(PF)
+  cpf               String?
+  cnpj              String?
+  razaoSocial       String?
+  inscricaoEstadual String?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addresses Address[]
+  bookings  Booking[]
+  series    BookingSeries[]
+  reviews   Review[]
+
+  @@map("client_profiles")
+}
+
+model ProfessionalProfile {
+  id             String             @id @default(cuid())
+  userId         String             @unique
+  status         ProfessionalStatus @default(PENDENTE)
+  bio            String?
+  fotoUrl        String?
+  cpf            String?
+  dataNascimento DateTime?          @db.Date
+  tiposServico   ServiceType[]
+
+  repassePixTipo  String?
+  repassePixChave String?
+
+  aprovadoEm       DateTime?
+  aprovadoPor      String?
+  motivoReprovacao String?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  user            User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  areas           ProfessionalServiceArea[]
+  disponibilidade Availability[]
+  excecoes        AvailabilityException[]
+  documentos      ProfessionalDocument[]
+  ofertas         BookingOffer[]
+  bookings        Booking[]
+  seriesTitular   BookingSeries[]
+  payouts         Payout[]
+  reviews         Review[]
+
+  @@index([status])
+  @@map("professional_profiles")
+}
+
+model ProfessionalDocument {
+  id             String       @id @default(cuid())
+  professionalId String
+  tipo           DocumentType
+  storagePath    String
+  nomeArquivo    String?
+  enviadoEm      DateTime     @default(now())
+
+  professional ProfessionalProfile @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@index([professionalId])
+  @@map("professional_documents")
+}
+
+// ---------------------------------------------------------------------------
+// Regiões atendidas + tabela de preços
+// ---------------------------------------------------------------------------
+
+model ServiceArea {
+  id       String   @id @default(cuid())
+  cidade   String
+  bairro   String?
+  uf       String   @default("PR")
+  ativo    Boolean  @default(true)
+  criadoEm DateTime @default(now())
+
+  pricingRules  PricingRule[]
+  profissionais ProfessionalServiceArea[]
+
+  @@unique([cidade, bairro])
+  @@index([ativo])
+  @@map("service_areas")
+}
+
+model ProfessionalServiceArea {
+  professionalId String
+  serviceAreaId  String
+
+  professional ProfessionalProfile @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  serviceArea  ServiceArea         @relation(fields: [serviceAreaId], references: [id], onDelete: Cascade)
+
+  @@id([professionalId, serviceAreaId])
+  @@index([serviceAreaId])
+  @@map("professional_service_areas")
+}
+
+model PricingRule {
+  id            String      @id @default(cuid())
+  tipoServico   ServiceType
+  duracaoHoras  Int
+  serviceAreaId String
+  valorBase     Int
+  multiplicador Decimal     @default(1) @db.Decimal(4, 2)
+  ativo         Boolean     @default(true)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  serviceArea ServiceArea @relation(fields: [serviceAreaId], references: [id], onDelete: Cascade)
+
+  @@unique([tipoServico, duracaoHoras, serviceAreaId])
+  @@map("pricing_rules")
+}
+
+model ServiceExtra {
+  id        String  @id @default(cuid())
+  nome      String
+  descricao String?
+  valor     Int
+  ativo     Boolean @default(true)
+
+  bookings BookingExtra[]
+
+  @@map("service_extras")
+}
+
+// ---------------------------------------------------------------------------
+// Endereços
+// ---------------------------------------------------------------------------
+
+model Address {
+  id          String  @id @default(cuid())
+  clientId    String
+  apelido     String?
+  cep         String
+  logradouro  String
+  numero      String
+  complemento String?
+  bairro      String
+  cidade      String
+  uf          String  @default("PR")
+  referencia  String?
+
+  // usados no fluxo pós-obra e no cálculo de preço
+  metragem      Int?
+  numeroComodos Int?
+  observacoes   String?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  client   ClientProfile   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+  series   BookingSeries[]
+
+  @@index([clientId])
+  @@map("addresses")
+}
+
+// ---------------------------------------------------------------------------
+// Agenda da profissional
+// ---------------------------------------------------------------------------
+
+model Availability {
+  id             String @id @default(cuid())
+  professionalId String
+  diaSemana      Int // 0 = domingo ... 6 = sábado
+  inicioMin      Int // minutos desde 00:00
+  fimMin         Int
+
+  professional ProfessionalProfile @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@index([professionalId, diaSemana])
+  @@map("availabilities")
+}
+
+model AvailabilityException {
+  id             String                    @id @default(cuid())
+  professionalId String
+  data           DateTime                  @db.Date
+  tipo           AvailabilityExceptionType
+  inicioMin      Int?
+  fimMin         Int?
+  motivo         String?
+
+  professional ProfessionalProfile @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@index([professionalId, data])
+  @@map("availability_exceptions")
+}
+
+// ---------------------------------------------------------------------------
+// Agendamentos
+// ---------------------------------------------------------------------------
+
+model BookingSeries {
+  id                    String      @id @default(cuid())
+  clientId              String
+  addressId             String
+  tipoServico           ServiceType
+  duracaoHoras          Int
+  recorrencia           Recurrence
+  diaSemana             Int
+  inicioMin             Int
+  dataInicio            DateTime    @db.Date
+  dataFim               DateTime?   @db.Date
+  titularProfessionalId String?
+  ativo                 Boolean     @default(true)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  client   ClientProfile        @relation(fields: [clientId], references: [id])
+  address  Address              @relation(fields: [addressId], references: [id])
+  titular  ProfessionalProfile? @relation(fields: [titularProfessionalId], references: [id])
+  bookings Booking[]
+
+  @@index([clientId])
+  @@map("booking_series")
+}
+
+model Booking {
+  id             String        @id @default(cuid())
+  clientId       String
+  addressId      String
+  seriesId       String?
+  tipoServico    ServiceType
+  data           DateTime      @db.Date
+  inicioMin      Int
+  duracaoHoras   Int
+  recorrencia    Recurrence    @default(AVULSA)
+  status         BookingStatus @default(AGUARDANDO_PROFISSIONAL)
+  professionalId String?
+
+  // valores em centavos
+  valorServico        Int
+  valorExtras         Int @default(0)
+  taxaPlataforma      Int
+  valorTotal          Int
+  repasseProfissional Int
+
+  // pós-obra sob orçamento
+  sobOrcamento        Boolean   @default(false)
+  orcamentoAprovadoEm DateTime?
+
+  observacoesCliente String?
+  concluidoEm        DateTime?
+  canceladoEm        DateTime?
+  canceladoPor       String?
+  motivoCancelamento String?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  client       ClientProfile        @relation(fields: [clientId], references: [id])
+  address      Address              @relation(fields: [addressId], references: [id])
+  series       BookingSeries?       @relation(fields: [seriesId], references: [id])
+  professional ProfessionalProfile? @relation(fields: [professionalId], references: [id])
+  offers       BookingOffer[]
+  extras       BookingExtra[]
+  payment      Payment?
+  payout       Payout?
+  review       Review?
+
+  @@index([clientId])
+  @@index([professionalId])
+  @@index([status])
+  @@index([data])
+  @@map("bookings")
+}
+
+model BookingExtra {
+  bookingId String
+  extraId   String
+  valor     Int // snapshot do valor no momento do agendamento
+
+  booking Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  extra   ServiceExtra @relation(fields: [extraId], references: [id])
+
+  @@id([bookingId, extraId])
+  @@map("booking_extras")
+}
+
+model BookingOffer {
+  id             String      @id @default(cuid())
+  bookingId      String
+  professionalId String
+  status         OfferStatus @default(PENDENTE)
+  abrangeSerie   Boolean     @default(false)
+  ordemFila      Int
+  expiraEm       DateTime
+  respondidoEm   DateTime?
+  criadoEm       DateTime    @default(now())
+
+  booking      Booking             @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  professional ProfessionalProfile @relation(fields: [professionalId], references: [id])
+
+  @@unique([bookingId, professionalId])
+  @@index([professionalId, status])
+  @@map("booking_offers")
+}
+
+// ---------------------------------------------------------------------------
+// Pagamento / repasse / avaliação
+// ---------------------------------------------------------------------------
+
+model Payment {
+  id           String        @id @default(cuid())
+  bookingId    String        @unique
+  provider     String        @default("fake")
+  providerId   String?
+  metodo       PaymentMethod
+  status       PaymentStatus @default(PENDENTE)
+  valor        Int
+  pixCopiaCola String?
+  checkoutUrl  String?
+
+  pagoEm           DateTime?
+  reembolsadoEm    DateTime?
+  valorReembolsado Int       @default(0)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("payments")
+}
+
+model Payout {
+  id             String       @id @default(cuid())
+  bookingId      String       @unique
+  professionalId String
+  status         PayoutStatus @default(PENDENTE)
+  valor          Int
+  provider       String?
+  providerId     String?
+  observacao     String?
+
+  liberadoEm DateTime?
+  pagoEm     DateTime?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  booking      Booking             @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  professional ProfessionalProfile @relation(fields: [professionalId], references: [id])
+
+  @@index([professionalId, status])
+  @@map("payouts")
+}
+
+model Review {
+  id             String   @id @default(cuid())
+  bookingId      String   @unique
+  professionalId String
+  clientId       String
+  nota           Int
+  comentario     String?
+  criadoEm       DateTime @default(now())
+
+  booking      Booking             @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  professional ProfessionalProfile @relation(fields: [professionalId], references: [id])
+  client       ClientProfile       @relation(fields: [clientId], references: [id])
+
+  @@index([professionalId])
+  @@map("reviews")
+}
+
+// ---------------------------------------------------------------------------
+// Leads (CEP fora da área atendida) + configurações
+// ---------------------------------------------------------------------------
+
+model Lead {
+  id          String       @id @default(cuid())
+  nome        String?
+  email       String?
+  telefone    String?
+  cep         String
+  cidade      String?
+  uf          String?
+  tipoServico ServiceType?
+  mensagem    String?
+  status      LeadStatus   @default(NOVO)
+  criadoEm    DateTime     @default(now())
+
+  @@index([status])
+  @@map("leads")
+}
+
+model Setting {
+  chave        String   @id
+  valor        String
+  descricao    String?
+  atualizadoEm DateTime @updatedAt
+
+  @@map("settings")
+}
