@@ -75,8 +75,16 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t border-slate-200">
-        <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-slate-500">
-          © {new Date().getFullYear()} Plataforma de Limpeza · Curitiba e RMC
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-8 text-sm text-slate-500">
+          <span>© {new Date().getFullYear()} Plataforma de Limpeza · Curitiba e RMC</span>
+          <span className="flex gap-4">
+            <Link href="/termos" className="hover:text-slate-700">
+              Termos
+            </Link>
+            <Link href="/privacidade" className="hover:text-slate-700">
+              Privacidade
+            </Link>
+          </span>
         </div>
       </footer>
     </>

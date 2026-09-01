@@ -14,60 +14,49 @@ Auth.js v5 · Supabase Storage · Resend · deploy na Vercel.
 
 ```bash
 npm install
-cp .env.example .env      # preencha com credenciais reais (Supabase, Resend)
-npm run db:deploy         # aplica as migrations no banco
-npm run db:seed           # configs, regiões, tabela de preços e usuários demo
+cp .env.example .env        # preencha com credenciais reais (Supabase, Resend)
+npm run db:deploy           # aplica as migrations no banco
+npm run setup:storage       # cria os buckets 'documentos' e 'perfil' (privados)
+npm run db:seed             # configs, regiões, tabela de preços e usuários demo
 npm run dev
 ```
 
 Abra <http://localhost:3000>.
 
-Usuários de demonstração criados pelo seed (senha `senha12345`):
-
-| Papel | E-mail |
-|---|---|
-| Admin | `admin@plataforma.local` |
-| Cliente | `cliente@plataforma.local` |
-| Profissional | `profissional@plataforma.local` |
+Usuários de demonstração (senha `senha12345`): `admin@`, `cliente@`, `profissional@plataforma.local`.
 
 ## Variáveis de ambiente
 
 Veja [`.env.example`](.env.example). Resumo:
 
-- `DATABASE_URL` / `DIRECT_URL` — Postgres do Supabase (pooler para runtime, conexão direta para migrations)
+- `DATABASE_URL` / `DIRECT_URL` — Postgres do Supabase (pooler transação 6543 no runtime, sessão 5432 nas migrations)
 - `AUTH_SECRET` / `AUTH_URL` — Auth.js
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` — Storage
-- `SUPABASE_BUCKET_DOCUMENTOS` / `SUPABASE_BUCKET_PERFIL`
-- `RESEND_API_KEY` / `EMAIL_FROM`
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (opcional) / `SUPABASE_SECRET_KEY`
+- `RESEND_API_KEY` / `EMAIL_FROM` (opcionais)
 - `PAYMENT_PROVIDER` (`fake` no MVP)
 
-## Estado atual
+## O que está implementado
 
-Pronto:
+- **Cadastro** do cliente (PF/PJ) e da profissional (dados + upload de foto/documento no
+  Supabase Storage, status `PENDENTE`)
+- **Aprovação manual** no admin (ficha, documentos por URL assinada, aprovar/reprovar/suspender)
+- **Agenda** da profissional (disponibilidade recorrente + bloqueios)
+- **Agendamento** do cliente: tipo, endereço (valida cidade contra `ServiceArea`; fora da área
+  gera lead), data/hora/duração, pós-obra, preço por tabela, pagamento retido (provider `fake`)
+- **Matching automático**: fila por avaliação/carga/aceite; oferta com prazo; aceite/recusa;
+  reprocessar e atribuir manual no admin
+- **Recorrência** semanal/quinzenal/mensal com profissional fixa (série + realocação pontual);
+  cancelamento da série com reembolso das ocorrências futuras
+- **Conclusão** (iniciar/concluir) → gera repasse · **avaliação** (1–5) do cliente ·
+  **cancelamento** com política de 24h
+- **Repasses** no admin (liberar individual ou em lote; `payments.liberarRepasse` fake)
+- **Admin**: tabela de preços e regiões atendidas
+- Páginas de Termos e Privacidade (rascunho)
 
-- Projeto Next 16 + Tailwind + Prisma 7 (driver adapter) + Auth.js v5 configurados
-- Schema de dados completo (`prisma/schema.prisma`) e seed
-- Landing + páginas informativas + `/agendar` (CTA)
-- Login funcional (Credentials) e logout
-- Área logada com 3 painéis (cliente / profissional / admin) protegidos por papel
-- **Cadastro do cliente** (PF/PJ) — `/cadastro`, com auto-login
-- **Cadastro da profissional** — `/cadastro/profissional`, com upload de foto e documento
-  para o Supabase Storage (buckets privados), status `PENDENTE` e aviso "em análise" no painel
-- Camadas de domínio com assinatura pronta e implementação pendente:
-  `pricing`, `matching`, `payments` (provider `fake`), `email`
+## O que ainda não foi feito
 
-## Próximas etapas sugeridas (uma de cada vez)
-
-1. **Aprovação manual** no painel admin (ver documentos via URL assinada, aprovar/reprovar/suspender)
-2. **Onboarding da profissional** — agenda de disponibilidade recorrente + bloqueios pontuais
-3. **Fluxo de agendamento** do cliente — serviço, CEP (ViaCEP + ServiceArea), data/hora/duração,
-   recorrência, preço (`lib/pricing`), pagamento retido
-4. **Matching** — fila por elegibilidade + avaliação, oferta com prazo, aceite/recusa, fallback admin
-5. **Recorrência com profissional fixa** — série + realocação pontual
-6. **Conclusão + avaliação** — libera repasse
-7. **Repasses** — painel admin dispara/confirma (`lib/payments.liberarRepasse`)
-8. **Painel admin** — tabela de preços e regiões atendidas
-9. **Provider de pagamento real** — implementar `PaymentProvider` + webhook
-10. **Páginas de Termos de uso e Política de Privacidade** (referenciadas nos cadastros)
-
-Setup do Storage: `npm run setup:storage` cria os buckets `documentos` e `perfil` (privados).
+- Provider de pagamento real (a interface `PaymentProvider` está pronta; hoje roda com `fake`)
+- Cron para expirar ofertas automaticamente (hoje o admin reprocessa a fila)
+- Endereços/meios de pagamento gerenciados numa tela própria do cliente
+- Revisão jurídica dos termos; e-mails transacionais além do "conta aprovada"
+- Fase 2 do PROMPT-INICIAL (chat, favoritar profissional, licitação, PWA, métricas etc.)
