@@ -7,7 +7,12 @@ import { env } from "@/lib/env";
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 function createClient() {
-  const adapter = new PrismaPg({ connectionString: env.DATABASE_URL });
+  // Em serverless (Vercel) cada instância mantém seu próprio pool; limita a 1 conexão
+  // para não estourar o pooler do Supabase. Em dev, pool normal.
+  const adapter = new PrismaPg({
+    connectionString: env.DATABASE_URL,
+    max: process.env.NODE_ENV === "production" ? 1 : 10,
+  });
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
