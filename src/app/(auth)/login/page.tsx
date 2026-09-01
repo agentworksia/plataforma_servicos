@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession, painelHref } from "@/lib/auth/dal";
+import { AuthCard } from "@/components/auth-card";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = { title: "Entrar" };
@@ -11,7 +12,7 @@ export default async function LoginPage() {
   if (session?.user) redirect(painelHref(session.user.role));
 
   return (
-    <div>
+    <AuthCard>
       <h1 className="text-xl font-semibold text-slate-900">Entrar</h1>
       <p className="mt-1 text-sm text-slate-600">Acesse seu painel de cliente ou profissional.</p>
 
@@ -25,6 +26,6 @@ export default async function LoginPage() {
           Criar conta
         </Link>
       </p>
-    </div>
+    </AuthCard>
   );
 }

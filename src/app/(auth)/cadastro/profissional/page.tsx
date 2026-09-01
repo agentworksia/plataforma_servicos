@@ -1,23 +1,40 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
+import { getSession, painelHref } from "@/lib/auth/dal";
+import { AuthCard } from "@/components/auth-card";
+import { CadastroProfissionalForm } from "./cadastro-profissional-form";
 
 export const metadata: Metadata = { title: "Cadastro de profissional" };
 
-export default function CadastroProfissionalPage() {
+export default async function CadastroProfissionalPage() {
+  const session = await getSession();
+  if (session?.user) redirect(painelHref(session.user.role));
+
+  const regioes = await db.serviceArea.findMany({
+    where: { ativo: true },
+    orderBy: [{ cidade: "asc" }, { bairro: "asc" }],
+    select: { id: true, cidade: true, bairro: true },
+  });
+
   return (
-    <div>
+    <AuthCard className="max-w-2xl">
       <h1 className="text-xl font-semibold text-slate-900">Cadastro de profissional</h1>
-      <p className="mt-2 text-sm text-slate-600">
-        O cadastro da diarista (dados pessoais, CPF, foto de perfil, documento com foto, regiões,
-        tipos de serviço, chave Pix de repasse e consentimento LGPD) é a próxima entrega. O envio
-        de arquivos vai para um bucket privado no Supabase Storage, e a conta passa por aprovação
-        manual antes de ficar visível.
+      <p className="mt-1 text-sm text-slate-600">
+        Após o envio, sua conta fica <strong>em análise</strong>. Avisamos por e-mail quando for aprovada.
       </p>
+
+      <div className="mt-6">
+        <CadastroProfissionalForm regioes={regioes} />
+      </div>
+
       <p className="mt-6 text-sm text-slate-600">
-        <Link href="/cadastro" className="font-medium text-teal-700 hover:underline">
-          Voltar ao cadastro de cliente
+        Já tem conta?{" "}
+        <Link href="/login" className="font-medium text-teal-700 hover:underline">
+          Entrar
         </Link>
       </p>
-    </div>
+    </AuthCard>
   );
 }

@@ -41,7 +41,7 @@ Veja [`.env.example`](.env.example). Resumo:
 - `RESEND_API_KEY` / `EMAIL_FROM`
 - `PAYMENT_PROVIDER` (`fake` no MVP)
 
-## Estado atual (esqueleto)
+## Estado atual
 
 Pronto:
 
@@ -50,21 +50,24 @@ Pronto:
 - Landing + páginas informativas + `/agendar` (CTA)
 - Login funcional (Credentials) e logout
 - Área logada com 3 painéis (cliente / profissional / admin) protegidos por papel
+- **Cadastro do cliente** (PF/PJ) — `/cadastro`, com auto-login
+- **Cadastro da profissional** — `/cadastro/profissional`, com upload de foto e documento
+  para o Supabase Storage (buckets privados), status `PENDENTE` e aviso "em análise" no painel
 - Camadas de domínio com assinatura pronta e implementação pendente:
-  `pricing`, `matching`, `payments` (provider `fake`), `storage`, `email`
+  `pricing`, `matching`, `payments` (provider `fake`), `email`
 
 ## Próximas etapas sugeridas (uma de cada vez)
 
-1. **Cadastro** — cliente (PF/PJ) e profissional (dados + upload de documentos + consentimento LGPD)
-2. **Onboarding da profissional** — regiões, tipos de serviço, agenda de disponibilidade + bloqueios
-3. **Aprovação manual** no painel admin (ver documentos, aprovar/reprovar/suspender)
-4. **Fluxo de agendamento** do cliente — serviço, CEP (ViaCEP + ServiceArea), data/hora/duração,
+1. **Aprovação manual** no painel admin (ver documentos via URL assinada, aprovar/reprovar/suspender)
+2. **Onboarding da profissional** — agenda de disponibilidade recorrente + bloqueios pontuais
+3. **Fluxo de agendamento** do cliente — serviço, CEP (ViaCEP + ServiceArea), data/hora/duração,
    recorrência, preço (`lib/pricing`), pagamento retido
-5. **Matching** — fila por elegibilidade + avaliação, oferta com prazo, aceite/recusa, fallback admin
-6. **Recorrência com profissional fixa** — série + realocação pontual
-7. **Conclusão + avaliação** — libera repasse
-8. **Repasses** — painel admin dispara/confirma (`lib/payments.liberarRepasse`)
-9. **Painel admin** — tabela de preços e regiões atendidas
-10. **Provider de pagamento real** — implementar `PaymentProvider` + webhook
+4. **Matching** — fila por elegibilidade + avaliação, oferta com prazo, aceite/recusa, fallback admin
+5. **Recorrência com profissional fixa** — série + realocação pontual
+6. **Conclusão + avaliação** — libera repasse
+7. **Repasses** — painel admin dispara/confirma (`lib/payments.liberarRepasse`)
+8. **Painel admin** — tabela de preços e regiões atendidas
+9. **Provider de pagamento real** — implementar `PaymentProvider` + webhook
+10. **Páginas de Termos de uso e Política de Privacidade** (referenciadas nos cadastros)
 
-Nada acima está implementado além da assinatura; as telas mostram estado vazio explicando o que falta.
+Setup do Storage: `npm run setup:storage` cria os buckets `documentos` e `perfil` (privados).

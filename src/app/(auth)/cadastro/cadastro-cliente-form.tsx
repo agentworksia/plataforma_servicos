@@ -12,27 +12,28 @@ function Erro({ msg }: { msg?: string }) {
 
 export function CadastroClienteForm() {
   const [state, action, pending] = useActionState<FormState, FormData>(cadastroClienteAction, undefined);
-  const v = state?.values ?? {};
   const e = state?.errors ?? {};
-  const [tipo, setTipo] = useState<string>(v.tipo ?? "PF");
+  const raw = state?.values ?? {};
+  const v = (k: string) => (typeof raw[k] === "string" ? (raw[k] as string) : "");
+  const [tipo, setTipo] = useState<string>(v("tipo") || "PF");
 
   return (
     <form action={action} className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="nome">Nome completo</Label>
-        <Input id="nome" name="nome" defaultValue={v.nome} autoComplete="name" required />
+        <Input id="nome" name="nome" defaultValue={v("nome")} autoComplete="name" required />
         <Erro msg={e.nome?.[0]} />
       </div>
 
       <div className="space-y-1.5">
         <Label htmlFor="email">E-mail</Label>
-        <Input id="email" name="email" type="email" defaultValue={v.email} autoComplete="email" required />
+        <Input id="email" name="email" type="email" defaultValue={v("email")} autoComplete="email" required />
         <Erro msg={e.email?.[0]} />
       </div>
 
       <div className="space-y-1.5">
         <Label htmlFor="telefone">Telefone (com DDD)</Label>
-        <Input id="telefone" name="telefone" type="tel" defaultValue={v.telefone} autoComplete="tel" placeholder="41 99999-9999" required />
+        <Input id="telefone" name="telefone" type="tel" defaultValue={v("telefone")} autoComplete="tel" placeholder="41 99999-9999" required />
         <Erro msg={e.telefone?.[0]} />
       </div>
 
@@ -54,12 +55,12 @@ export function CadastroClienteForm() {
         <>
           <div className="space-y-1.5">
             <Label htmlFor="cnpj">CNPJ</Label>
-            <Input id="cnpj" name="cnpj" defaultValue={v.cnpj} placeholder="00.000.000/0000-00" inputMode="numeric" />
+            <Input id="cnpj" name="cnpj" defaultValue={v("cnpj")} placeholder="00.000.000/0000-00" inputMode="numeric" />
             <Erro msg={e.cnpj?.[0]} />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="razaoSocial">Razão social</Label>
-            <Input id="razaoSocial" name="razaoSocial" defaultValue={v.razaoSocial} />
+            <Input id="razaoSocial" name="razaoSocial" defaultValue={v("razaoSocial")} />
             <Erro msg={e.razaoSocial?.[0]} />
           </div>
         </>

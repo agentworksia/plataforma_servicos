@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession, painelHref } from "@/lib/auth/dal";
+import { AuthCard } from "@/components/auth-card";
 import { CadastroClienteForm } from "./cadastro-cliente-form";
 
 export const metadata: Metadata = { title: "Criar conta" };
@@ -11,7 +12,7 @@ export default async function CadastroPage() {
   if (session?.user) redirect(painelHref(session.user.role));
 
   return (
-    <div>
+    <AuthCard className="max-w-md">
       <h1 className="text-xl font-semibold text-slate-900">Criar conta</h1>
       <p className="mt-1 text-sm text-slate-600">Para agendar serviços de limpeza.</p>
 
@@ -33,6 +34,6 @@ export default async function CadastroPage() {
           </Link>
         </p>
       </div>
-    </div>
+    </AuthCard>
   );
 }
