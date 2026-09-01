@@ -32,6 +32,7 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
       inicioMin: true,
       duracaoHoras: true,
       status: true,
+      seriesId: true,
       valorServico: true,
       valorExtras: true,
       taxaPlataforma: true,
@@ -60,6 +61,15 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
           <Badge cor={st.cor}>{st.label}</Badge>
         </div>
       </div>
+
+      {b.seriesId && (
+        <p className="text-sm text-slate-600">
+          Parte de uma série recorrente ·{" "}
+          <Link href={`/cliente/series/${b.seriesId}`} className="text-teal-700 hover:underline">
+            ver todas as ocorrências
+          </Link>
+        </p>
+      )}
 
       {b.status === "AGUARDANDO_PROFISSIONAL" && (
         <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">

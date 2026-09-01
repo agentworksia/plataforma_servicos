@@ -49,6 +49,7 @@ export default async function ProfissionalPage() {
           select: {
             id: true,
             expiraEm: true,
+            abrangeSerie: true,
             booking: {
               select: {
                 id: true,
@@ -102,12 +103,20 @@ export default async function ProfissionalPage() {
               <li key={o.id} className="rounded-xl border border-slate-200 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="text-sm">
-                    <div className="font-medium text-slate-900">{LABEL_SERVICO[o.booking.tipoServico] ?? o.booking.tipoServico}</div>
+                    <div className="font-medium text-slate-900">
+                      {LABEL_SERVICO[o.booking.tipoServico] ?? o.booking.tipoServico}
+                      {o.abrangeSerie && (
+                        <span className="ml-2 rounded bg-teal-100 px-1.5 py-0.5 text-xs text-teal-800">série recorrente</span>
+                      )}
+                    </div>
                     <div className="text-slate-500">
                       {formatData(o.booking.data)} · {minutosParaHora(o.booking.inicioMin)} · {o.booking.duracaoHoras}h ·{" "}
                       {o.booking.address.bairro}, {o.booking.address.cidade}
                     </div>
-                    <div className="mt-1 text-slate-700">Você recebe {formatBRL(o.booking.repasseProfissional)}</div>
+                    <div className="mt-1 text-slate-700">
+                      Você recebe {formatBRL(o.booking.repasseProfissional)}
+                      {o.abrangeSerie ? " por serviço" : ""}
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <ActionForm action={aceitarOferta} submitLabel="Aceitar" size="sm" className="space-y-0">
