@@ -3,8 +3,11 @@ import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import type { ServiceType } from "../src/generated/prisma/enums";
+import { pgSsl } from "../src/lib/pg-ssl";
 
-const adapter = new PrismaPg({ connectionString: process.env.DIRECT_URL ?? process.env.DATABASE_URL });
+// Usa DATABASE_URL (mesmo caminho do runtime, com sslmode que o node-postgres entende).
+const connectionString = process.env.DATABASE_URL ?? process.env.DIRECT_URL ?? "";
+const adapter = new PrismaPg({ connectionString, ssl: pgSsl(connectionString) });
 const db = new PrismaClient({ adapter });
 
 const CIDADES = [
