@@ -16,6 +16,9 @@ type EnviarEmailInput = {
 };
 
 export async function enviarEmail({ para, assunto, html }: EnviarEmailInput) {
+  if (!env.RESEND_API_KEY || !env.EMAIL_FROM) {
+    throw new Error("E-mail não configurado: defina RESEND_API_KEY e EMAIL_FROM.");
+  }
   const { data, error } = await client().emails.send({
     from: env.EMAIL_FROM,
     to: para,

@@ -4,6 +4,9 @@ import { z } from "zod";
 // Validação das variáveis de ambiente do servidor.
 // Em runtime, falha cedo se algo essencial faltar. Durante `next build` (sem env configurada
 // ainda, ex.: 1º deploy na Vercel) apenas avisa, para o build do esqueleto não quebrar.
+//
+// Obrigatórias = o que o app já usa hoje (banco, auth, storage server-side).
+// Opcionais = o que só será usado quando a feature correspondente entrar.
 const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
   DIRECT_URL: z.string().url().optional(),
@@ -11,13 +14,13 @@ const serverSchema = z.object({
   AUTH_URL: z.string().url().optional(),
 
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
   SUPABASE_SECRET_KEY: z.string().min(1),
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1).optional(), // só p/ uso client-side (ainda não há)
   SUPABASE_BUCKET_DOCUMENTOS: z.string().min(1).default("documentos"),
   SUPABASE_BUCKET_PERFIL: z.string().min(1).default("perfil"),
 
-  RESEND_API_KEY: z.string().min(1),
-  EMAIL_FROM: z.string().min(1),
+  RESEND_API_KEY: z.string().min(1).optional(), // e-mail transacional (nenhuma feature envia ainda)
+  EMAIL_FROM: z.string().min(1).optional(),
 
   PAYMENT_PROVIDER: z.enum(["fake", "mercadopago", "pagarme", "stripe", "asaas", "iugu"]).default("fake"),
 
