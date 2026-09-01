@@ -1,5 +1,6 @@
 import "server-only";
 import { db } from "@/lib/db";
+import { getSettingNumber } from "@/lib/settings";
 import type { ServiceType } from "@/generated/prisma/enums";
 
 export type CalcularPrecoInput = {
@@ -15,16 +16,12 @@ export type PrecoCalculado = {
   taxaPlataforma: number;
   valorTotal: number;
   repasseProfissional: number;
-  sobOrcamento: boolean;
+  taxaPct: number;
 };
 
-const CHAVE_TAXA_PLATAFORMA = "TAXA_PLATAFORMA_PCT";
-const TAXA_PADRAO_PCT = 20;
-
 /**
- * preço = valorBase(tipo, duração, região) * multiplicador + extras.
- * taxa da plataforma = X% (Setting), repasse = total - taxa.
- * Pós-obra pode vir marcado como "sob orçamento" (aprovação do admin antes de cobrar).
+ * preço = valorBase(tipo, duração, região) × multiplicador + extras.
+ * taxa da plataforma = X% (Setting TAXA_PLATAFORMA_PCT); repasse = total − taxa.
  */
 export async function calcularPreco(input: CalcularPrecoInput): Promise<PrecoCalculado> {
   const regra = await db.pricingRule.findUnique({
@@ -36,9 +33,8 @@ export async function calcularPreco(input: CalcularPrecoInput): Promise<PrecoCal
       },
     },
   });
-
   if (!regra || !regra.ativo) {
-    throw new Error("Não há tabela de preço para essa combinação de tipo, duração e região.");
+    throw new Error("Não há preço cadastrado para essa combinação de tipo, duração e região.");
   }
 
   const multiplicador = Number(regra.multiplicador);
@@ -49,7 +45,7 @@ export async function calcularPreco(input: CalcularPrecoInput): Promise<PrecoCal
     : [];
   const valorExtras = extras.reduce((soma, e) => soma + e.valor, 0);
 
-  const taxaPct = await getTaxaPlataformaPct();
+  const taxaPct = await getSettingNumber("TAXA_PLATAFORMA_PCT", 20);
   const valorTotal = valorServico + valorExtras;
   const taxaPlataforma = Math.round(valorTotal * (taxaPct / 100));
 
@@ -59,12 +55,6 @@ export async function calcularPreco(input: CalcularPrecoInput): Promise<PrecoCal
     taxaPlataforma,
     valorTotal,
     repasseProfissional: valorTotal - taxaPlataforma,
-    sobOrcamento: input.tipoServico === "POS_OBRA" && multiplicador === 0,
+    taxaPct,
   };
-}
-
-async function getTaxaPlataformaPct(): Promise<number> {
-  const setting = await db.setting.findUnique({ where: { chave: CHAVE_TAXA_PLATAFORMA } });
-  const valor = setting ? Number(setting.valor) : NaN;
-  return Number.isFinite(valor) ? valor : TAXA_PADRAO_PCT;
 }

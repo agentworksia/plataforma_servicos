@@ -8,8 +8,18 @@ export function reaisParaCentavos(reais: number): number {
   return Math.round(reais * 100);
 }
 
+// Datas de serviço são date-only (sem hora). Formata sempre em UTC para não deslocar o dia.
 export function formatData(data: Date): string {
-  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "long" }).format(data);
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: "UTC" }).format(data);
+}
+
+export function formatDataCurta(data: Date): string {
+  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" }).format(data);
+}
+
+/** "YYYY-MM-DD" -> Date ao meio-dia UTC (evita salto de dia por fuso). */
+export function dataDeInput(iso: string): Date {
+  return new Date(`${iso}T12:00:00.000Z`);
 }
 
 /** Minutos desde 00:00 -> "HH:mm". */
