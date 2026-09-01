@@ -5,7 +5,10 @@ import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
 import { formatData, formatBRL, minutosParaHora } from "@/lib/format";
 import { LABEL_SERVICO, STATUS_BOOKING, STATUS_PAGAMENTO } from "@/lib/bookings/display";
+import { avaliarServico, cancelarAgendamento } from "@/lib/bookings/cliente-actions";
+import { ActionForm } from "@/components/action-form";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 
 export const metadata: Metadata = { title: "Agendamento" };
 
@@ -38,17 +41,20 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
       taxaPlataforma: true,
       valorTotal: true,
       observacoesCliente: true,
+      concluidoEm: true,
       criadoEm: true,
       address: true,
       professional: { select: { user: { select: { name: true } } } },
       payment: { select: { status: true, metodo: true, pixCopiaCola: true } },
       offers: { where: { status: "PENDENTE" }, select: { id: true } },
-      review: { select: { nota: true } },
+      review: { select: { nota: true, comentario: true } },
     },
   });
   if (!b) notFound();
 
   const st = STATUS_BOOKING[b.status];
+  const podeCancelar = b.status === "AGUARDANDO_PROFISSIONAL" || b.status === "AGENDADO";
+  const podeAvaliar = b.status === "CONCLUIDO" && !b.review;
 
   return (
     <section className="space-y-6">
@@ -104,6 +110,61 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
           <p className="mt-3 break-all rounded bg-slate-100 p-2 text-xs text-slate-600">{b.payment.pixCopiaCola}</p>
         )}
       </div>
+
+      {b.review && (
+        <div className="rounded-xl border border-slate-200 p-5 text-sm">
+          <h2 className="font-semibold text-slate-900">Sua avaliação</h2>
+          <p className="mt-1 text-slate-700">
+            <strong>{b.review.nota}/5</strong>
+            {b.review.comentario ? ` — "${b.review.comentario}"` : ""}
+          </p>
+        </div>
+      )}
+
+      {podeAvaliar && (
+        <div className="rounded-xl border border-slate-200 p-5">
+          <h2 className="font-semibold text-slate-900">Avaliar o serviço</h2>
+          <ActionForm action={avaliarServico} submitLabel="Enviar avaliação" className="mt-3">
+            <input type="hidden" name="bookingId" value={b.id} />
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-slate-800" htmlFor="nota">
+                Nota
+              </label>
+              <select id="nota" name="nota" defaultValue="5" className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm">
+                {[5, 4, 3, 2, 1].map((n) => (
+                  <option key={n} value={n}>
+                    {n} — {["", "péssimo", "ruim", "ok", "bom", "excelente"][n]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Textarea name="comentario" maxLength={500} placeholder="Comentário (opcional)" />
+          </ActionForm>
+        </div>
+      )}
+
+      {podeCancelar && (
+        <div className="rounded-xl border border-slate-200 p-5">
+          <h2 className="font-semibold text-slate-900">Cancelar</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Sem custo até 24h antes do serviço. Depois disso, o valor não é reembolsado.
+          </p>
+          <ActionForm
+            action={cancelarAgendamento}
+            submitLabel="Cancelar agendamento"
+            variant="danger"
+            className="mt-3"
+            confirm="Confirmar o cancelamento deste agendamento?"
+          >
+            <input type="hidden" name="bookingId" value={b.id} />
+            <input
+              name="motivo"
+              placeholder="Motivo (opcional)"
+              className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+            />
+          </ActionForm>
+        </div>
+      )}
     </section>
   );
 }

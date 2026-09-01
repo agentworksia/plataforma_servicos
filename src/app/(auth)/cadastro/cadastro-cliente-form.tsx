@@ -81,7 +81,17 @@ export function CadastroClienteForm() {
       <div className="space-y-1.5">
         <label className="flex items-start gap-2 text-sm text-slate-700">
           <input type="checkbox" name="aceiteTermos" className="mt-1" />
-          <span>Li e aceito os termos de uso e a política de privacidade (LGPD).</span>
+          <span>
+            Li e aceito os{" "}
+            <a href="/termos" target="_blank" rel="noreferrer" className="text-teal-700 underline">
+              termos de uso
+            </a>{" "}
+            e a{" "}
+            <a href="/privacidade" target="_blank" rel="noreferrer" className="text-teal-700 underline">
+              política de privacidade
+            </a>{" "}
+            (LGPD).
+          </span>
         </label>
         <Erro msg={e.aceiteTermos?.[0]} />
       </div>
