@@ -9,7 +9,7 @@ let client: SupabaseClient | null = null;
 
 function supabaseAdmin(): SupabaseClient {
   if (!client) {
-    client = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
+    client = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
   }

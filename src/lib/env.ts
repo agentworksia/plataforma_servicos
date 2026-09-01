@@ -11,8 +11,8 @@ const serverSchema = z.object({
   AUTH_URL: z.string().url().optional(),
 
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+  SUPABASE_SECRET_KEY: z.string().min(1),
   SUPABASE_BUCKET_DOCUMENTOS: z.string().min(1).default("documentos"),
   SUPABASE_BUCKET_PERFIL: z.string().min(1).default("perfil"),
 

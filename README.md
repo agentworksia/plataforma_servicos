@@ -36,7 +36,7 @@ Veja [`.env.example`](.env.example). Resumo:
 
 - `DATABASE_URL` / `DIRECT_URL` — Postgres do Supabase (pooler para runtime, conexão direta para migrations)
 - `AUTH_SECRET` / `AUTH_URL` — Auth.js
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` — Storage
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` — Storage
 - `SUPABASE_BUCKET_DOCUMENTOS` / `SUPABASE_BUCKET_PERFIL`
 - `RESEND_API_KEY` / `EMAIL_FROM`
 - `PAYMENT_PROVIDER` (`fake` no MVP)
