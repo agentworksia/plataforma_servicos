@@ -1,7 +1,9 @@
 import "server-only";
 import { z } from "zod";
 
-// Validação das variáveis de ambiente do servidor. Falha cedo (no boot) se algo essencial faltar.
+// Validação das variáveis de ambiente do servidor.
+// Em runtime, falha cedo se algo essencial faltar. Durante `next build` (sem env configurada
+// ainda, ex.: 1º deploy na Vercel) apenas avisa, para o build do esqueleto não quebrar.
 const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
   DIRECT_URL: z.string().url().optional(),
@@ -22,11 +24,20 @@ const serverSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
 });
 
+export type Env = z.infer<typeof serverSchema>;
+
+const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
 const parsed = serverSchema.safeParse(process.env);
 
 if (!parsed.success) {
-  console.error("❌ Variáveis de ambiente inválidas:", z.flattenError(parsed.error).fieldErrors);
-  throw new Error("Configuração de ambiente inválida. Confira o .env (base em .env.example).");
+  const detalhe = z.flattenError(parsed.error).fieldErrors;
+  if (isBuildPhase) {
+    console.warn("⚠️  Variáveis de ambiente incompletas no build:", detalhe);
+    console.warn("    Configure-as no painel da Vercel antes de usar o app.");
+  } else {
+    console.error("❌ Variáveis de ambiente inválidas:", detalhe);
+    throw new Error("Configuração de ambiente inválida. Confira o .env (base em .env.example).");
+  }
 }
 
-export const env = parsed.data;
+export const env: Env = parsed.success ? parsed.data : (process.env as unknown as Env);
