@@ -22,14 +22,10 @@ export default function SejaProfissionalPage() {
       </ul>
 
       <div className="mt-8">
-        <Link href="/cadastro?perfil=profissional" className={cn(buttonVariants({ size: "lg" }))}>
+        <Link href="/cadastro/profissional" className={cn(buttonVariants({ size: "lg" }))}>
           Começar meu cadastro
         </Link>
       </div>
-
-      <p className="mt-8 text-sm text-slate-500">
-        Página informativa — o cadastro completo da profissional entra na próxima etapa do projeto.
-      </p>
     </article>
   );
 }
