@@ -30,31 +30,31 @@ export default async function GanhosPage() {
 
   return (
     <section className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900">Ganhos</h1>
+      <h1 className="titulo text-2xl text-pinho-900">Ganhos</h1>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 p-5">
-          <p className="text-3xl font-bold text-slate-900">{formatBRL(recebido)}</p>
-          <p className="mt-1 text-sm text-slate-600">já recebido</p>
+        <div className="rounded-xl border border-pedra-200 p-5">
+          <p className="titulo text-3xl text-pinho-900">{formatBRL(recebido)}</p>
+          <p className="mt-1 text-sm text-pedra-600">já recebido</p>
         </div>
-        <div className="rounded-xl border border-slate-200 p-5">
-          <p className="text-3xl font-bold text-slate-900">{formatBRL(aReceber)}</p>
-          <p className="mt-1 text-sm text-slate-600">a receber</p>
+        <div className="rounded-xl border border-pedra-200 p-5">
+          <p className="titulo text-3xl text-pinho-900">{formatBRL(aReceber)}</p>
+          <p className="mt-1 text-sm text-pedra-600">a receber</p>
         </div>
       </div>
 
       {payouts.length === 0 ? (
         <EmptyState titulo="Sem repasses ainda" descricao="Cada serviço concluído gera um repasse, liberado alguns dias depois." />
       ) : (
-        <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 text-sm">
+        <ul className="divide-y divide-pedra-100 rounded-xl border border-pedra-200 text-sm">
           {payouts.map((p) => (
             <li key={p.id} className="flex items-center justify-between px-4 py-3">
-              <span className="text-slate-800">
+              <span className="text-pedra-800">
                 {formatData(p.booking.data)} · {p.booking.tipoServico}
               </span>
               <span className="flex items-center gap-3">
-                <span className="text-slate-600">{formatBRL(p.valor)}</span>
-                <span className="text-slate-400">{STATUS_PAYOUT[p.status]}</span>
+                <span className="text-pedra-600">{formatBRL(p.valor)}</span>
+                <span className="text-pedra-400">{STATUS_PAYOUT[p.status]}</span>
               </span>
             </li>
           ))}

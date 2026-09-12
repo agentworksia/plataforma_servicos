@@ -25,16 +25,16 @@ export default async function AdminRegioesPage() {
 
   return (
     <section>
-      <h1 className="text-2xl font-bold text-slate-900">Regiões atendidas</h1>
-      <p className="mt-1 text-slate-600">
+      <h1 className="titulo text-2xl text-pinho-900">Regiões atendidas</h1>
+      <p className="mt-1 text-pedra-600">
         Ative ou desative as cidades/bairros disponíveis para agendamento. Uma região nova já entra com a
         tabela de preços padrão.
       </p>
 
-      <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200">
+      <div className="mt-6 overflow-x-auto rounded-xl border border-pedra-200">
         <table className="w-full min-w-[560px] text-sm">
           <thead>
-            <tr className="border-b border-slate-200 text-left text-slate-500">
+            <tr className="border-b border-pedra-200 text-left text-pedra-500">
               <th className="px-4 py-2 font-medium">Cidade / bairro</th>
               <th className="px-4 py-2 font-medium">UF</th>
               <th className="px-4 py-2 font-medium">Profissionais</th>
@@ -44,13 +44,13 @@ export default async function AdminRegioesPage() {
           </thead>
           <tbody>
             {regioes.map((r) => (
-              <tr key={r.id} className="border-b border-slate-100">
-                <td className="px-4 py-3 text-slate-800">
+              <tr key={r.id} className="border-b border-pedra-100">
+                <td className="px-4 py-3 text-pedra-800">
                   {r.cidade}
                   {r.bairro ? ` — ${r.bairro}` : ""}
                 </td>
-                <td className="px-4 py-3 text-slate-600">{r.uf}</td>
-                <td className="px-4 py-3 text-slate-600">{r._count.profissionais}</td>
+                <td className="px-4 py-3 text-pedra-600">{r.uf}</td>
+                <td className="px-4 py-3 text-pedra-600">{r._count.profissionais}</td>
                 <td className="px-4 py-3">
                   <Badge cor={r.ativo ? "verde" : "neutro"}>{r.ativo ? "Ativa" : "Inativa"}</Badge>
                 </td>
@@ -85,8 +85,8 @@ export default async function AdminRegioesPage() {
         </table>
       </div>
 
-      <div className="mt-6 max-w-md rounded-xl border border-slate-200 p-4">
-        <h2 className="font-semibold text-slate-900">Adicionar região</h2>
+      <div className="mt-6 max-w-md rounded-xl border border-pedra-200 p-4">
+        <h2 className="font-semibold text-pedra-900">Adicionar região</h2>
         <ActionForm action={criarRegiao} submitLabel="Adicionar" className="mt-3">
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5">

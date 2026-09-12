@@ -53,8 +53,8 @@ export default async function AdminAgendamentosPage({ searchParams }: { searchPa
 
   return (
     <section>
-      <h1 className="text-2xl font-bold text-slate-900">Agendamentos</h1>
-      <p className="mt-1 text-slate-600">Acompanhe e reatribua os serviços que estão aguardando profissional.</p>
+      <h1 className="titulo text-2xl text-pinho-900">Agendamentos</h1>
+      <p className="mt-1 text-pedra-600">Acompanhe e reatribua os serviços que estão aguardando profissional.</p>
 
       <div className="mt-4 flex flex-wrap gap-2 text-sm">
         {FILTROS.map((f) => {
@@ -65,7 +65,7 @@ export default async function AdminAgendamentosPage({ searchParams }: { searchPa
               href={f.status ? `/admin/agendamentos?status=${f.status}` : "/admin/agendamentos?status=TODOS"}
               className={cn(
                 "rounded-lg px-3 py-1.5 font-medium",
-                ativo ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200",
+                ativo ? "bg-pinho-600 text-white" : "bg-pedra-100 text-pedra-600 hover:bg-pedra-200",
               )}
             >
               {f.label}
@@ -79,16 +79,16 @@ export default async function AdminAgendamentosPage({ searchParams }: { searchPa
         {bookings.map((b) => {
           const st = STATUS_BOOKING[b.status];
           return (
-            <div key={b.id} className="rounded-xl border border-slate-200 p-4">
+            <div key={b.id} className="rounded-xl border border-pedra-200 p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="text-sm">
-                  <div className="font-medium text-slate-900">
+                  <div className="font-medium text-pedra-900">
                     {LABEL_SERVICO[b.tipoServico] ?? b.tipoServico} · {formatBRL(b.valorTotal)}
                   </div>
-                  <div className="text-slate-500">
+                  <div className="text-pedra-500">
                     {formatData(b.data)} · {minutosParaHora(b.inicioMin)} · {b.duracaoHoras}h · {b.address.bairro}, {b.address.cidade}
                   </div>
-                  <div className="text-slate-500">
+                  <div className="text-pedra-500">
                     Cliente: {b.client.user.name} · Profissional: {b.professional?.user.name ?? "—"}
                     {b.offers[0] ? ` (oferta pendente p/ ${b.offers[0].professional.user.name})` : ""}
                   </div>
@@ -97,7 +97,7 @@ export default async function AdminAgendamentosPage({ searchParams }: { searchPa
               </div>
 
               {b.status === "AGUARDANDO_PROFISSIONAL" && (
-                <div className="mt-3 flex flex-wrap items-end gap-3 border-t border-slate-100 pt-3">
+                <div className="mt-3 flex flex-wrap items-end gap-3 border-t border-pedra-100 pt-3">
                   <ActionForm action={reprocessarFila} submitLabel="Reprocessar fila" variant="outline" size="sm" className="space-y-0">
                     <input type="hidden" name="bookingId" value={b.id} />
                   </ActionForm>
@@ -105,7 +105,7 @@ export default async function AdminAgendamentosPage({ searchParams }: { searchPa
                     <input type="hidden" name="bookingId" value={b.id} />
                     <select
                       name="professionalId"
-                      className="h-9 rounded-lg border border-slate-300 bg-white px-2 text-sm"
+                      className="h-9 rounded-lg border border-pedra-300 bg-white px-2 text-sm"
                       defaultValue=""
                     >
                       <option value="" disabled>

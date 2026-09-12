@@ -4,6 +4,20 @@ export function formatBRL(centavos: number): string {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(centavos / 100);
 }
 
+/** Como formatBRL, mas omite ",00" em valores redondos — para os preços de vitrine. */
+export function formatBRLRedondo(centavos: number): string {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    maximumFractionDigits: centavos % 100 === 0 ? 0 : 2,
+  }).format(centavos / 100);
+}
+
+/** Nota de avaliação com uma casa e vírgula decimal: 4,8. */
+export function formatNota(nota: number): string {
+  return nota.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
+
 export function reaisParaCentavos(reais: number): number {
   return Math.round(reais * 100);
 }

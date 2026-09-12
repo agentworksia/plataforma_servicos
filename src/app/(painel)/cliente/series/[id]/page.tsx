@@ -47,33 +47,33 @@ export default async function SerieDetalhePage({ params }: { params: Promise<{ i
   return (
     <section className="space-y-6">
       <div>
-        <Link href="/cliente" className="text-sm text-teal-700 hover:underline">
+        <Link href="/cliente" className="text-sm text-pinho-700 hover:underline">
           ← Meus agendamentos
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-bold text-slate-900">
+          <h1 className="titulo text-2xl text-pinho-900">
             {LABEL_SERVICO[serie.tipoServico] ?? serie.tipoServico} · {LABEL_REC[serie.recorrencia]}
           </h1>
           <Badge cor={serie.ativo ? "verde" : "neutro"}>{serie.ativo ? "Ativa" : "Cancelada"}</Badge>
         </div>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-pedra-600">
           {minutosParaHora(serie.inicioMin)} · {serie.duracaoHoras}h · {serie.address.bairro}, {serie.address.cidade}
           {serie.titular ? ` · profissional fixa: ${serie.titular.user.name}` : ""}
         </p>
       </div>
 
-      <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+      <ul className="divide-y divide-pedra-100 rounded-xl border border-pedra-200">
         {serie.bookings.map((b) => {
           const st = STATUS_BOOKING[b.status];
           return (
             <li key={b.id}>
-              <Link href={`/cliente/agendamentos/${b.id}`} className="flex items-center justify-between px-4 py-3 text-sm hover:bg-slate-50">
-                <span className="text-slate-800">
+              <Link href={`/cliente/agendamentos/${b.id}`} className="flex items-center justify-between px-4 py-3 text-sm hover:bg-pedra-50">
+                <span className="text-pedra-800">
                   {formatData(b.data)}
                   {b.professional ? ` · ${b.professional.user.name}` : ""}
                 </span>
                 <span className="flex items-center gap-3">
-                  <span className="text-slate-600">{formatBRL(b.valorTotal)}</span>
+                  <span className="text-pedra-600">{formatBRL(b.valorTotal)}</span>
                   <Badge cor={st.cor}>{st.label}</Badge>
                 </span>
               </Link>
@@ -83,8 +83,8 @@ export default async function SerieDetalhePage({ params }: { params: Promise<{ i
       </ul>
 
       {serie.ativo && temFuturas && (
-        <div className="rounded-xl border border-slate-200 p-4">
-          <p className="text-sm text-slate-600">
+        <div className="rounded-xl border border-pedra-200 p-4">
+          <p className="text-sm text-pedra-600">
             Cancelar a série encerra as ocorrências futuras ainda não realizadas e reembolsa os valores retidos.
           </p>
           <div className="mt-3">

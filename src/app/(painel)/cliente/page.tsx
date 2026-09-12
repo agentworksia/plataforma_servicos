@@ -40,8 +40,8 @@ export default async function ClientePage() {
     <section className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Meus agendamentos</h1>
-          <p className="mt-1 text-slate-600">Acompanhe o status de cada serviço.</p>
+          <h1 className="titulo text-2xl text-pinho-900">Meus agendamentos</h1>
+          <p className="mt-1 text-pedra-600">Acompanhe o status de cada serviço.</p>
         </div>
         <Link href="/agendar" className={cn(buttonVariants())}>
           Novo agendamento
@@ -79,21 +79,21 @@ function Lista({
   if (itens.length === 0) return null;
   return (
     <div className="space-y-3">
-      <h2 className="font-semibold text-slate-900">{titulo}</h2>
-      <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+      <h2 className="font-semibold text-pedra-900">{titulo}</h2>
+      <ul className="divide-y divide-pedra-100 rounded-xl border border-pedra-200">
         {itens.map((b) => {
           const st = STATUS_BOOKING[b.status];
           return (
             <li key={b.id}>
-              <Link href={`/cliente/agendamentos/${b.id}`} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-slate-50">
+              <Link href={`/cliente/agendamentos/${b.id}`} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-pedra-50">
                 <div className="text-sm">
-                  <div className="font-medium text-slate-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</div>
-                  <div className="text-slate-500">
+                  <div className="font-medium text-pedra-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</div>
+                  <div className="text-pedra-500">
                     {formatData(b.data)} · {minutosParaHora(b.inicioMin)} · {b.duracaoHoras}h · {b.address.bairro}, {b.address.cidade}
                   </div>
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
-                  <span className="text-sm text-slate-600">{formatBRL(b.valorTotal)}</span>
+                  <span className="text-sm text-pedra-600">{formatBRL(b.valorTotal)}</span>
                   <Badge cor={st.cor}>{st.label}</Badge>
                 </div>
               </Link>

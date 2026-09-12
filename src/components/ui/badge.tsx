@@ -2,9 +2,9 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const cores = {
-  neutro: "bg-slate-100 text-slate-700",
-  amarelo: "bg-amber-100 text-amber-800",
-  verde: "bg-teal-100 text-teal-800",
+  neutro: "bg-pedra-100 text-pedra-700",
+  amarelo: "bg-mel-100 text-mel-700",
+  verde: "bg-pinho-100 text-pinho-800",
   vermelho: "bg-red-100 text-red-800",
 } as const;
 

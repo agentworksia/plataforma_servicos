@@ -27,8 +27,8 @@ async function assinar(bucket: BucketName, path: string | null): Promise<string 
 function Campo({ rotulo, children }: { rotulo: string; children: React.ReactNode }) {
   return (
     <div>
-      <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{rotulo}</dt>
-      <dd className="mt-0.5 text-sm text-slate-900">{children}</dd>
+      <dt className="text-xs font-medium uppercase tracking-wide text-pedra-500">{rotulo}</dt>
+      <dd className="mt-0.5 text-sm text-pedra-900">{children}</dd>
     </div>
   );
 }
@@ -69,14 +69,14 @@ export default async function ProfissionalDetalhePage({ params }: { params: Prom
   return (
     <section className="space-y-6">
       <div>
-        <Link href="/admin/profissionais" className="text-sm text-teal-700 hover:underline">
+        <Link href="/admin/profissionais" className="text-sm text-pinho-700 hover:underline">
           ← Profissionais
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-bold text-slate-900">{p.user.name ?? "—"}</h1>
+          <h1 className="titulo text-2xl text-pinho-900">{p.user.name ?? "—"}</h1>
           <Badge cor={st.cor}>{st.label}</Badge>
         </div>
-        <p className="text-slate-600">
+        <p className="text-pedra-600">
           {p.user.email} · {p.user.telefone ?? "sem telefone"} · cadastro em {formatData(p.criadoEm)}
         </p>
       </div>
@@ -87,10 +87,10 @@ export default async function ProfissionalDetalhePage({ params }: { params: Prom
         </p>
       )}
       {p.status === "APROVADA" && p.aprovadoEm && (
-        <p className="text-sm text-slate-500">Aprovada em {formatData(p.aprovadoEm)}.</p>
+        <p className="text-sm text-pedra-500">Aprovada em {formatData(p.aprovadoEm)}.</p>
       )}
 
-      <div className="rounded-xl border border-slate-200 p-5">
+      <div className="rounded-xl border border-pedra-200 p-5">
         <AcoesProfissional id={p.id} status={p.status} />
       </div>
 
@@ -118,31 +118,31 @@ export default async function ProfissionalDetalhePage({ params }: { params: Prom
 
         <div className="space-y-4">
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Foto de perfil</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-pedra-500">Foto de perfil</p>
             {fotoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={fotoUrl} alt="Foto de perfil" className="mt-2 w-full rounded-lg border border-slate-200" />
+              <img src={fotoUrl} alt="Foto de perfil" className="mt-2 w-full rounded-lg border border-pedra-200" />
             ) : (
-              <p className="mt-2 text-sm text-slate-400">Indisponível</p>
+              <p className="mt-2 text-sm text-pedra-400">Indisponível</p>
             )}
           </div>
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Documentos</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-pedra-500">Documentos</p>
             <ul className="mt-2 space-y-1 text-sm">
-              {docs.length === 0 && <li className="text-slate-400">Nenhum documento enviado.</li>}
+              {docs.length === 0 && <li className="text-pedra-400">Nenhum documento enviado.</li>}
               {docs.map((d) => (
                 <li key={d.id}>
                   {d.url ? (
-                    <a href={d.url} target="_blank" rel="noreferrer" className="text-teal-700 hover:underline">
+                    <a href={d.url} target="_blank" rel="noreferrer" className="text-pinho-700 hover:underline">
                       {d.nomeArquivo ?? d.tipo}
                     </a>
                   ) : (
-                    <span className="text-slate-400">{d.nomeArquivo ?? d.tipo} (indisponível)</span>
+                    <span className="text-pedra-400">{d.nomeArquivo ?? d.tipo} (indisponível)</span>
                   )}
                 </li>
               ))}
             </ul>
-            <p className="mt-1 text-xs text-slate-400">Links expiram em 5 minutos.</p>
+            <p className="mt-1 text-xs text-pedra-400">Links expiram em 5 minutos.</p>
           </div>
         </div>
       </div>

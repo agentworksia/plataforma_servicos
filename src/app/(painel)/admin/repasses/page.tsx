@@ -31,8 +31,8 @@ export default async function AdminRepassesPage() {
     <section>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Repasses</h1>
-          <p className="mt-1 text-slate-600">
+          <h1 className="titulo text-2xl text-pinho-900">Repasses</h1>
+          <p className="mt-1 text-pedra-600">
             {pendentes.length} pendente(s) · {formatBRL(totalPendente)} a liberar.
           </p>
         </div>
@@ -45,19 +45,19 @@ export default async function AdminRepassesPage() {
         {payouts.length === 0 ? (
           <EmptyState titulo="Nenhum repasse" descricao="Repasses são criados quando um serviço é concluído." />
         ) : (
-          <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 text-sm">
+          <ul className="divide-y divide-pedra-100 rounded-xl border border-pedra-200 text-sm">
             {payouts.map((p) => (
               <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
                 <div>
-                  <div className="font-medium text-slate-900">
+                  <div className="font-medium text-pedra-900">
                     {p.professional.user.name} · {formatBRL(p.valor)}
                   </div>
-                  <div className="text-slate-500">
+                  <div className="text-pedra-500">
                     {p.booking.tipoServico} em {formatData(p.booking.data)} · previsto {p.liberadoEm ? formatData(p.liberadoEm) : "—"}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-slate-400">{STATUS_PAYOUT[p.status]}</span>
+                  <span className="text-pedra-400">{STATUS_PAYOUT[p.status]}</span>
                   {p.status === "PENDENTE" && (
                     <ActionForm action={liberarRepasse} submitLabel="Liberar" size="sm" className="space-y-0">
                       <input type="hidden" name="payoutId" value={p.id} />

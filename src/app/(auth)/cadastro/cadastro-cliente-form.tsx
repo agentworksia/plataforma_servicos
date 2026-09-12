@@ -38,7 +38,7 @@ export function CadastroClienteForm() {
       </div>
 
       <fieldset className="space-y-2">
-        <legend className="text-sm font-medium text-slate-800">Tipo de conta</legend>
+        <legend className="text-sm font-medium text-pedra-800">Tipo de conta</legend>
         <div className="flex gap-4 text-sm">
           <label className="flex items-center gap-2">
             <input type="radio" name="tipo" value="PF" checked={tipo === "PF"} onChange={() => setTipo("PF")} />
@@ -79,15 +79,15 @@ export function CadastroClienteForm() {
       </div>
 
       <div className="space-y-1.5">
-        <label className="flex items-start gap-2 text-sm text-slate-700">
+        <label className="flex items-start gap-2 text-sm text-pedra-700">
           <input type="checkbox" name="aceiteTermos" className="mt-1" />
           <span>
             Li e aceito os{" "}
-            <a href="/termos" target="_blank" rel="noreferrer" className="text-teal-700 underline">
+            <a href="/termos" target="_blank" rel="noreferrer" className="text-pinho-700 underline">
               termos de uso
             </a>{" "}
             e a{" "}
-            <a href="/privacidade" target="_blank" rel="noreferrer" className="text-teal-700 underline">
+            <a href="/privacidade" target="_blank" rel="noreferrer" className="text-pinho-700 underline">
               política de privacidade
             </a>{" "}
             (LGPD).

@@ -1,9 +1,109 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme {
+  /* pinho — verde da araucária, símbolo de Curitiba. Cor da marca. */
+  --color-pinho-50: #f0f6f2;
+  --color-pinho-100: #dceae1;
+  --color-pinho-200: #b9d6c5;
+  --color-pinho-300: #8dbba4;
+  --color-pinho-400: #5d9b80;
+  --color-pinho-500: #3b7d62;
+  --color-pinho-600: #256349;
+  --color-pinho-700: #1a4e39;
+  --color-pinho-800: #143d2d;
+  --color-pinho-900: #0e2c21;
+
+  /* pedra — neutros com fundo verde frio, de granito molhado. Texto e superfícies. */
+  --color-pedra-50: #f5f7f5;
+  --color-pedra-100: #ebefec;
+  --color-pedra-200: #dce2de;
+  --color-pedra-300: #c2cbc5;
+  --color-pedra-400: #9aa7a0;
+  --color-pedra-500: #68776f;
+  --color-pedra-600: #55625c;
+  --color-pedra-700: #3f4a45;
+  --color-pedra-800: #2c3531;
+  --color-pedra-900: #18201c;
+
+  /* mel — único acento quente. Reservado a nota, destaque e sinal de confiança. */
+  --color-mel-50: #fdf6e9;
+  --color-mel-100: #f9e9c8;
+  --color-mel-200: #f4dba4;
+  --color-mel-300: #efc978;
+  --color-mel-400: #e5b24c;
+  --color-mel-500: #d69a28;
+  --color-mel-600: #b67d17;
+  --color-mel-700: #8f5f10;
+
+  /* raio por função, não um valor único para tudo */
+  --radius-botao: 0.625rem;
+  --radius-cartao: 0.875rem;
+  --radius-foto: 1.25rem;
 }
 
 body {
   font-family: var(--font-sans);
+  background-color: var(--color-pedra-50);
+  color: var(--color-pedra-900);
+}
+
+::selection {
+  background-color: var(--color-pinho-200);
+  color: var(--color-pinho-900);
+}
+
+/* Archivo variável: a largura estendida é a assinatura tipográfica dos títulos. */
+.titulo {
+  font-stretch: 114%;
+  font-weight: 650;
+  letter-spacing: -0.022em;
+  line-height: 1.06;
+}
+
+.titulo-secao {
+  font-stretch: 108%;
+  font-weight: 620;
+  letter-spacing: -0.014em;
+}
+
+/* Números de preço: tabulares para não dançarem ao trocar a duração. */
+.numeros {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes sobe {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+  @keyframes assenta {
+    from {
+      opacity: 0;
+      transform: scale(1.05);
+    }
+  }
+  @keyframes troca-preco {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  /* Um único momento coreografado: a entrada da capa. */
+  .entra {
+    animation: sobe 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  }
+  .entra-foto {
+    animation: assenta 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  }
+  .troca {
+    animation: troca-preco 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
 }

@@ -26,21 +26,21 @@ export default async function AdminPrecosPage() {
 
   return (
     <section>
-      <h1 className="text-2xl font-bold text-slate-900">Tabela de preços</h1>
-      <p className="mt-1 text-slate-600">
+      <h1 className="titulo text-2xl text-pinho-900">Tabela de preços</h1>
+      <p className="mt-1 text-pedra-600">
         Valor base por tipo × duração × região. O multiplicador ajusta o preço final (ex.: pós-obra).
       </p>
 
       <div className="mt-6 space-y-3">
         {[...porRegiao.values()].map((grupo) => (
-          <details key={grupo.nome} className="rounded-xl border border-slate-200">
-            <summary className="cursor-pointer px-4 py-3 font-medium text-slate-800 hover:bg-slate-50">
+          <details key={grupo.nome} className="rounded-xl border border-pedra-200">
+            <summary className="cursor-pointer px-4 py-3 font-medium text-pedra-800 hover:bg-pedra-50">
               {grupo.nome}
             </summary>
-            <div className="overflow-x-auto border-t border-slate-200 p-4">
+            <div className="overflow-x-auto border-t border-pedra-200 p-4">
               <table className="w-full min-w-[560px] text-sm">
                 <thead>
-                  <tr className="text-left text-slate-500">
+                  <tr className="text-left text-pedra-500">
                     <th className="pb-2 pr-3 font-medium">Serviço</th>
                     <th className="pb-2 pr-3 font-medium">Duração</th>
                     <th className="pb-2 pr-3 font-medium">Valor base (R$)</th>
@@ -51,9 +51,9 @@ export default async function AdminPrecosPage() {
                 </thead>
                 <tbody>
                   {grupo.regras.map((r) => (
-                    <tr key={r.id} className="border-t border-slate-100">
-                      <td className="py-2 pr-3 text-slate-800">{LABEL[r.tipoServico] ?? r.tipoServico}</td>
-                      <td className="py-2 pr-3 text-slate-600">{r.duracaoHoras}h</td>
+                    <tr key={r.id} className="border-t border-pedra-100">
+                      <td className="py-2 pr-3 text-pedra-800">{LABEL[r.tipoServico] ?? r.tipoServico}</td>
+                      <td className="py-2 pr-3 text-pedra-600">{r.duracaoHoras}h</td>
                       <td colSpan={4} className="py-2">
                         <ActionForm action={atualizarPreco} submitLabel="Salvar" size="sm" className="flex flex-wrap items-center gap-2 space-y-0">
                           <input type="hidden" name="id" value={r.id} />
@@ -73,7 +73,7 @@ export default async function AdminPrecosPage() {
                             defaultValue={Number(r.multiplicador).toString()}
                             className="h-9 w-20"
                           />
-                          <label className="flex items-center gap-1 text-slate-600">
+                          <label className="flex items-center gap-1 text-pedra-600">
                             <input type="checkbox" name="ativo" defaultChecked={r.ativo} /> ativo
                           </label>
                         </ActionForm>

@@ -32,21 +32,21 @@ export default async function AgendaPage() {
   return (
     <section className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Agenda</h1>
-        <p className="mt-1 text-slate-600">
+        <h1 className="titulo text-2xl text-pinho-900">Agenda</h1>
+        <p className="mt-1 text-pedra-600">
           Disponibilidade recorrente por dia da semana e bloqueios em datas específicas.
         </p>
       </div>
 
       <div className="space-y-4">
-        <h2 className="font-semibold text-slate-900">Disponibilidade semanal</h2>
+        <h2 className="font-semibold text-pedra-900">Disponibilidade semanal</h2>
         {disponibilidade.length === 0 ? (
           <EmptyState titulo="Sem horários" descricao="Adicione as janelas em que você costuma atender." />
         ) : (
-          <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+          <ul className="divide-y divide-pedra-100 rounded-xl border border-pedra-200">
             {disponibilidade.map((d) => (
               <li key={d.id} className="flex items-center justify-between px-4 py-3 text-sm">
-                <span className="text-slate-800">
+                <span className="text-pedra-800">
                   <strong>{DIAS[d.diaSemana]}</strong> · {minutosParaHora(d.inicioMin)}–{minutosParaHora(d.fimMin)}
                 </span>
                 <ActionForm action={removerDisponibilidade} submitLabel="Remover" variant="ghost" size="sm" className="space-y-0">
@@ -57,7 +57,7 @@ export default async function AgendaPage() {
           </ul>
         )}
 
-        <div className="rounded-xl border border-slate-200 p-4">
+        <div className="rounded-xl border border-pedra-200 p-4">
           <ActionForm action={adicionarDisponibilidade} submitLabel="Adicionar janela">
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="space-y-1.5">
@@ -66,7 +66,7 @@ export default async function AgendaPage() {
                   id="diaSemana"
                   name="diaSemana"
                   defaultValue="1"
-                  className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+                  className="flex h-10 w-full rounded-lg border border-pedra-300 bg-white px-3 text-sm"
                 >
                   {DIAS.map((nome, i) => (
                     <option key={i} value={i}>
@@ -89,14 +89,14 @@ export default async function AgendaPage() {
       </div>
 
       <div className="space-y-4">
-        <h2 className="font-semibold text-slate-900">Bloqueios</h2>
+        <h2 className="font-semibold text-pedra-900">Bloqueios</h2>
         {bloqueios.length === 0 ? (
           <EmptyState titulo="Nenhum bloqueio" descricao="Marque folgas ou compromissos em datas específicas." />
         ) : (
-          <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+          <ul className="divide-y divide-pedra-100 rounded-xl border border-pedra-200">
             {bloqueios.map((b) => (
               <li key={b.id} className="flex items-center justify-between px-4 py-3 text-sm">
-                <span className="text-slate-800">
+                <span className="text-pedra-800">
                   <strong>{formatData(b.data)}</strong>
                   {b.inicioMin != null && b.fimMin != null
                     ? ` · ${minutosParaHora(b.inicioMin)}–${minutosParaHora(b.fimMin)}`
@@ -111,7 +111,7 @@ export default async function AgendaPage() {
           </ul>
         )}
 
-        <div className="rounded-xl border border-slate-200 p-4">
+        <div className="rounded-xl border border-pedra-200 p-4">
           <ActionForm action={adicionarBloqueio} submitLabel="Adicionar bloqueio">
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
@@ -122,7 +122,7 @@ export default async function AgendaPage() {
                 <Label htmlFor="motivo">Motivo (opcional)</Label>
                 <Input id="motivo" name="motivo" maxLength={200} />
               </div>
-              <label className="flex items-center gap-2 text-sm text-slate-700">
+              <label className="flex items-center gap-2 text-sm text-pedra-700">
                 <input type="checkbox" name="diaInteiro" defaultChecked /> Dia inteiro
               </label>
               <div className="grid grid-cols-2 gap-3">

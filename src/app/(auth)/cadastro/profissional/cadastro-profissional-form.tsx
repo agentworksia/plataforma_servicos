@@ -44,7 +44,7 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
   return (
     <form action={action} className="space-y-6">
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Dados pessoais</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-pedra-500">Dados pessoais</h2>
         <div className="space-y-1.5">
           <Label htmlFor="nome">Nome completo</Label>
           <Input id="nome" name="nome" defaultValue={v("nome")} autoComplete="name" required />
@@ -85,7 +85,7 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Perfil e documento</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-pedra-500">Perfil e documento</h2>
         <div className="space-y-1.5">
           <Label htmlFor="bio">Bio curta (opcional)</Label>
           <Textarea id="bio" name="bio" defaultValue={v("bio")} maxLength={500} placeholder="Conte um pouco da sua experiência." />
@@ -113,16 +113,16 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
             onChange={(ev) => reduzirNoInput(ev, 2000)}
             required
           />
-          <p className="text-xs text-slate-500">Acesso restrito ao time de aprovação.</p>
+          <p className="text-xs text-pedra-500">Acesso restrito ao time de aprovação.</p>
           <Erro msg={e.documento?.[0]} />
         </div>
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Tipos de serviço que atende</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-pedra-500">Tipos de serviço que atende</h2>
         <div className="grid gap-2 sm:grid-cols-2">
           {TIPOS_SERVICO.map((t) => (
-            <label key={t.value} className="flex items-center gap-2 text-sm text-slate-700">
+            <label key={t.value} className="flex items-center gap-2 text-sm text-pedra-700">
               <input type="checkbox" name="tiposServico" value={t.value} defaultChecked={marcadoTipo.has(t.value)} />
               {t.label}
             </label>
@@ -132,10 +132,10 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Regiões que atende</h2>
-        <div className="grid max-h-52 gap-2 overflow-y-auto rounded-lg border border-slate-200 p-3 sm:grid-cols-2">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-pedra-500">Regiões que atende</h2>
+        <div className="grid max-h-52 gap-2 overflow-y-auto rounded-lg border border-pedra-200 p-3 sm:grid-cols-2">
           {regioes.map((r) => (
-            <label key={r.id} className="flex items-center gap-2 text-sm text-slate-700">
+            <label key={r.id} className="flex items-center gap-2 text-sm text-pedra-700">
               <input type="checkbox" name="serviceAreaIds" value={r.id} defaultChecked={marcadaRegiao.has(r.id)} />
               {r.cidade}
               {r.bairro ? ` — ${r.bairro}` : ""}
@@ -146,7 +146,7 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Dados de repasse (Pix)</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-pedra-500">Dados de repasse (Pix)</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="repassePixTipo">Tipo de chave</Label>
@@ -155,7 +155,7 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
               name="repassePixTipo"
               value={tipoPix}
               onChange={(ev) => setTipoPix(ev.target.value)}
-              className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+              className="flex h-10 w-full rounded-lg border border-pedra-300 bg-white px-3 text-sm text-pedra-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pinho-500"
             >
               {TIPOS_CHAVE_PIX.map((t) => (
                 <option key={t.value} value={t.value}>
@@ -174,22 +174,22 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
       </section>
 
       <section className="space-y-2">
-        <label className="flex items-start gap-2 text-sm text-slate-700">
+        <label className="flex items-start gap-2 text-sm text-pedra-700">
           <input type="checkbox" name="aceiteTermos" className="mt-1" />
           <span>
             Li e aceito os{" "}
-            <a href="/termos" target="_blank" rel="noreferrer" className="text-teal-700 underline">
+            <a href="/termos" target="_blank" rel="noreferrer" className="text-pinho-700 underline">
               termos de uso
             </a>{" "}
             e a{" "}
-            <a href="/privacidade" target="_blank" rel="noreferrer" className="text-teal-700 underline">
+            <a href="/privacidade" target="_blank" rel="noreferrer" className="text-pinho-700 underline">
               política de privacidade
             </a>{" "}
             (LGPD).
           </span>
         </label>
         <Erro msg={e.aceiteTermos?.[0]} />
-        <label className="flex items-start gap-2 text-sm text-slate-700">
+        <label className="flex items-start gap-2 text-sm text-pedra-700">
           <input type="checkbox" name="consentimentoDocumentos" className="mt-1" />
           <span>Autorizo o envio e a guarda dos meus documentos para verificação de identidade.</span>
         </label>
@@ -201,7 +201,7 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
       <Button type="submit" disabled={pending} className="w-full">
         {pending ? "Enviando cadastro…" : "Enviar cadastro"}
       </Button>
-      <p className="text-center text-xs text-slate-500">
+      <p className="text-center text-xs text-pedra-500">
         Sua conta passa por aprovação manual antes de receber ofertas.
       </p>
     </form>

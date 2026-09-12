@@ -41,16 +41,16 @@ export default async function ServicoDetalhePage({ params }: { params: Promise<{
   return (
     <section className="space-y-6">
       <div>
-        <Link href="/profissional" className="text-sm text-teal-700 hover:underline">
+        <Link href="/profissional" className="text-sm text-pinho-700 hover:underline">
           ← Ofertas
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-bold text-slate-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</h1>
+          <h1 className="titulo text-2xl text-pinho-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</h1>
           <Badge cor={st.cor}>{st.label}</Badge>
         </div>
       </div>
 
-      <div className="space-y-2 rounded-xl border border-slate-200 p-5 text-sm">
+      <div className="space-y-2 rounded-xl border border-pedra-200 p-5 text-sm">
         <p><strong>Data:</strong> {formatData(b.data)} · {minutosParaHora(b.inicioMin)} · {b.duracaoHoras}h</p>
         <p><strong>Endereço:</strong> {b.address.logradouro}, {b.address.numero}
           {b.address.complemento ? ` · ${b.address.complemento}` : ""} — {b.address.bairro}, {b.address.cidade}
@@ -61,7 +61,7 @@ export default async function ServicoDetalhePage({ params }: { params: Promise<{
       </div>
 
       {(b.status === "AGENDADO" || b.status === "EM_ANDAMENTO") && (
-        <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 p-4">
+        <div className="flex flex-wrap gap-2 rounded-xl border border-pedra-200 p-4">
           {b.status === "AGENDADO" && (
             <ActionForm action={iniciarServico} submitLabel="Iniciar serviço" className="space-y-0">
               <input type="hidden" name="bookingId" value={b.id} />
@@ -80,15 +80,15 @@ export default async function ServicoDetalhePage({ params }: { params: Promise<{
       )}
 
       {b.status === "CONCLUIDO" && (
-        <div className="rounded-xl border border-slate-200 p-4 text-sm">
+        <div className="rounded-xl border border-pedra-200 p-4 text-sm">
           <p>Concluído em {b.concluidoEm ? formatData(b.concluidoEm) : "—"}.</p>
           {b.payout && (
-            <p className="mt-1 text-slate-600">
+            <p className="mt-1 text-pedra-600">
               Repasse de {formatBRL(b.payout.valor)} — {b.payout.status === "PAGO" ? "pago" : `previsto para ${b.payout.liberadoEm ? formatData(b.payout.liberadoEm) : "—"}`}.
             </p>
           )}
           {b.review && (
-            <p className="mt-2 text-slate-700">
+            <p className="mt-2 text-pedra-700">
               Avaliação do cliente: <strong>{b.review.nota}/5</strong>
               {b.review.comentario ? ` — "${b.review.comentario}"` : ""}
             </p>
