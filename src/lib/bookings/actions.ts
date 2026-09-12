@@ -9,6 +9,7 @@ import { resolverServiceArea } from "@/lib/areas";
 import { calcularPreco, type PrecoCalculado } from "@/lib/pricing";
 import { atribuirProximaDaFila } from "@/lib/matching";
 import { datasDaSerie } from "@/lib/bookings/recorrencia";
+import { podeEscolher } from "@/lib/professionals/historico";
 import { payments } from "@/lib/payments";
 import { horaParaMinutos, dataDeInput } from "@/lib/format";
 import type { FormState } from "@/lib/auth/actions";
@@ -39,7 +40,14 @@ async function registrarPagamento(bookingId: string, valorCentavos: number, p: D
   });
 }
 
-function dadosBooking(tipoServico: ServiceType, inicioMin: number, duracaoHoras: number, preco: PrecoCalculado, observacoes?: string) {
+function dadosBooking(
+  tipoServico: ServiceType,
+  inicioMin: number,
+  duracaoHoras: number,
+  preco: PrecoCalculado,
+  observacoes?: string,
+  preferidaId?: string,
+) {
   return {
     tipoServico,
     inicioMin,
@@ -51,6 +59,7 @@ function dadosBooking(tipoServico: ServiceType, inicioMin: number, duracaoHoras:
     valorTotal: preco.valorTotal,
     repasseProfissional: preco.repasseProfissional,
     observacoesCliente: observacoes ?? null,
+    preferidaId: preferidaId ?? null,
   };
 }
 
@@ -62,7 +71,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
   const campos = [
     "tipoServico", "enderecoId", "cep", "logradouro", "numero", "complemento", "bairro", "cidade",
     "referencia", "metragem", "numeroComodos", "data", "inicio", "duracaoHoras", "recorrencia",
-    "metodoPagamento", "observacoes",
+    "metodoPagamento", "observacoes", "preferidaId",
   ];
   const brutos = Object.fromEntries(campos.map((k) => [k, formData.get(k) ? String(formData.get(k)) : undefined]));
 
@@ -122,6 +131,18 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
     return { message: err instanceof Error ? err.message : "Não foi possível calcular o preço.", values: valores };
   }
 
+  // A preferida vem do <select>, então é conferida aqui: só vale quem já atendeu este cliente.
+  let preferidaId: string | undefined;
+  if (d.preferidaId) {
+    if (!(await podeEscolher(cliente.id, d.preferidaId))) {
+      return {
+        errors: { preferidaId: ["Escolha uma profissional que já atendeu você."] },
+        values: valores,
+      };
+    }
+    preferidaId = d.preferidaId;
+  }
+
   const inicioMin = horaParaMinutos(d.inicio);
   const pgto: DadosPagamento = {
     metodo: d.metodoPagamento,
@@ -138,7 +159,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
         addressId: endereco.id,
         recorrencia: "AVULSA",
         data: dataDeInput(d.data),
-        ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes),
+        ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes, preferidaId),
       },
     });
     await registrarPagamento(booking.id, preco.valorTotal, pgto);
@@ -164,6 +185,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
       inicioMin,
       dataInicio: inicio,
       dataFim: datas[datas.length - 1],
+      titularProfessionalId: preferidaId ?? null,
     },
   });
 
@@ -176,7 +198,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
           seriesId: serie.id,
           recorrencia: d.recorrencia,
           data,
-          ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes),
+          ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes, preferidaId),
         },
       }),
     ),

@@ -227,7 +227,8 @@ model ProfessionalProfile {
   excecoes        AvailabilityException[]
   documentos      ProfessionalDocument[]
   ofertas         BookingOffer[]
-  bookings        Booking[]
+  bookings        Booking[]                 @relation("ServicosExecutados")
+  preferidaEm     Booking[]                 @relation("ProfissionalPreferida")
   seriesTitular   BookingSeries[]
   payouts         Payout[]
   reviews         Review[]
@@ -420,6 +421,10 @@ model Booking {
   status         BookingStatus @default(AGUARDANDO_PROFISSIONAL)
   professionalId String?
 
+  // Profissional que o cliente pediu. A fila de ofertas tenta ela primeiro; se recusar ou
+  // não estiver disponível, o serviço segue para a fila normal.
+  preferidaId String?
+
   // valores em centavos
   valorServico        Int
   valorExtras         Int @default(0)
@@ -443,7 +448,8 @@ model Booking {
   client       ClientProfile        @relation(fields: [clientId], references: [id])
   address      Address              @relation(fields: [addressId], references: [id])
   series       BookingSeries?       @relation(fields: [seriesId], references: [id])
-  professional ProfessionalProfile? @relation(fields: [professionalId], references: [id])
+  professional ProfessionalProfile? @relation("ServicosExecutados", fields: [professionalId], references: [id])
+  preferida    ProfessionalProfile? @relation("ProfissionalPreferida", fields: [preferidaId], references: [id])
   offers       BookingOffer[]
   extras       BookingExtra[]
   payment      Payment?

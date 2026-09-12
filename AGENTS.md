@@ -43,17 +43,22 @@ src/
     agendar/             CTA público do fluxo de agendamento
     api/auth/[...nextauth]/   handlers do Auth.js
     api/webhooks/pagamento/   webhook do provedor de pagamento
-  components/ui/          button, input, label, card, empty-state (estilo shadcn, manual)
+  components/ui/          button, input, label, card, badge, empty-state (estilo shadcn, manual)
+  components/             marca (logo + araucária), site-header, site-footer, seletor-preco
   lib/
     env.ts               validação das env vars (zod) — server only
     db.ts                PrismaClient singleton + PrismaPg adapter
+    marca.ts             nome comercial da plataforma (fonte única)
     auth/                config, dal (getSession/requireUser/requireRole), actions
-    pricing/             preço = f(tipo, duração, região) + extras − taxa
-    matching/            fila de elegibilidade + atribuição (stub)
+    pricing/index.ts     preço = f(tipo, duração, região) + extras − taxa (lê PricingRule)
+    pricing/tabela.ts    tabela-base de Curitiba/RMC — usada pelo seed e pelas telas públicas
+    ranking/             pontuação interna das profissionais (só o admin vê)
+    matching/            fila de elegibilidade + atribuição
     payments/            interface + provider fake
     storage/ email/      wrappers Supabase Storage / Resend
     regioes.ts           cidades da RMC + checagem grosseira de CEP
     validation/          schemas zod compartilhados
+public/fotos/            fotos dos serviços (Unsplash, licença livre)
 ```
 
 ## Convenções
@@ -62,6 +67,18 @@ src/
 - Horários na agenda: `Int` = minutos desde 00:00.
 - Validação de entrada **sempre no backend** (server action / route handler), mesmo com validação no client.
 - Sem escopo extra sem alinhar: telas de feature ainda não construídas mostram estado vazio explicando o que falta.
+
+### Design
+
+Tokens em `src/app/globals.css`, não nas cores padrão do Tailwind:
+
+- `pinho-*` — verde da araucária, cor da marca (botão primário é `pinho-700`).
+- `pedra-*` — neutros com fundo verde frio; `pedra-50` é o fundo da página, `pedra-900` o texto.
+- `mel-*` — único acento quente, reservado a nota, destaque e numeração.
+- Raio por função: `rounded-botao` / `rounded-cartao` / `rounded-foto` — não um valor único para tudo.
+- Títulos usam `.titulo` / `.titulo-secao`, que acionam o eixo de largura da Archivo variável.
+- Sombra só no elemento elevado (cartão de preço); o resto estrutura com borda.
+- Animação: só a entrada da capa (`.entra` / `.entra-foto`), dentro de `prefers-reduced-motion`.
 
 ## Comandos
 
@@ -72,11 +89,20 @@ src/
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run db:migrate` | cria/aplica migration (dev) |
 | `npm run db:deploy` | aplica migrations (produção) |
-| `npm run db:seed` | popula configs, regiões, preços e 3 usuários demo (senha `senha12345`) |
+| `npm run db:seed` | reaplica configs, regiões e a tabela de preços; cria admin, cliente e 3 diaristas demo com histórico (senha `senha12345`) |
 | `npm run db:studio` | Prisma Studio |
 
 ## Estado atual
 
-Esqueleto: build e rotas OK, auth por papel funcionando (redirect para `/login`), camadas de
-domínio com assinatura definida e implementação pendente. Próximas features na ordem sugerida
-no README.
+Fluxo do cliente fecha ponta a ponta: agendar → pagar (provider fake) → matching → conclusão →
+avaliação → repasse. Identidade visual aplicada em todas as telas.
+
+Duas regras de negócio que não são óbvias pelo código:
+
+- **Ranking interno** (`lib/ranking`): 100 pontos divididos entre avaliação (50), serviços
+  concluídos (20), ofertas aceitas (20) e ausência de cancelamento próprio (10). Define a ordem
+  da fila de ofertas e aparece **só** em `/admin/ranking` — a cliente e a própria profissional
+  nunca veem esse número. É calculado na leitura, sem coluna para desatualizar.
+- **Profissional preferida** (`Booking.preferidaId`): a cliente escolhe entre quem já concluiu um
+  serviço para ela. Vai para o topo da fila, mas passa pelos mesmos filtros de elegibilidade —
+  se não estiver disponível no horário, a fila normal assume.

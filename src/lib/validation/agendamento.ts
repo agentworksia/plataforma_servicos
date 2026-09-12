@@ -33,6 +33,13 @@ export const agendamentoSchema = z
     recorrencia: z.enum(["AVULSA", "SEMANAL", "QUINZENAL", "MENSAL"]),
     metodoPagamento: z.enum(["PIX", "CARTAO"]),
     observacoes: z.string().trim().max(500).optional(),
+
+    // "" = sem preferência; a plataforma escolhe pela fila.
+    preferidaId: z
+      .string()
+      .trim()
+      .optional()
+      .transform((v) => (v ? v : undefined)),
   })
   .refine(
     (d) =>

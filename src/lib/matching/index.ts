@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "@/lib/db";
 import { getSetting } from "@/lib/settings";
+import { calcularPontuacao } from "@/lib/ranking/pontuacao";
 
 const STATUS_OCUPADO = ["AGENDADO", "EM_ANDAMENTO", "CONCLUIDO"] as const;
 
@@ -19,7 +20,8 @@ function inicioSemana(ref: Date): Date {
  * Fila de profissionais elegíveis para uma diária, em ordem de prioridade.
  * Elegibilidade: APROVADA · atende o tipo · cobre a cidade · disponível na agenda naquele
  * dia/horário · sem bloqueio · sem serviço conflitante · ainda não ofertado/recusado.
- * Ordem: melhor média de avaliação; desempate por menos serviços na semana e maior taxa de aceite.
+ * Ordem: pontuação interna (ver lib/ranking), com desempate por menos serviços na semana.
+ * A profissional que a cliente pediu vai para o topo — desde que passe pelos mesmos filtros.
  */
 export async function montarFilaDeOfertas(bookingId: string): Promise<string[]> {
   const booking = await db.booking.findUnique({
@@ -48,10 +50,10 @@ export async function montarFilaDeOfertas(bookingId: string): Promise<string[]> 
     },
     select: {
       id: true,
+      userId: true,
       reviews: { select: { nota: true } },
       bookings: {
-        where: { status: { in: [...STATUS_OCUPADO] } },
-        select: { data: true, inicioMin: true, duracaoHoras: true },
+        select: { status: true, data: true, inicioMin: true, duracaoHoras: true, canceladoPor: true },
       },
       ofertas: { select: { status: true } },
     },
@@ -61,31 +63,47 @@ export async function montarFilaDeOfertas(bookingId: string): Promise<string[]> 
 
   const ranqueados = candidatos
     .filter((c) => {
-      // conflito de horário no mesmo dia
-      return !c.bookings.some(
+      const ocupados = c.bookings.filter((b) =>
+        (STATUS_OCUPADO as readonly string[]).includes(b.status),
+      );
+      return !ocupados.some(
         (b) =>
           b.data.getTime() === booking.data.getTime() &&
           intervalosColidem(inicio, fim, b.inicioMin, b.inicioMin + b.duracaoHoras * 60),
       );
     })
     .map((c) => {
-      const media = c.reviews.length
-        ? c.reviews.reduce((s, r) => s + r.nota, 0) / c.reviews.length
-        : 4; // sem avaliações: nota neutra para dar chance a quem está começando
-      const naSemana = c.bookings.filter((b) => inicioSemana(b.data).getTime() === semanaRef).length;
-      const respondidas = c.ofertas.filter((o) => o.status === "ACEITA" || o.status === "RECUSADA").length;
-      const aceitas = c.ofertas.filter((o) => o.status === "ACEITA").length;
-      const taxaAceite = respondidas ? aceitas / respondidas : 1;
-      return { id: c.id, media, naSemana, taxaAceite };
-    })
-    .sort(
-      (a, b) =>
-        b.media - a.media ||
-        a.naSemana - b.naSemana ||
-        b.taxaAceite - a.taxaAceite,
-    );
+      const pontuacao = calcularPontuacao({
+        totalAvaliacoes: c.reviews.length,
+        mediaNota: c.reviews.length
+          ? c.reviews.reduce((soma, r) => soma + r.nota, 0) / c.reviews.length
+          : null,
+        servicosConcluidos: c.bookings.filter((b) => b.status === "CONCLUIDO").length,
+        ofertasRespondidas: c.ofertas.filter((o) => o.status === "ACEITA" || o.status === "RECUSADA")
+          .length,
+        ofertasAceitas: c.ofertas.filter((o) => o.status === "ACEITA").length,
+        cancelamentosProprios: c.bookings.filter(
+          (b) => b.status === "CANCELADO" && b.canceladoPor === c.userId,
+        ).length,
+      });
 
-  return ranqueados.map((r) => r.id);
+      const naSemana = c.bookings.filter(
+        (b) =>
+          (STATUS_OCUPADO as readonly string[]).includes(b.status) &&
+          inicioSemana(b.data).getTime() === semanaRef,
+      ).length;
+
+      return { id: c.id, total: pontuacao.total, naSemana };
+    })
+    .sort((a, b) => b.total - a.total || a.naSemana - b.naSemana);
+
+  const fila = ranqueados.map((r) => r.id);
+
+  // A escolha da cliente vem antes da pontuação, mas nunca dispensa os filtros acima.
+  if (booking.preferidaId && fila.includes(booking.preferidaId)) {
+    return [booking.preferidaId, ...fila.filter((id) => id !== booking.preferidaId)];
+  }
+  return fila;
 }
 
 export type ResultadoAtribuicao =
