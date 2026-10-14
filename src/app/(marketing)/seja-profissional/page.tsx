@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Seja profissional" };
 export default function SejaProfissionalPage() {
   return (
     <article>
-      <h1 className="titulo text-3xl text-pinho-900">Trabalhe como diarista na plataforma</h1>
+      <h1 className="titulo text-3xl text-mar-900">Trabalhe como diarista na plataforma</h1>
       <p className="mt-4 text-pedra-700">
         Você define onde atende, o que faz e quando está disponível. A plataforma leva os serviços até você,
         cuida do pagamento do cliente e faz o repasse após a conclusão.
@@ -16,7 +16,7 @@ export default function SejaProfissionalPage() {
 
       <ul className="mt-6 space-y-2 text-pedra-700">
         <li>• Cadastro com documento e foto — aprovação manual antes de aparecer para os clientes.</li>
-        <li>• Você escolhe as regiões de Curitiba e RMC que quer atender.</li>
+        <li>• Você escolhe as cidades que quer atender, no Paraná ou no litoral de Santa Catarina.</li>
         <li>• Agenda com disponibilidade recorrente e bloqueios pontuais.</li>
         <li>• Receba ofertas e aceite só o que couber na sua rotina.</li>
       </ul>

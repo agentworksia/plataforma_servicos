@@ -23,13 +23,13 @@ export default async function CadastroPage() {
       <div className="mt-6 space-y-1 text-sm text-pedra-600">
         <p>
           Já tem conta?{" "}
-          <Link href="/login" className="font-medium text-pinho-700 hover:underline">
+          <Link href="/login" className="font-medium text-mar-700 hover:underline">
             Entrar
           </Link>
         </p>
         <p>
           Quer trabalhar como diarista?{" "}
-          <Link href="/cadastro/profissional" className="font-medium text-pinho-700 hover:underline">
+          <Link href="/cadastro/profissional" className="font-medium text-mar-700 hover:underline">
             Cadastre-se aqui
           </Link>
         </p>

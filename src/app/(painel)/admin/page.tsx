@@ -12,7 +12,7 @@ export default async function AdminPage() {
 
   return (
     <section>
-      <h1 className="titulo text-2xl text-pinho-900">Visão geral</h1>
+      <h1 className="titulo text-2xl text-mar-900">Visão geral</h1>
       <p className="mt-1 text-pedra-600">
         Aprovação de profissionais, agendamentos, repasses, tabela de preços e regiões atendidas.
       </p>
@@ -20,9 +20,9 @@ export default async function AdminPage() {
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <Link
           href="/admin/profissionais?status=PENDENTE"
-          className="rounded-xl border border-pedra-200 p-5 transition-colors hover:border-pinho-300 hover:bg-pinho-50/40"
+          className="rounded-xl border border-pedra-200 p-5 transition-colors hover:border-mar-300 hover:bg-mar-50/40"
         >
-          <p className="titulo text-3xl text-pinho-900">{pendentes}</p>
+          <p className="titulo text-3xl text-mar-900">{pendentes}</p>
           <p className="mt-1 text-sm text-pedra-600">
             {pendentes === 1 ? "profissional aguardando aprovação" : "profissionais aguardando aprovação"}
           </p>

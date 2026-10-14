@@ -436,6 +436,10 @@ model Booking {
   sobOrcamento        Boolean   @default(false)
   orcamentoAprovadoEm DateTime?
 
+  // Obrigatório no pós-obra: o que foi a obra e o que precisa ser limpo. É o que permite
+  // a profissional decidir se aceita e levar o produto e o EPI certos.
+  detalhesPosObra String?
+
   observacoesCliente String?
   concluidoEm        DateTime?
   canceladoEm        DateTime?

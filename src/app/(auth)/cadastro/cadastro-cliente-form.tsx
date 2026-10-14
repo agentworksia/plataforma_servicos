@@ -83,11 +83,11 @@ export function CadastroClienteForm() {
           <input type="checkbox" name="aceiteTermos" className="mt-1" />
           <span>
             Li e aceito os{" "}
-            <a href="/termos" target="_blank" rel="noreferrer" className="text-pinho-700 underline">
+            <a href="/termos" target="_blank" rel="noreferrer" className="text-mar-700 underline">
               termos de uso
             </a>{" "}
             e a{" "}
-            <a href="/privacidade" target="_blank" rel="noreferrer" className="text-pinho-700 underline">
+            <a href="/privacidade" target="_blank" rel="noreferrer" className="text-mar-700 underline">
               política de privacidade
             </a>{" "}
             (LGPD).

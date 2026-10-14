@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MARCA } from "@/lib/marca";
-import { Araucaria } from "@/components/marca";
+import { Selo } from "@/components/marca";
 
 const LINKS = [
   { href: "/como-funciona", label: "Como funciona" },
@@ -15,8 +15,8 @@ export function SiteFooter() {
     <footer className="mt-24 border-t border-pedra-200 bg-white">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:flex-row sm:justify-between">
         <div className="max-w-xs">
-          <div className="flex items-center gap-2 text-pinho-800">
-            <Araucaria className="size-5 text-pinho-600" />
+          <div className="flex items-center gap-2 text-mar-800">
+            <Selo tamanho={32} className="size-8" />
             <span className="titulo text-base">{MARCA.nome}</span>
           </div>
           <p className="mt-3 text-sm leading-relaxed text-pedra-600">
@@ -27,7 +27,7 @@ export function SiteFooter() {
 
         <nav className="grid gap-2 text-sm sm:text-right">
           {LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className="text-pedra-600 hover:text-pinho-700">
+            <Link key={l.href} href={l.href} className="text-pedra-600 hover:text-mar-700">
               {l.label}
             </Link>
           ))}

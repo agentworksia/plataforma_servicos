@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 
 const cores = {
   neutro: "bg-pedra-100 text-pedra-700",
-  amarelo: "bg-mel-100 text-mel-700",
-  verde: "bg-pinho-100 text-pinho-800",
+  amarelo: "bg-folha-100 text-folha-700",
+  verde: "bg-mar-100 text-mar-800",
   vermelho: "bg-red-100 text-red-800",
 } as const;
 

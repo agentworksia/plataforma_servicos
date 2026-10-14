@@ -1,8 +1,12 @@
 import { z } from "zod";
+import { duracoesDisponiveis, type Duracao } from "@/lib/pricing/tabela";
 
 const digitos = (v: string) => v.replace(/\D/g, "");
 
 export const DURACOES_VALIDAS = [4, 6, 8] as const;
+
+/** Mínimo para o relato do pós-obra valer alguma coisa para quem vai executar. */
+export const MIN_DETALHES_POS_OBRA = 60;
 
 export const RECORRENCIAS = [
   { value: "AVULSA", label: "Avulsa (uma vez)" },
@@ -34,6 +38,8 @@ export const agendamentoSchema = z
     metodoPagamento: z.enum(["PIX", "CARTAO"]),
     observacoes: z.string().trim().max(500).optional(),
 
+    detalhesPosObra: z.string().trim().max(2000).optional(),
+
     // "" = sem preferência; a plataforma escolhe pela fila.
     preferidaId: z
       .string()
@@ -50,6 +56,23 @@ export const agendamentoSchema = z
   .refine((d) => new Date(`${d.data}T12:00:00Z`).getTime() > Date.now() + 12 * 3600_000, {
     error: "Escolha uma data a partir de amanhã.",
     path: ["data"],
-  });
+  })
+  .refine(
+    (d) =>
+      (duracoesDisponiveis(d.tipoServico) as readonly number[]).includes(d.duracaoHoras),
+    {
+      error: "Essa duração não é vendida para o serviço escolhido.",
+      path: ["duracaoHoras"],
+    },
+  )
+  .refine(
+    (d) =>
+      d.tipoServico !== "POS_OBRA" ||
+      (d.detalhesPosObra?.length ?? 0) >= MIN_DETALHES_POS_OBRA,
+    {
+      error: `Descreva a obra e o que precisa ser limpo, com pelo menos ${MIN_DETALHES_POS_OBRA} caracteres. É isso que permite a profissional levar o produto certo.`,
+      path: ["detalhesPosObra"],
+    },
+  );
 
 export type AgendamentoInput = z.infer<typeof agendamentoSchema>;

@@ -15,7 +15,7 @@ export default async function AdminRankingPage() {
 
   return (
     <section>
-      <h1 className="titulo text-2xl text-pinho-900">Ranking das profissionais</h1>
+      <h1 className="titulo text-2xl text-mar-900">Ranking das profissionais</h1>
       <p className="mt-2 max-w-3xl leading-relaxed text-pedra-600">
         Define a ordem em que as ofertas são enviadas. A pontuação é calculada na hora da leitura e não
         aparece para a cliente nem para a profissional — cada uma vê apenas a própria média de avaliação.
@@ -26,7 +26,7 @@ export default async function AdminRankingPage() {
         <ul className="mt-3 grid gap-2 text-sm text-pedra-600 sm:grid-cols-2 lg:grid-cols-4">
           {EXPLICACAO_PESOS.map((p) => (
             <li key={p.nome} className="flex items-baseline gap-2">
-              <span className="numeros titulo-secao text-pinho-800">{p.peso}</span>
+              <span className="numeros titulo-secao text-mar-800">{p.peso}</span>
               <span>{p.nome}</span>
             </li>
           ))}
@@ -75,7 +75,7 @@ export default async function AdminRankingPage() {
                       <div className="font-medium text-pedra-900">{l.nome}</div>
                       <div className="text-pedra-500">{l.email}</div>
                     </td>
-                    <td className="numeros py-3 pr-4 font-medium text-pinho-800">
+                    <td className="numeros py-3 pr-4 font-medium text-mar-800">
                       {formatNota(l.pontuacao.total)}
                     </td>
                     <td className="py-3 pr-4">
@@ -95,7 +95,7 @@ export default async function AdminRankingPage() {
                     <td className="py-3 text-right">
                       <Link
                         href={`/admin/profissionais/${l.id}`}
-                        className="font-medium text-pinho-700 hover:underline"
+                        className="font-medium text-mar-700 hover:underline"
                       >
                         Ver
                       </Link>

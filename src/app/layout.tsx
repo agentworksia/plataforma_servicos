@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: `%s · ${MARCA.nome}`,
   },
   description:
-    "Agende limpeza residencial, passadoria, pós-obra ou serviço corporativo em Curitiba e na Região Metropolitana. O pagamento fica retido na plataforma e só chega à profissional depois que o serviço é concluído.",
+    "Agende limpeza residencial, passadoria, pós-obra ou serviço corporativo em Curitiba, na Região Metropolitana e no litoral de Santa Catarina. O pagamento fica retido na plataforma e só chega à profissional depois que o serviço é concluído.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

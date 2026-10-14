@@ -69,11 +69,11 @@ export default async function ProfissionalDetalhePage({ params }: { params: Prom
   return (
     <section className="space-y-6">
       <div>
-        <Link href="/admin/profissionais" className="text-sm text-pinho-700 hover:underline">
+        <Link href="/admin/profissionais" className="text-sm text-mar-700 hover:underline">
           ← Profissionais
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="titulo text-2xl text-pinho-900">{p.user.name ?? "—"}</h1>
+          <h1 className="titulo text-2xl text-mar-900">{p.user.name ?? "—"}</h1>
           <Badge cor={st.cor}>{st.label}</Badge>
         </div>
         <p className="text-pedra-600">
@@ -133,7 +133,7 @@ export default async function ProfissionalDetalhePage({ params }: { params: Prom
               {docs.map((d) => (
                 <li key={d.id}>
                   {d.url ? (
-                    <a href={d.url} target="_blank" rel="noreferrer" className="text-pinho-700 hover:underline">
+                    <a href={d.url} target="_blank" rel="noreferrer" className="text-mar-700 hover:underline">
                       {d.nomeArquivo ?? d.tipo}
                     </a>
                   ) : (

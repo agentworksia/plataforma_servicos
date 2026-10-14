@@ -47,11 +47,11 @@ export default async function SerieDetalhePage({ params }: { params: Promise<{ i
   return (
     <section className="space-y-6">
       <div>
-        <Link href="/cliente" className="text-sm text-pinho-700 hover:underline">
+        <Link href="/cliente" className="text-sm text-mar-700 hover:underline">
           ← Meus agendamentos
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="titulo text-2xl text-pinho-900">
+          <h1 className="titulo text-2xl text-mar-900">
             {LABEL_SERVICO[serie.tipoServico] ?? serie.tipoServico} · {LABEL_REC[serie.recorrencia]}
           </h1>
           <Badge cor={serie.ativo ? "verde" : "neutro"}>{serie.ativo ? "Ativa" : "Cancelada"}</Badge>

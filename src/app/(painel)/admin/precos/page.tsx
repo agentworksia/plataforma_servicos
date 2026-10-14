@@ -26,7 +26,7 @@ export default async function AdminPrecosPage() {
 
   return (
     <section>
-      <h1 className="titulo text-2xl text-pinho-900">Tabela de preços</h1>
+      <h1 className="titulo text-2xl text-mar-900">Tabela de preços</h1>
       <p className="mt-1 text-pedra-600">
         Valor base por tipo × duração × região. O multiplicador ajusta o preço final (ex.: pós-obra).
       </p>

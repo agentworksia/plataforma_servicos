@@ -8,11 +8,14 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Plataforma de serviços de limpeza (Curitiba + RMC)
+# Prime Diárias — plataforma de serviços de limpeza
 
 Marketplace de dois lados: **cliente** agenda limpeza, **profissional** (diarista) executa.
 A plataforma faz o matching, retém o pagamento e repassa após a conclusão. Escopo completo
 do produto em [`PROMPT-INICIAL.md`](PROMPT-INICIAL.md).
+
+Praças: Curitiba + Região Metropolitana (PR) e o litoral de Santa Catarina, de Itapoá a
+Florianópolis. O nome comercial fica só em `src/lib/marca.ts`; o logo em `public/marca/`.
 
 ## Stack
 
@@ -65,6 +68,9 @@ public/fotos/            fotos dos serviços (Unsplash, licença livre)
 
 - **Dinheiro é sempre `Int` em centavos** (BRL). Formatação em `src/lib/format.ts`.
 - Horários na agenda: `Int` = minutos desde 00:00.
+- Preço vem de `lib/pricing/tabela.ts`. `null` ali significa "não vendido nessa duração" e vira
+  orçamento — é assim que pós-obra de 8 h sai da tabela. O seed grava o preço de praça já
+  calculado em `valorBase` com `multiplicador` 1, para o que o admin edita ser o que o cliente vê.
 - Validação de entrada **sempre no backend** (server action / route handler), mesmo com validação no client.
 - Sem escopo extra sem alinhar: telas de feature ainda não construídas mostram estado vazio explicando o que falta.
 
@@ -72,9 +78,12 @@ public/fotos/            fotos dos serviços (Unsplash, licença livre)
 
 Tokens em `src/app/globals.css`, não nas cores padrão do Tailwind:
 
-- `pinho-*` — verde da araucária, cor da marca (botão primário é `pinho-700`).
-- `pedra-*` — neutros com fundo verde frio; `pedra-50` é o fundo da página, `pedra-900` o texto.
-- `mel-*` — único acento quente, reservado a nota, destaque e numeração.
+A paleta sai do logo — qualquer cor nova precisa sair dele também, não de escolha avulsa:
+
+- `mar-*` — azuis do logo. `mar-700` (#123e61) é o navy da marca e o botão primário;
+  `mar-400` (#549dcd) é o azul do risco e das estrelas.
+- `pedra-*` — neutros frios puxando para o azul; `pedra-50` é o fundo da página, `pedra-900` o texto.
+- `folha-*` — verde da folha do logo. Único acento: nota, numeração, destaque.
 - Raio por função: `rounded-botao` / `rounded-cartao` / `rounded-foto` — não um valor único para tudo.
 - Títulos usam `.titulo` / `.titulo-secao`, que acionam o eixo de largura da Archivo variável.
 - Sombra só no elemento elevado (cartão de preço); o resto estrutura com borda.
@@ -97,7 +106,11 @@ Tokens em `src/app/globals.css`, não nas cores padrão do Tailwind:
 Fluxo do cliente fecha ponta a ponta: agendar → pagar (provider fake) → matching → conclusão →
 avaliação → repasse. Identidade visual aplicada em todas as telas.
 
-Duas regras de negócio que não são óbvias pelo código:
+Recuperação de senha é **só por e-mail** (Resend). A tela já mostra a opção de SMS desativada —
+falta contratar provedor; quando houver, é ligar o canal em `lib/auth/recuperacao.ts`. O token vai
+em claro no link e só o hash SHA-256 fica no banco, reaproveitando `VerificationToken`.
+
+Regras de negócio que não são óbvias pelo código:
 
 - **Ranking interno** (`lib/ranking`): 100 pontos divididos entre avaliação (50), serviços
   concluídos (20), ofertas aceitas (20) e ausência de cancelamento próprio (10). Define a ordem
@@ -106,3 +119,6 @@ Duas regras de negócio que não são óbvias pelo código:
 - **Profissional preferida** (`Booking.preferidaId`): a cliente escolhe entre quem já concluiu um
   serviço para ela. Vai para o topo da fila, mas passa pelos mesmos filtros de elegibilidade —
   se não estiver disponível no horário, a fila normal assume.
+- **Pós-obra** (`Booking.detalhesPosObra`): descrição obrigatória, mínimo de 60 caracteres. O
+  roteiro de perguntas e o exemplo ficam em `lib/servicos.ts`. Vendido só em 4 h e 6 h; acima
+  disso é orçamento.

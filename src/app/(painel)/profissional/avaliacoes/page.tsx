@@ -23,7 +23,7 @@ export default async function AvaliacoesPage() {
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="titulo text-2xl text-pinho-900">Avaliações recebidas</h1>
+        <h1 className="titulo text-2xl text-mar-900">Avaliações recebidas</h1>
         {media !== null && (
           <p className="mt-1 text-pedra-600">
             Média <strong>{media.toFixed(1)}</strong> em {reviews.length} avaliação(ões).

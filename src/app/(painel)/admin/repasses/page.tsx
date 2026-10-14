@@ -31,7 +31,7 @@ export default async function AdminRepassesPage() {
     <section>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="titulo text-2xl text-pinho-900">Repasses</h1>
+          <h1 className="titulo text-2xl text-mar-900">Repasses</h1>
           <p className="mt-1 text-pedra-600">
             {pendentes.length} pendente(s) · {formatBRL(totalPendente)} a liberar.
           </p>

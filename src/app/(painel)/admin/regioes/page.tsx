@@ -25,7 +25,7 @@ export default async function AdminRegioesPage() {
 
   return (
     <section>
-      <h1 className="titulo text-2xl text-pinho-900">Regiões atendidas</h1>
+      <h1 className="titulo text-2xl text-mar-900">Regiões atendidas</h1>
       <p className="mt-1 text-pedra-600">
         Ative ou desative as cidades/bairros disponíveis para agendamento. Uma região nova já entra com a
         tabela de preços padrão.

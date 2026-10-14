@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { DURACOES, PRECO_BASE_CENTAVOS, type Duracao } from "@/lib/pricing/tabela";
+import { DURACOES, precoDeTabela, type Duracao } from "@/lib/pricing/tabela";
 import { formatBRLRedondo } from "@/lib/format";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -27,9 +27,9 @@ export function SeletorPreco() {
               aria-checked={ativo}
               onClick={() => setDuracao(h)}
               className={cn(
-                "h-10 flex-1 rounded-botao text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pinho-600 focus-visible:ring-offset-2",
+                "h-10 flex-1 rounded-botao text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mar-600 focus-visible:ring-offset-2",
                 ativo
-                  ? "bg-pinho-700 text-white"
+                  ? "bg-mar-700 text-white"
                   : "border border-pedra-200 bg-white text-pedra-600 hover:border-pedra-300 hover:text-pedra-900",
               )}
             >
@@ -39,8 +39,8 @@ export function SeletorPreco() {
         })}
       </div>
 
-      <p key={duracao} className="troca numeros titulo mt-5 text-5xl text-pinho-900">
-        {formatBRLRedondo(PRECO_BASE_CENTAVOS[duracao])}
+      <p key={duracao} className="troca numeros titulo mt-5 text-5xl text-mar-900">
+        {formatBRLRedondo(precoDeTabela("DIARIA_PADRAO", duracao)!)}
       </p>
       <p className="mt-2 text-sm leading-relaxed text-pedra-600">
         {POR_EXTENSO[duracao]} horas de serviço na sua casa. Os produtos de limpeza são os seus.

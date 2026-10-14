@@ -5,39 +5,40 @@
 }
 
 @theme {
-  /* pinho — verde da araucária, símbolo de Curitiba. Cor da marca. */
-  --color-pinho-50: #f0f6f2;
-  --color-pinho-100: #dceae1;
-  --color-pinho-200: #b9d6c5;
-  --color-pinho-300: #8dbba4;
-  --color-pinho-400: #5d9b80;
-  --color-pinho-500: #3b7d62;
-  --color-pinho-600: #256349;
-  --color-pinho-700: #1a4e39;
-  --color-pinho-800: #143d2d;
-  --color-pinho-900: #0e2c21;
+  /* mar — azuis do logo da Prime Diárias. O 700 é o navy da marca, o 400 é o azul do
+     risco e das estrelas. Mesma matiz (~205°) da ponta clara à escura. */
+  --color-mar-50: #eff6fb;
+  --color-mar-100: #daeaf4;
+  --color-mar-200: #b8d5e9;
+  --color-mar-300: #8dbbda;
+  --color-mar-400: #549dcd;
+  --color-mar-500: #3380b4;
+  --color-mar-600: #1f6392;
+  --color-mar-700: #123e61;
+  --color-mar-800: #0e3150;
+  --color-mar-900: #0a2238;
 
-  /* pedra — neutros com fundo verde frio, de granito molhado. Texto e superfícies. */
-  --color-pedra-50: #f5f7f5;
-  --color-pedra-100: #ebefec;
-  --color-pedra-200: #dce2de;
-  --color-pedra-300: #c2cbc5;
-  --color-pedra-400: #9aa7a0;
-  --color-pedra-500: #68776f;
-  --color-pedra-600: #55625c;
-  --color-pedra-700: #3f4a45;
-  --color-pedra-800: #2c3531;
-  --color-pedra-900: #18201c;
+  /* folha — o verde da folha do logo. Único acento quente: nota, numeração, destaque. */
+  --color-folha-50: #f2f7ec;
+  --color-folha-100: #e3eed6;
+  --color-folha-200: #c9dfb3;
+  --color-folha-300: #a9c988;
+  --color-folha-400: #8bb163;
+  --color-folha-500: #6e934c;
+  --color-folha-600: #587840;
+  --color-folha-700: #445c33;
 
-  /* mel — único acento quente. Reservado a nota, destaque e sinal de confiança. */
-  --color-mel-50: #fdf6e9;
-  --color-mel-100: #f9e9c8;
-  --color-mel-200: #f4dba4;
-  --color-mel-300: #efc978;
-  --color-mel-400: #e5b24c;
-  --color-mel-500: #d69a28;
-  --color-mel-600: #b67d17;
-  --color-mel-700: #8f5f10;
+  /* pedra — neutros frios puxando para o azul, para assentar no navy. */
+  --color-pedra-50: #f4f7f9;
+  --color-pedra-100: #e8edf2;
+  --color-pedra-200: #d8e0e8;
+  --color-pedra-300: #bcc8d4;
+  --color-pedra-400: #94a3b4;
+  --color-pedra-500: #68788a;
+  --color-pedra-600: #53606f;
+  --color-pedra-700: #3d4854;
+  --color-pedra-800: #2b343d;
+  --color-pedra-900: #18202a;
 
   /* raio por função, não um valor único para tudo */
   --radius-botao: 0.625rem;
@@ -52,11 +53,12 @@ body {
 }
 
 ::selection {
-  background-color: var(--color-pinho-200);
-  color: var(--color-pinho-900);
+  background-color: var(--color-mar-200);
+  color: var(--color-mar-900);
 }
 
-/* Archivo variável: a largura estendida é a assinatura tipográfica dos títulos. */
+/* Archivo variável: a largura estendida é a assinatura tipográfica dos títulos.
+   O logotipo carrega o serifado; a interface fica no grotesco, por legibilidade. */
 .titulo {
   font-stretch: 114%;
   font-weight: 650;

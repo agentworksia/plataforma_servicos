@@ -53,7 +53,7 @@ export default async function AdminAgendamentosPage({ searchParams }: { searchPa
 
   return (
     <section>
-      <h1 className="titulo text-2xl text-pinho-900">Agendamentos</h1>
+      <h1 className="titulo text-2xl text-mar-900">Agendamentos</h1>
       <p className="mt-1 text-pedra-600">Acompanhe e reatribua os serviços que estão aguardando profissional.</p>
 
       <div className="mt-4 flex flex-wrap gap-2 text-sm">
@@ -65,7 +65,7 @@ export default async function AdminAgendamentosPage({ searchParams }: { searchPa
               href={f.status ? `/admin/agendamentos?status=${f.status}` : "/admin/agendamentos?status=TODOS"}
               className={cn(
                 "rounded-lg px-3 py-1.5 font-medium",
-                ativo ? "bg-pinho-600 text-white" : "bg-pedra-100 text-pedra-600 hover:bg-pedra-200",
+                ativo ? "bg-mar-600 text-white" : "bg-pedra-100 text-pedra-600 hover:bg-pedra-200",
               )}
             >
               {f.label}

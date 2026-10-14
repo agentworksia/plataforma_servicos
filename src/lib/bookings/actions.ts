@@ -10,6 +10,7 @@ import { calcularPreco, type PrecoCalculado } from "@/lib/pricing";
 import { atribuirProximaDaFila } from "@/lib/matching";
 import { datasDaSerie } from "@/lib/bookings/recorrencia";
 import { podeEscolher } from "@/lib/professionals/historico";
+import { pracaPorNome, UF_PADRAO } from "@/lib/regioes";
 import { payments } from "@/lib/payments";
 import { horaParaMinutos, dataDeInput } from "@/lib/format";
 import type { FormState } from "@/lib/auth/actions";
@@ -47,6 +48,7 @@ function dadosBooking(
   preco: PrecoCalculado,
   observacoes?: string,
   preferidaId?: string,
+  detalhesPosObra?: string,
 ) {
   return {
     tipoServico,
@@ -60,6 +62,7 @@ function dadosBooking(
     repasseProfissional: preco.repasseProfissional,
     observacoesCliente: observacoes ?? null,
     preferidaId: preferidaId ?? null,
+    detalhesPosObra: tipoServico === "POS_OBRA" ? (detalhesPosObra ?? null) : null,
   };
 }
 
@@ -71,7 +74,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
   const campos = [
     "tipoServico", "enderecoId", "cep", "logradouro", "numero", "complemento", "bairro", "cidade",
     "referencia", "metragem", "numeroComodos", "data", "inicio", "duracaoHoras", "recorrencia",
-    "metodoPagamento", "observacoes", "preferidaId",
+    "metodoPagamento", "observacoes", "preferidaId", "detalhesPosObra",
   ];
   const brutos = Object.fromEntries(campos.map((k) => [k, formData.get(k) ? String(formData.get(k)) : undefined]));
 
@@ -97,6 +100,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
         complemento: d.complemento ?? null,
         bairro: d.bairro!,
         cidade: d.cidade!,
+        uf: pracaPorNome(d.cidade!)?.uf ?? UF_PADRAO,
         referencia: d.referencia ?? null,
       },
     });
@@ -159,7 +163,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
         addressId: endereco.id,
         recorrencia: "AVULSA",
         data: dataDeInput(d.data),
-        ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes, preferidaId),
+        ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes, preferidaId, d.detalhesPosObra),
       },
     });
     await registrarPagamento(booking.id, preco.valorTotal, pgto);
@@ -198,7 +202,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
           seriesId: serie.id,
           recorrencia: d.recorrencia,
           data,
-          ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes, preferidaId),
+          ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes, preferidaId, d.detalhesPosObra),
         },
       }),
     ),

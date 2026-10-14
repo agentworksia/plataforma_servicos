@@ -4,36 +4,16 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import type { ServiceType } from "../src/generated/prisma/enums";
 import { pgSsl } from "../src/lib/pg-ssl";
-import {
-  DURACOES,
-  MULTIPLICADOR_POR_TIPO,
-  PRECO_BASE_CENTAVOS,
-  precoDeTabela,
-  type Duracao,
-} from "../src/lib/pricing/tabela";
+import { DURACOES, TABELA_BASE, precoDeTabela, type Duracao } from "../src/lib/pricing/tabela";
+import { PRACAS } from "../src/lib/regioes";
 
 // Usa DATABASE_URL (mesmo caminho do runtime, com sslmode que o node-postgres entende).
 const connectionString = process.env.DATABASE_URL ?? process.env.DIRECT_URL ?? "";
 const adapter = new PrismaPg({ connectionString, ssl: pgSsl(connectionString) });
 const db = new PrismaClient({ adapter });
 
-const CIDADES = [
-  "Curitiba",
-  "São José dos Pinhais",
-  "Colombo",
-  "Pinhais",
-  "Araucária",
-  "Fazenda Rio Grande",
-  "Almirante Tamandaré",
-  "Campo Largo",
-  "Piraquara",
-  "Quatro Barras",
-  "Campina Grande do Sul",
-  "Campo Magro",
-];
-
 // A tabela de preços é a mesma que as telas públicas mostram — fonte única em lib/pricing/tabela.
-const TIPOS = Object.keys(MULTIPLICADOR_POR_TIPO) as ServiceType[];
+const TIPOS = Object.keys(TABELA_BASE) as ServiceType[];
 
 async function main() {
   // --- Configurações -------------------------------------------------------
@@ -48,36 +28,46 @@ async function main() {
   }
 
   // --- Regiões + tabela de preços ---------------------------------------
-  for (const cidade of CIDADES) {
+  // O preço de praça já entra calculado em valorBase (multiplicador 1), para o que o
+  // admin edita na tela ser exatamente o que o cliente vê.
+  for (const praca of PRACAS) {
     // where compound com campo nullable não é aceito no upsert do Prisma; faz find + create.
-    const existente = await db.serviceArea.findFirst({ where: { cidade, bairro: null } });
+    const existente = await db.serviceArea.findFirst({ where: { cidade: praca.nome, bairro: null } });
     const area = existente
-      ? await db.serviceArea.update({ where: { id: existente.id }, data: { ativo: true } })
-      : await db.serviceArea.create({ data: { cidade, ativo: true } });
+      ? await db.serviceArea.update({ where: { id: existente.id }, data: { ativo: true, uf: praca.uf } })
+      : await db.serviceArea.create({ data: { cidade: praca.nome, uf: praca.uf, ativo: true } });
 
     for (const tipo of TIPOS) {
       for (const duracao of DURACOES) {
-        await db.pricingRule.upsert({
-          where: {
-            tipoServico_duracaoHoras_serviceAreaId: {
-              tipoServico: tipo,
-              duracaoHoras: duracao,
-              serviceAreaId: area.id,
-            },
+        const chave = {
+          tipoServico_duracaoHoras_serviceAreaId: {
+            tipoServico: tipo,
+            duracaoHoras: duracao,
+            serviceAreaId: area.id,
           },
+        };
+        const valor = precoDeTabela(tipo, duracao, praca.multiplicadorRegiao);
+
+        // Duração que saiu da tabela (pós-obra de 8 h) é removida, não desativada —
+        // senão sobra preço velho no banco de quem rodou o seed anterior.
+        if (valor === null) {
+          await db.pricingRule.deleteMany({
+            where: { tipoServico: tipo, duracaoHoras: duracao, serviceAreaId: area.id },
+          });
+          continue;
+        }
+
+        await db.pricingRule.upsert({
+          where: chave,
           create: {
             tipoServico: tipo,
             duracaoHoras: duracao,
             serviceAreaId: area.id,
-            valorBase: PRECO_BASE_CENTAVOS[duracao],
-            multiplicador: MULTIPLICADOR_POR_TIPO[tipo],
+            valorBase: valor,
+            multiplicador: 1,
           },
           // Reaplica a tabela: rodar o seed de novo corrige preços antigos no banco.
-          update: {
-            valorBase: PRECO_BASE_CENTAVOS[duracao],
-            multiplicador: MULTIPLICADOR_POR_TIPO[tipo],
-            ativo: true,
-          },
+          update: { valorBase: valor, multiplicador: 1, ativo: true },
         });
       }
     }
@@ -173,7 +163,7 @@ async function main() {
     for (const [n, nota] of demo.notas.entries()) {
       const bookingId = `demo-servico-${demo.slug}-${n}`;
       const duracao: Duracao = 4;
-      const valorTotal = precoDeTabela("DIARIA_PADRAO", duracao);
+      const valorTotal = precoDeTabela("DIARIA_PADRAO", duracao)!;
       const taxaPlataforma = Math.round(valorTotal * 0.2);
       const data = new Date(Date.UTC(2026, 6, 6 + indice + n * 7, 12));
 

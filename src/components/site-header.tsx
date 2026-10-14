@@ -24,7 +24,7 @@ export async function SiteHeader() {
             <Link
               key={l.href}
               href={l.href}
-              className="rounded-botao px-3 py-2 text-pedra-600 hover:bg-pedra-100 hover:text-pinho-800"
+              className="rounded-botao px-3 py-2 text-pedra-600 hover:bg-pedra-100 hover:text-mar-800"
             >
               {l.label}
             </Link>

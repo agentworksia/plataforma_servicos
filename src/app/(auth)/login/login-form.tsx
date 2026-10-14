@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { loginAction, type LoginState } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +18,12 @@ export function LoginForm() {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="senha">Senha</Label>
+        <div className="flex items-baseline justify-between gap-3">
+          <Label htmlFor="senha">Senha</Label>
+          <Link href="/esqueci-senha" className="text-sm text-mar-700 hover:underline">
+            Esqueci minha senha
+          </Link>
+        </div>
         <Input id="senha" name="senha" type="password" autoComplete="current-password" required />
       </div>
 

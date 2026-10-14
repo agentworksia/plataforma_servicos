@@ -41,11 +41,11 @@ export default async function ServicoDetalhePage({ params }: { params: Promise<{
   return (
     <section className="space-y-6">
       <div>
-        <Link href="/profissional" className="text-sm text-pinho-700 hover:underline">
+        <Link href="/profissional" className="text-sm text-mar-700 hover:underline">
           ← Ofertas
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="titulo text-2xl text-pinho-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</h1>
+          <h1 className="titulo text-2xl text-mar-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</h1>
           <Badge cor={st.cor}>{st.label}</Badge>
         </div>
       </div>

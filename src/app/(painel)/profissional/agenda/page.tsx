@@ -32,7 +32,7 @@ export default async function AgendaPage() {
   return (
     <section className="space-y-8">
       <div>
-        <h1 className="titulo text-2xl text-pinho-900">Agenda</h1>
+        <h1 className="titulo text-2xl text-mar-900">Agenda</h1>
         <p className="mt-1 text-pedra-600">
           Disponibilidade recorrente por dia da semana e bloqueios em datas específicas.
         </p>

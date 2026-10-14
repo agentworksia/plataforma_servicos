@@ -12,10 +12,11 @@ export default async function CadastroProfissionalPage() {
   const session = await getSession();
   if (session?.user) redirect(painelHref(session.user.role));
 
+  // Agrupa por estado: com o litoral de SC aberto, são mais de 30 cidades na lista.
   const regioes = await db.serviceArea.findMany({
     where: { ativo: true },
-    orderBy: [{ cidade: "asc" }, { bairro: "asc" }],
-    select: { id: true, cidade: true, bairro: true },
+    orderBy: [{ uf: "asc" }, { cidade: "asc" }, { bairro: "asc" }],
+    select: { id: true, cidade: true, bairro: true, uf: true },
   });
 
   return (
@@ -31,7 +32,7 @@ export default async function CadastroProfissionalPage() {
 
       <p className="mt-6 text-sm text-pedra-600">
         Já tem conta?{" "}
-        <Link href="/login" className="font-medium text-pinho-700 hover:underline">
+        <Link href="/login" className="font-medium text-mar-700 hover:underline">
           Entrar
         </Link>
       </p>

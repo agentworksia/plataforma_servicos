@@ -59,11 +59,11 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
   return (
     <section className="space-y-6">
       <div>
-        <Link href="/cliente" className="text-sm text-pinho-700 hover:underline">
+        <Link href="/cliente" className="text-sm text-mar-700 hover:underline">
           ← Meus agendamentos
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="titulo text-2xl text-pinho-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</h1>
+          <h1 className="titulo text-2xl text-mar-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</h1>
           <Badge cor={st.cor}>{st.label}</Badge>
         </div>
       </div>
@@ -71,7 +71,7 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
       {b.seriesId && (
         <p className="text-sm text-pedra-600">
           Parte de uma série recorrente ·{" "}
-          <Link href={`/cliente/series/${b.seriesId}`} className="text-pinho-700 hover:underline">
+          <Link href={`/cliente/series/${b.seriesId}`} className="text-mar-700 hover:underline">
             ver todas as ocorrências
           </Link>
         </p>

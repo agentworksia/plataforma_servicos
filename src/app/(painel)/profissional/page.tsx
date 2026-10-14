@@ -82,7 +82,7 @@ export default async function ProfissionalPage() {
   return (
     <section className="space-y-8">
       <div>
-        <h1 className="titulo text-2xl text-pinho-900">Ofertas de serviço</h1>
+        <h1 className="titulo text-2xl text-mar-900">Ofertas de serviço</h1>
         <p className="mt-1 text-pedra-600">Aceite ou recuse cada oferta dentro do prazo.</p>
       </div>
 
@@ -106,7 +106,7 @@ export default async function ProfissionalPage() {
                     <div className="font-medium text-pedra-900">
                       {LABEL_SERVICO[o.booking.tipoServico] ?? o.booking.tipoServico}
                       {o.abrangeSerie && (
-                        <span className="ml-2 rounded bg-pinho-100 px-1.5 py-0.5 text-xs text-pinho-800">série recorrente</span>
+                        <span className="ml-2 rounded bg-mar-100 px-1.5 py-0.5 text-xs text-mar-800">série recorrente</span>
                       )}
                     </div>
                     <div className="text-pedra-500">
@@ -146,7 +146,7 @@ export default async function ProfissionalPage() {
                     <strong>{formatData(b.data)}</strong> · {minutosParaHora(b.inicioMin)} · {b.duracaoHoras}h —{" "}
                     {LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}, {b.address.bairro}
                   </span>
-                  <span className="text-pinho-700">abrir</span>
+                  <span className="text-mar-700">abrir</span>
                 </Link>
               </li>
             ))}

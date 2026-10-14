@@ -43,7 +43,7 @@ export default async function AdminProfissionaisPage({
 
   return (
     <section>
-      <h1 className="titulo text-2xl text-pinho-900">Profissionais</h1>
+      <h1 className="titulo text-2xl text-mar-900">Profissionais</h1>
       <p className="mt-1 text-pedra-600">Aprovar, reprovar ou suspender contas de diaristas.</p>
 
       <div className="mt-4 flex flex-wrap gap-2 text-sm">
@@ -95,7 +95,7 @@ export default async function AdminProfissionaisPage({
                     <td className="py-3 text-right">
                       <Link
                         href={`/admin/profissionais/${p.id}`}
-                        className="font-medium text-pinho-700 hover:underline"
+                        className="font-medium text-mar-700 hover:underline"
                       >
                         Ver
                       </Link>
@@ -117,7 +117,7 @@ function FiltroLink({ label, href, ativo }: { label: string; href: string; ativo
       href={href}
       className={cn(
         "rounded-lg px-3 py-1.5 font-medium",
-        ativo ? "bg-pinho-600 text-white" : "bg-pedra-100 text-pedra-600 hover:bg-pedra-200",
+        ativo ? "bg-mar-600 text-white" : "bg-pedra-100 text-pedra-600 hover:bg-pedra-200",
       )}
     >
       {label}

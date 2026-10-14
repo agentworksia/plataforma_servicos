@@ -3,7 +3,9 @@
  * das páginas e os e-mails — não há o nome escrito solto em nenhuma tela.
  */
 export const MARCA = {
-  nome: "Casa Pinhão",
-  descricaoCurta: "Diaristas verificadas em Curitiba e Região Metropolitana",
-  regiao: "Curitiba e Região Metropolitana",
+  nome: "Prime Diárias",
+  descricaoCurta: "Diaristas verificadas em Curitiba e no litoral de Santa Catarina",
+  regiao: "Curitiba, Região Metropolitana e litoral de Santa Catarina",
+  regiaoCurta: "Curitiba e litoral de SC",
+  logo: "/marca/prime-diarias.png",
 } as const;

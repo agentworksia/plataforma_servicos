@@ -24,7 +24,7 @@ export function PainelNav({ items }: { items: NavItem[] }) {
             href={item.href}
             className={cn(
               "whitespace-nowrap rounded-botao px-3 py-1.5 text-sm font-medium transition-colors",
-              ativo ? "bg-pinho-700 text-white" : "text-pedra-600 hover:bg-pedra-100 hover:text-pinho-800",
+              ativo ? "bg-mar-700 text-white" : "text-pedra-600 hover:bg-pedra-100 hover:text-mar-800",
             )}
           >
             {item.label}

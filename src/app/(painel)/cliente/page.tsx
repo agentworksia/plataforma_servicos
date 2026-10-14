@@ -40,7 +40,7 @@ export default async function ClientePage() {
     <section className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="titulo text-2xl text-pinho-900">Meus agendamentos</h1>
+          <h1 className="titulo text-2xl text-mar-900">Meus agendamentos</h1>
           <p className="mt-1 text-pedra-600">Acompanhe o status de cada serviço.</p>
         </div>
         <Link href="/agendar" className={cn(buttonVariants())}>

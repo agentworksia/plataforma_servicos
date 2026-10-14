@@ -9,7 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-type Regiao = { id: string; cidade: string; bairro: string | null };
+type Regiao = { id: string; cidade: string; bairro: string | null; uf: string };
+
+const ESTADOS = [
+  { uf: "PR", nome: "Paraná — Curitiba e Região Metropolitana" },
+  { uf: "SC", nome: "Santa Catarina — litoral" },
+] as const;
 
 function Erro({ msg }: { msg?: string }) {
   return msg ? <p className="text-sm text-red-600">{msg}</p> : null;
@@ -132,15 +137,32 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-pedra-500">Regiões que atende</h2>
-        <div className="grid max-h-52 gap-2 overflow-y-auto rounded-lg border border-pedra-200 p-3 sm:grid-cols-2">
-          {regioes.map((r) => (
-            <label key={r.id} className="flex items-center gap-2 text-sm text-pedra-700">
-              <input type="checkbox" name="serviceAreaIds" value={r.id} defaultChecked={marcadaRegiao.has(r.id)} />
-              {r.cidade}
-              {r.bairro ? ` — ${r.bairro}` : ""}
-            </label>
-          ))}
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-pedra-500">Cidades que atende</h2>
+        <div className="max-h-64 space-y-4 overflow-y-auto rounded-botao border border-pedra-200 p-3">
+          {ESTADOS.map(({ uf, nome }) => {
+            const doEstado = regioes.filter((r) => r.uf === uf);
+            if (doEstado.length === 0) return null;
+            return (
+              <div key={uf}>
+                <p className="text-xs font-medium text-pedra-500">{nome}</p>
+                <div className="mt-1.5 grid gap-2 sm:grid-cols-2">
+                  {doEstado.map((r) => (
+                    <label key={r.id} className="flex items-center gap-2 text-sm text-pedra-700">
+                      <input
+                        type="checkbox"
+                        name="serviceAreaIds"
+                        value={r.id}
+                        defaultChecked={marcadaRegiao.has(r.id)}
+                        className="accent-mar-700"
+                      />
+                      {r.cidade}
+                      {r.bairro ? ` — ${r.bairro}` : ""}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
         <Erro msg={e.serviceAreaIds?.[0]} />
       </section>
@@ -155,7 +177,7 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
               name="repassePixTipo"
               value={tipoPix}
               onChange={(ev) => setTipoPix(ev.target.value)}
-              className="flex h-10 w-full rounded-lg border border-pedra-300 bg-white px-3 text-sm text-pedra-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pinho-500"
+              className="flex h-10 w-full rounded-lg border border-pedra-300 bg-white px-3 text-sm text-pedra-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mar-500"
             >
               {TIPOS_CHAVE_PIX.map((t) => (
                 <option key={t.value} value={t.value}>
@@ -178,11 +200,11 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
           <input type="checkbox" name="aceiteTermos" className="mt-1" />
           <span>
             Li e aceito os{" "}
-            <a href="/termos" target="_blank" rel="noreferrer" className="text-pinho-700 underline">
+            <a href="/termos" target="_blank" rel="noreferrer" className="text-mar-700 underline">
               termos de uso
             </a>{" "}
             e a{" "}
-            <a href="/privacidade" target="_blank" rel="noreferrer" className="text-pinho-700 underline">
+            <a href="/privacidade" target="_blank" rel="noreferrer" className="text-mar-700 underline">
               política de privacidade
             </a>{" "}
             (LGPD).

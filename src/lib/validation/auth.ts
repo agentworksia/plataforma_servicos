@@ -8,6 +8,28 @@ export const loginSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginSchema>;
 
+/** Canais de recuperação de senha. O SMS fica desligado até haver provedor contratado. */
+export const CANAIS_RECUPERACAO = [
+  { value: "EMAIL", label: "E-mail", disponivel: true },
+  { value: "SMS", label: "SMS no celular cadastrado", disponivel: false },
+] as const;
+
+export const solicitarRecuperacaoSchema = z.object({
+  canal: z.enum(["EMAIL", "SMS"]).default("EMAIL"),
+  email: z.email("E-mail inválido").trim().toLowerCase(),
+});
+
+export const redefinirSenhaSchema = z
+  .object({
+    token: z.string().trim().min(10, "Link inválido"),
+    senha: z.string().min(8, "Mínimo de 8 caracteres").max(72),
+    confirmarSenha: z.string(),
+  })
+  .refine((d) => d.senha === d.confirmarSenha, {
+    error: "As senhas não conferem",
+    path: ["confirmarSenha"],
+  });
+
 export const cadastroClienteSchema = z
   .object({
     nome: z.string().trim().min(2, "Informe seu nome completo").max(120),

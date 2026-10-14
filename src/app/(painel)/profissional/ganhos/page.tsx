@@ -30,15 +30,15 @@ export default async function GanhosPage() {
 
   return (
     <section className="space-y-6">
-      <h1 className="titulo text-2xl text-pinho-900">Ganhos</h1>
+      <h1 className="titulo text-2xl text-mar-900">Ganhos</h1>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-pedra-200 p-5">
-          <p className="titulo text-3xl text-pinho-900">{formatBRL(recebido)}</p>
+          <p className="titulo text-3xl text-mar-900">{formatBRL(recebido)}</p>
           <p className="mt-1 text-sm text-pedra-600">já recebido</p>
         </div>
         <div className="rounded-xl border border-pedra-200 p-5">
-          <p className="titulo text-3xl text-pinho-900">{formatBRL(aReceber)}</p>
+          <p className="titulo text-3xl text-mar-900">{formatBRL(aReceber)}</p>
           <p className="mt-1 text-sm text-pedra-600">a receber</p>
         </div>
       </div>

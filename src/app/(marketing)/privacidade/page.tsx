@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "Política de Privacidade" };
 export default function PrivacidadePage() {
   return (
     <article className="space-y-4 text-pedra-700">
-      <h1 className="titulo text-3xl text-pinho-900">Política de Privacidade</h1>
+      <h1 className="titulo text-3xl text-mar-900">Política de Privacidade</h1>
       <p className="text-sm text-pedra-500">Última atualização: rascunho — a ser revisado antes do lançamento.</p>
 
       <h2 className="mt-6 titulo-secao text-xl text-pedra-900">Dados que coletamos</h2>

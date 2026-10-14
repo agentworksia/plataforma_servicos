@@ -5,13 +5,14 @@ export const metadata: Metadata = { title: "Termos de uso" };
 export default function TermosPage() {
   return (
     <article className="space-y-4 text-pedra-700">
-      <h1 className="titulo text-3xl text-pinho-900">Termos de uso</h1>
+      <h1 className="titulo text-3xl text-mar-900">Termos de uso</h1>
       <p className="text-sm text-pedra-500">Última atualização: rascunho — a ser revisado juridicamente antes do lançamento.</p>
 
       <h2 className="mt-6 titulo-secao text-xl text-pedra-900">1. O serviço</h2>
       <p>
         A plataforma intermedia a contratação de serviços de limpeza entre clientes e profissionais autônomas
-        em Curitiba e Região Metropolitana. A plataforma faz o encontro entre as partes, processa o pagamento
+        em Curitiba, na Região Metropolitana e no litoral de Santa Catarina. A plataforma faz o encontro
+        entre as partes, processa o pagamento
         e repassa o valor à profissional após a conclusão do serviço, retendo uma taxa de serviço.
       </p>
 
