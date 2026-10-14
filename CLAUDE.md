@@ -5,6 +5,8 @@ stack: Next.js App Router + TypeScript + Tailwind + Prisma + Auth.js + PostgreSQ
 host: Vercel
 ---
 
+@AGENTS.md
+
 # Perfil e forma de trabalho
 
 Eu crio plataformas, sites, SaaS e apps sob demanda (freelance/agência) e trabalho pelo VS Code, publicando os projetos no GitHub e fazendo deploy em serviços como Vercel/HostGator. Quero um parceiro de engenharia que entenda a demanda antes de sair codando, proponha a stack certa pro tamanho do projeto e entregue código pronto para produção — não protótipos descartáveis.
