@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MARCA } from "@/lib/marca";
-import { Selo } from "@/components/marca";
+import { Simbolo } from "@/components/marca";
 
 const LINKS = [
   { href: "/como-funciona", label: "Como funciona" },
@@ -16,7 +16,7 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:flex-row sm:justify-between">
         <div className="max-w-xs">
           <div className="flex items-center gap-2 text-mar-800">
-            <Selo tamanho={32} className="size-8" />
+            <Simbolo largura={72} className="h-auto w-9" />
             <span className="titulo text-base">{MARCA.nome}</span>
           </div>
           <p className="mt-3 text-sm leading-relaxed text-pedra-600">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo } from "next/font/google";
 import { MARCA } from "@/lib/marca";
+import { MarcaDagua } from "@/components/marca";
 import "./globals.css";
 
 // Archivo variável: o eixo de largura (wdth) é usado nos títulos, em .titulo.
@@ -22,7 +23,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR" className={`${archivo.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-pedra-50 text-pedra-900">{children}</body>
+      <body className="flex min-h-full flex-col bg-pedra-50 text-pedra-900">
+        <MarcaDagua />
+        {/* O conteúdo sobe uma camada para ficar sempre na frente da marca d'água. */}
+        <div className="relative z-10 flex min-h-full flex-1 flex-col">{children}</div>
+      </body>
     </html>
   );
 }

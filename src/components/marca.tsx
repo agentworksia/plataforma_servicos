@@ -3,18 +3,15 @@ import Image from "next/image";
 import { MARCA } from "@/lib/marca";
 import { cn } from "@/lib/utils";
 
-/**
- * O selo é circular, mas o arquivo é quadrado com fundo claro — o rounded-full apara
- * os cantos em vez de deixar um quadrado pálido sobre o fundo da página.
- */
-export function Selo({ className, tamanho = 40 }: { className?: string; tamanho?: number }) {
+/** Só a casa com o risco e a folha — o nome vem escrito ao lado, em tipografia. */
+export function Simbolo({ className, largura = 56 }: { className?: string; largura?: number }) {
   return (
     <Image
-      src={MARCA.logo}
+      src={MARCA.simbolo}
       alt=""
-      width={tamanho}
-      height={tamanho}
-      className={cn("rounded-full", className)}
+      width={largura}
+      height={Math.round(largura * 0.6)}
+      className={className}
       priority
     />
   );
@@ -30,8 +27,31 @@ export function Logo({ className }: { className?: string }) {
         className,
       )}
     >
-      <Selo tamanho={40} className="size-10" />
+      <Simbolo largura={88} className="h-auto w-11" />
       <span className="titulo text-lg">{MARCA.nome}</span>
     </Link>
+  );
+}
+
+/**
+ * Marca d'água: o símbolo grande, fixo e quase apagado, atrás de tudo.
+ * Fica acima do fundo da página mas abaixo do conteúdo (que sobe com z-10),
+ * então some sob as seções que têm fundo próprio — é o comportamento desejado.
+ */
+export function MarcaDagua() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center overflow-hidden select-none"
+    >
+      <Image
+        src={MARCA.simbolo}
+        alt=""
+        width={1400}
+        height={840}
+        priority={false}
+        className="w-[min(135vw,1200px)] opacity-[0.055]"
+      />
+    </div>
   );
 }
