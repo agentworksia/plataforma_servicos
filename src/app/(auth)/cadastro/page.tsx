@@ -13,23 +13,23 @@ export default async function CadastroPage() {
 
   return (
     <AuthCard className="max-w-md">
-      <h1 className="titulo-secao text-xl text-pedra-900">Criar conta</h1>
-      <p className="mt-1 text-sm text-pedra-600">Para agendar serviços de limpeza.</p>
+      <h1 className="titulo-secao text-xl text-areia-900">Criar conta</h1>
+      <p className="mt-1 text-sm text-areia-600">Para agendar serviços de limpeza.</p>
 
       <div className="mt-6">
         <CadastroClienteForm />
       </div>
 
-      <div className="mt-6 space-y-1 text-sm text-pedra-600">
+      <div className="mt-6 space-y-1 text-sm text-areia-600">
         <p>
           Já tem conta?{" "}
-          <Link href="/login" className="font-medium text-mar-700 hover:underline">
+          <Link href="/login" className="font-medium text-marinho-700 hover:underline">
             Entrar
           </Link>
         </p>
         <p>
           Quer trabalhar como diarista?{" "}
-          <Link href="/cadastro/profissional" className="font-medium text-mar-700 hover:underline">
+          <Link href="/cadastro/profissional" className="font-medium text-marinho-700 hover:underline">
             Cadastre-se aqui
           </Link>
         </p>

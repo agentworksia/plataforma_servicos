@@ -53,44 +53,47 @@ export default function HomePage() {
       <SiteHeader />
 
       <main className="flex-1">
-        {/* Capa ------------------------------------------------------------- */}
-        <section className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 lg:grid-cols-[1.05fr_.95fr] lg:gap-14 lg:py-20">
-          <div>
-            <h1 className="titulo entra max-w-xl text-4xl text-mar-900 sm:text-5xl lg:text-6xl">
-              Você abre a porta. A gente responde por quem entra.
-            </h1>
-            <p
-              className="entra mt-6 max-w-lg text-lg leading-relaxed text-pedra-700"
-              style={{ animationDelay: "90ms" }}
-            >
-              Diaristas com documento conferido e avaliação de quem já contratou, em Curitiba, na Região
-              Metropolitana e no litoral de Santa Catarina. Você agenda pelo site e acompanha até o serviço
-              terminar.
-            </p>
+        {/* Capa: bloco navy da marca. Texto e símbolo em colunas separadas, para o
+            3D nunca invadir o título — foi o que quebrou na primeira montagem. */}
+        <section className="bg-marinho-800">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-14 lg:py-24">
+            <div>
+              <h1 className="titulo entra max-w-xl text-4xl text-white sm:text-5xl lg:text-6xl">
+                Você abre a porta. A gente responde por quem entra.
+              </h1>
+              <p
+                className="entra mt-6 max-w-lg text-lg leading-relaxed text-marinho-100"
+                style={{ animationDelay: "90ms" }}
+              >
+                Diaristas com documento conferido e avaliação de quem já contratou, em Curitiba, na Região
+                Metropolitana e no litoral de Santa Catarina. Você agenda pelo site e acompanha até o
+                serviço terminar.
+              </p>
 
-            <div className="entra mt-8 max-w-md" style={{ animationDelay: "180ms" }}>
-              <SeletorPreco />
+              <div className="entra mt-8 max-w-md" style={{ animationDelay: "180ms" }}>
+                <SeletorPreco />
+              </div>
             </div>
-          </div>
 
-          <div className="entra-foto overflow-hidden rounded-foto bg-pedra-200">
-            <Image
-              src="/fotos/casa-limpa.jpg"
-              alt="Sala de estar arrumada, com luz natural entrando pela cortina"
-              width={900}
-              height={1125}
-              priority
-              className="aspect-[4/5] w-full object-cover"
-            />
+            <div className="entra-foto hidden overflow-hidden rounded-foto lg:block">
+              <Image
+                src="/fotos/capa-marca.jpg"
+                alt=""
+                width={700}
+                height={592}
+                priority
+                className="w-full object-cover"
+              />
+            </div>
           </div>
         </section>
 
         {/* Serviços --------------------------------------------------------- */}
         <section className="mx-auto max-w-6xl px-4 py-16">
-          <h2 className="titulo-secao max-w-lg text-3xl text-mar-900">
+          <h2 className="titulo-secao max-w-lg text-3xl text-marinho-900">
             Quatro serviços, todos cobrados por hora
           </h2>
-          <p className="mt-3 max-w-2xl leading-relaxed text-pedra-600">
+          <p className="mt-3 max-w-2xl leading-relaxed text-areia-600">
             Clique no serviço para agendar já com ele escolhido. Os valores abaixo são os de Curitiba.
           </p>
 
@@ -99,7 +102,7 @@ export default function HomePage() {
               <li key={s.tipo}>
                 <Link
                   href={`/agendar?tipo=${s.tipo}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-cartao border border-pedra-200 bg-white transition-colors hover:border-mar-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mar-600 focus-visible:ring-offset-2"
+                  className="group flex h-full flex-col overflow-hidden rounded-cartao border border-areia-200 bg-white transition-colors hover:border-marinho-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-marinho-600 focus-visible:ring-offset-2"
                 >
                   <Image
                     src={s.foto}
@@ -109,13 +112,13 @@ export default function HomePage() {
                     className="aspect-[4/3] w-full object-cover"
                   />
                   <div className="flex flex-1 flex-col p-5">
-                    <h3 className="titulo-secao text-lg text-pedra-900 group-hover:text-mar-700">
+                    <h3 className="titulo-secao text-lg text-areia-900 group-hover:text-marinho-700">
                       {s.nome}
                     </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-pedra-600">{s.desc}</p>
-                    <p className="mt-auto pt-4 text-sm text-mar-600">
+                    <p className="mt-2 text-sm leading-relaxed text-areia-600">{s.desc}</p>
+                    <p className="mt-auto pt-4 text-sm text-marinho-600">
                       a partir de{" "}
-                      <span className="numeros titulo-secao text-lg text-mar-800">
+                      <span className="numeros titulo-secao text-lg text-marinho-800">
                         {formatBRLRedondo(precoMinimo(s.tipo))}
                       </span>
                     </p>
@@ -127,15 +130,15 @@ export default function HomePage() {
         </section>
 
         {/* Como funciona ---------------------------------------------------- */}
-        <section className="bg-mar-900 text-pedra-100">
+        <section className="bg-marinho-900 text-areia-100">
           <div className="mx-auto max-w-6xl px-4 py-20">
             <h2 className="titulo-secao max-w-lg text-3xl text-white">Do pedido ao repasse</h2>
             <ol className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
               {PASSOS.map((p, i) => (
-                <li key={p.titulo} className="border-t border-mar-700 pt-5">
-                  <span className="numeros titulo block text-3xl text-folha-400">{i + 1}</span>
+                <li key={p.titulo} className="border-t border-marinho-700 pt-5">
+                  <span className="numeros titulo block text-3xl text-laranja-400">{i + 1}</span>
                   <h3 className="titulo-secao mt-3 text-lg text-white">{p.titulo}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-mar-200">{p.texto}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-marinho-200">{p.texto}</p>
                 </li>
               ))}
             </ol>
@@ -144,8 +147,8 @@ export default function HomePage() {
 
         {/* Preços ----------------------------------------------------------- */}
         <section id="precos" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20">
-          <h2 className="titulo-secao max-w-lg text-3xl text-mar-900">A tabela inteira, aqui</h2>
-          <p className="mt-3 max-w-2xl leading-relaxed text-pedra-600">
+          <h2 className="titulo-secao max-w-lg text-3xl text-marinho-900">A tabela inteira, aqui</h2>
+          <p className="mt-3 max-w-2xl leading-relaxed text-areia-600">
             Valores de Curitiba e Região Metropolitana. É o valor final: não há taxa de visita nem
             acréscimo depois. No litoral de Santa Catarina a tabela é 25% maior, e aparece já ajustada
             quando você informa o endereço.
@@ -154,10 +157,10 @@ export default function HomePage() {
           <div className="mt-10 overflow-x-auto">
             <table className="w-full min-w-lg border-collapse text-left">
               <thead>
-                <tr className="border-b border-pedra-300">
-                  <th className="py-3 pr-4 text-sm font-medium text-pedra-600">Serviço</th>
+                <tr className="border-b border-areia-300">
+                  <th className="py-3 pr-4 text-sm font-medium text-areia-600">Serviço</th>
                   {DURACOES.map((h) => (
-                    <th key={h} className="py-3 pr-4 text-sm font-medium text-pedra-600">
+                    <th key={h} className="py-3 pr-4 text-sm font-medium text-areia-600">
                       {h} horas
                     </th>
                   ))}
@@ -165,16 +168,16 @@ export default function HomePage() {
               </thead>
               <tbody>
                 {SERVICOS.map((s) => (
-                  <tr key={s.tipo} className="border-b border-pedra-200">
-                    <th scope="row" className="py-4 pr-4 font-medium text-pedra-900">
+                  <tr key={s.tipo} className="border-b border-areia-200">
+                    <th scope="row" className="py-4 pr-4 font-medium text-areia-900">
                       {s.nome}
                     </th>
                     {DURACOES.map((h) => {
                       const valor = precoDeTabela(s.tipo, h);
                       return (
-                        <td key={h} className="numeros py-4 pr-4 text-mar-800">
+                        <td key={h} className="numeros py-4 pr-4 text-marinho-800">
                           {valor === null ? (
-                            <span className="text-pedra-500">sob orçamento</span>
+                            <span className="text-areia-500">sob orçamento</span>
                           ) : (
                             formatBRLRedondo(valor)
                           )}
@@ -187,54 +190,66 @@ export default function HomePage() {
             </table>
           </div>
 
-          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-pedra-500">
+          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-areia-500">
             Pós-obra acima de seis horas quase sempre pede equipe, então sai da tabela e passa por
             orçamento — a plataforma avisa antes de cobrar qualquer coisa.
           </p>
         </section>
 
         {/* Onde atendemos --------------------------------------------------- */}
-        <section className="border-y border-pedra-200 bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-16">
-            <h2 className="titulo-secao text-3xl text-mar-900">Agora também no litoral</h2>
-            <p className="mt-3 max-w-2xl leading-relaxed text-pedra-600">
-              Além de Curitiba e das onze cidades da Região Metropolitana, atendemos a faixa litorânea de
-              Santa Catarina — de Itapoá a Florianópolis. Imóvel de temporada entra na mesma regra: você
-              agenda à distância e acompanha pelo site.
-            </p>
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {CIDADES_SC.map((c) => (
-                <li
-                  key={c}
-                  className="rounded-full border border-mar-200 bg-mar-50 px-3 py-1 text-sm text-mar-800"
-                >
-                  {c}
-                </li>
-              ))}
-            </ul>
+        <section className="border-y border-areia-200 bg-white">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 lg:grid-cols-[1fr_.8fr]">
+            <div>
+              <h2 className="titulo-secao text-3xl text-marinho-900">Agora também no litoral</h2>
+              <p className="mt-3 max-w-2xl leading-relaxed text-areia-600">
+                Além de Curitiba e das onze cidades da Região Metropolitana, atendemos a faixa litorânea de
+                Santa Catarina — de Itapoá a Florianópolis. Imóvel de temporada entra na mesma regra: você
+                agenda à distância, deixa a chave combinada e acompanha pelo site.
+              </p>
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {CIDADES_SC.map((c) => (
+                  <li
+                    key={c}
+                    className="rounded-full border border-marinho-200 bg-marinho-50 px-3 py-1 text-sm text-marinho-800"
+                  >
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="overflow-hidden rounded-foto bg-areia-200">
+              <Image
+                src="/fotos/litoral.jpg"
+                alt="Chaves etiquetadas na entrada de um apartamento de praia, com vista para o mar"
+                width={900}
+                height={1118}
+                className="aspect-[4/5] w-full object-cover"
+              />
+            </div>
           </div>
         </section>
 
         {/* Segurança -------------------------------------------------------- */}
         <section className="mx-auto max-w-6xl px-4 py-20">
           <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div className="overflow-hidden rounded-foto bg-pedra-200">
+            <div className="overflow-hidden rounded-foto bg-areia-200">
               <Image
-                src="/fotos/cozinha.jpg"
-                alt="Cozinha organizada, com bancada limpa e plantas na janela"
-                width={1000}
-                height={667}
-                className="aspect-[3/2] w-full object-cover"
+                src="/fotos/confianca.jpg"
+                alt="Sala arrumada, com poltrona azul e luz entrando pela janela"
+                width={900}
+                height={1118}
+                className="aspect-[4/5] w-full object-cover"
               />
             </div>
 
             <div>
-              <h2 className="titulo-secao text-3xl text-mar-900">Por que dá para confiar em quem chega</h2>
+              <h2 className="titulo-secao text-3xl text-marinho-900">Por que dá para confiar em quem chega</h2>
               <dl className="mt-8 space-y-7">
                 {GARANTIAS.map((g) => (
-                  <div key={g.titulo} className="border-l-2 border-mar-600 pl-5">
-                    <dt className="titulo-secao text-pedra-900">{g.titulo}</dt>
-                    <dd className="mt-1.5 text-sm leading-relaxed text-pedra-600">{g.texto}</dd>
+                  <div key={g.titulo} className="border-l-2 border-marinho-600 pl-5">
+                    <dt className="titulo-secao text-areia-900">{g.titulo}</dt>
+                    <dd className="mt-1.5 text-sm leading-relaxed text-areia-600">{g.texto}</dd>
                   </div>
                 ))}
               </dl>
@@ -243,13 +258,13 @@ export default function HomePage() {
         </section>
 
         {/* Para profissionais ------------------------------------------------ */}
-        <section className="border-t border-pedra-200 bg-white">
+        <section className="border-t border-areia-200 bg-white">
           <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-20 lg:grid-cols-[.9fr_1.1fr]">
             <div>
-              <h2 className="titulo-secao text-3xl text-mar-900">
+              <h2 className="titulo-secao text-3xl text-marinho-900">
                 Trabalha como diarista? Escolha seus dias.
               </h2>
-              <p className="mt-4 max-w-md leading-relaxed text-pedra-700">
+              <p className="mt-4 max-w-md leading-relaxed text-areia-700">
                 Você marca na agenda os dias e horários em que quer trabalhar, e recebe ofertas só dentro
                 disso. Aceita ou recusa cada uma. O repasse sai depois de cada serviço concluído, sem você
                 precisar cobrar ninguém.
@@ -259,13 +274,13 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="overflow-hidden rounded-foto bg-pedra-200">
+            <div className="overflow-hidden rounded-foto bg-areia-200">
               <Image
                 src="/fotos/profissional.jpg"
-                alt="Profissional limpando a janela de uma sala, em dia claro"
-                width={1000}
-                height={667}
-                className="aspect-[3/2] w-full object-cover"
+                alt="Quarto arrumado, com vista para as araucárias de Curitiba"
+                width={1100}
+                height={614}
+                className="aspect-[16/9] w-full object-cover"
               />
             </div>
           </div>

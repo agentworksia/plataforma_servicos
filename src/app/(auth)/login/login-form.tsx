@@ -20,7 +20,7 @@ export function LoginForm() {
       <div className="space-y-1.5">
         <div className="flex items-baseline justify-between gap-3">
           <Label htmlFor="senha">Senha</Label>
-          <Link href="/esqueci-senha" className="text-sm text-mar-700 hover:underline">
+          <Link href="/esqueci-senha" className="text-sm text-marinho-700 hover:underline">
             Esqueci minha senha
           </Link>
         </div>

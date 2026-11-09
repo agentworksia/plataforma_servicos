@@ -21,8 +21,8 @@ export default async function CadastroProfissionalPage() {
 
   return (
     <AuthCard className="max-w-2xl">
-      <h1 className="titulo-secao text-xl text-pedra-900">Cadastro de profissional</h1>
-      <p className="mt-1 text-sm text-pedra-600">
+      <h1 className="titulo-secao text-xl text-areia-900">Cadastro de profissional</h1>
+      <p className="mt-1 text-sm text-areia-600">
         Após o envio, sua conta fica <strong>em análise</strong>. Avisamos por e-mail quando for aprovada.
       </p>
 
@@ -30,9 +30,9 @@ export default async function CadastroProfissionalPage() {
         <CadastroProfissionalForm regioes={regioes} />
       </div>
 
-      <p className="mt-6 text-sm text-pedra-600">
+      <p className="mt-6 text-sm text-areia-600">
         Já tem conta?{" "}
-        <Link href="/login" className="font-medium text-mar-700 hover:underline">
+        <Link href="/login" className="font-medium text-marinho-700 hover:underline">
           Entrar
         </Link>
       </p>

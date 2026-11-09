@@ -31,12 +31,12 @@ function Erro({ msg }: { msg?: string }) {
 }
 
 const campoSelect =
-  "flex h-10 w-full rounded-botao border border-pedra-300 bg-white px-3 text-sm text-pedra-900 focus-visible:border-mar-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mar-600/25";
+  "flex h-10 w-full rounded-botao border border-areia-300 bg-white px-3 text-sm text-areia-900 focus-visible:border-marinho-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-marinho-600/25";
 
 function Secao({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
-    <fieldset className="rounded-cartao border border-pedra-200 bg-white p-5 sm:p-6">
-      <legend className="titulo-secao px-1 text-pedra-900">{titulo}</legend>
+    <fieldset className="rounded-cartao border border-areia-200 bg-white p-5 sm:p-6">
+      <legend className="titulo-secao px-1 text-areia-900">{titulo}</legend>
       <div className="mt-4 space-y-4">{children}</div>
     </fieldset>
   );
@@ -86,8 +86,8 @@ export function AgendarForm({
                   className={cn(
                     "flex cursor-pointer gap-3 overflow-hidden rounded-botao border p-2 transition-colors",
                     ativo
-                      ? "border-mar-600 bg-mar-50 ring-1 ring-mar-600"
-                      : "border-pedra-200 hover:border-pedra-300",
+                      ? "border-marinho-600 bg-marinho-50 ring-1 ring-marinho-600"
+                      : "border-areia-200 hover:border-areia-300",
                   )}
                 >
                   <input
@@ -109,12 +109,12 @@ export function AgendarForm({
                     <span
                       className={cn(
                         "block text-sm font-medium",
-                        ativo ? "text-mar-900" : "text-pedra-800",
+                        ativo ? "text-marinho-900" : "text-areia-800",
                       )}
                     >
                       {s.nome}
                     </span>
-                    <span className="mt-0.5 block text-xs leading-snug text-pedra-600">{s.resumo}</span>
+                    <span className="mt-0.5 block text-xs leading-snug text-areia-600">{s.resumo}</span>
                   </span>
                 </label>
               );
@@ -133,8 +133,8 @@ export function AgendarForm({
                     className={cn(
                       "flex h-10 flex-1 cursor-pointer items-center justify-center rounded-botao border text-sm transition-colors",
                       ativo
-                        ? "border-mar-700 bg-mar-700 font-medium text-white"
-                        : "border-pedra-200 text-pedra-600 hover:border-pedra-300",
+                        ? "border-marinho-700 bg-marinho-700 font-medium text-white"
+                        : "border-areia-200 text-areia-600 hover:border-areia-300",
                     )}
                   >
                     <input
@@ -151,7 +151,7 @@ export function AgendarForm({
               })}
             </div>
             {tipo === "POS_OBRA" && (
-              <p className="mt-2 text-xs leading-relaxed text-pedra-500">
+              <p className="mt-2 text-xs leading-relaxed text-areia-500">
                 Pós-obra acima de seis horas quase sempre pede equipe, então passa por orçamento. Descreva
                 a obra abaixo e a gente retorna com o valor.
               </p>
@@ -163,17 +163,17 @@ export function AgendarForm({
         {/* Análise do pós-obra -------------------------------------------- */}
         {tipo === "POS_OBRA" && (
           <Secao titulo="Como ficou a obra">
-            <p className="text-sm leading-relaxed text-pedra-600">
+            <p className="text-sm leading-relaxed text-areia-600">
               Pós-obra varia demais de um imóvel para outro. Quanto mais específico você for, melhor a
               profissional se prepara — e menos chance de o serviço não caber nas horas contratadas.
             </p>
 
-            <div className="rounded-botao border border-mar-200 bg-mar-50 p-4">
-              <p className="text-sm font-medium text-mar-900">Responda, se souber:</p>
+            <div className="rounded-botao border border-marinho-200 bg-marinho-50 p-4">
+              <p className="text-sm font-medium text-marinho-900">Responda, se souber:</p>
               <ul className="mt-2 space-y-1">
                 {ROTEIRO_POS_OBRA.map((item) => (
-                  <li key={item} className="flex gap-2 text-sm leading-relaxed text-mar-800">
-                    <span aria-hidden="true" className="select-none text-mar-400">
+                  <li key={item} className="flex gap-2 text-sm leading-relaxed text-marinho-800">
+                    <span aria-hidden="true" className="select-none text-marinho-400">
                       —
                     </span>
                     {item}
@@ -197,14 +197,14 @@ export function AgendarForm({
                 <button
                   type="button"
                   onClick={() => setDetalhes(EXEMPLO_POS_OBRA)}
-                  className="text-xs font-medium text-mar-700 underline underline-offset-2 hover:text-mar-900"
+                  className="text-xs font-medium text-marinho-700 underline underline-offset-2 hover:text-marinho-900"
                 >
                   Preencher com um exemplo e editar
                 </button>
                 <span
                   className={cn(
                     "numeros text-xs",
-                    detalhes.trim().length >= MIN_DETALHES_POS_OBRA ? "text-folha-600" : "text-pedra-500",
+                    detalhes.trim().length >= MIN_DETALHES_POS_OBRA ? "text-laranja-600" : "text-areia-500",
                   )}
                 >
                   {detalhes.trim().length} de {MIN_DETALHES_POS_OBRA} caracteres
@@ -234,14 +234,14 @@ export function AgendarForm({
 
         <Secao titulo="Onde">
           {enderecos.map((en) => (
-            <label key={en.id} className="flex items-start gap-2.5 text-sm text-pedra-700">
+            <label key={en.id} className="flex items-start gap-2.5 text-sm text-areia-700">
               <input
                 type="radio"
                 name="enderecoId"
                 value={en.id}
                 checked={enderecoId === en.id}
                 onChange={() => setEnderecoId(en.id)}
-                className="mt-1 accent-mar-700"
+                className="mt-1 accent-marinho-700"
               />
               <span>
                 {en.apelido ? `${en.apelido} — ` : ""}
@@ -249,20 +249,20 @@ export function AgendarForm({
               </span>
             </label>
           ))}
-          <label className="flex items-center gap-2.5 text-sm text-pedra-700">
+          <label className="flex items-center gap-2.5 text-sm text-areia-700">
             <input
               type="radio"
               name="enderecoId"
               value="novo"
               checked={usarNovo}
               onChange={() => setEnderecoId("novo")}
-              className="accent-mar-700"
+              className="accent-marinho-700"
             />
             Usar um endereço novo
           </label>
 
           {usarNovo && (
-            <div className="grid gap-3 rounded-botao border border-pedra-200 bg-pedra-50 p-4 sm:grid-cols-2">
+            <div className="grid gap-3 rounded-botao border border-areia-200 bg-areia-50 p-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="cep">CEP</Label>
                 <Input
@@ -350,14 +350,14 @@ export function AgendarForm({
                   </option>
                 ))}
               </select>
-              <p className="text-xs leading-relaxed text-pedra-500">
+              <p className="text-xs leading-relaxed text-areia-500">
                 Ela recebe a oferta primeiro. Se não puder atender nesse horário, a plataforma chama outra
                 profissional e avisa você.
               </p>
               <Erro msg={e.preferidaId?.[0]} />
             </div>
           ) : (
-            <p className="text-sm leading-relaxed text-pedra-600">
+            <p className="text-sm leading-relaxed text-areia-600">
               A plataforma escolhe entre as profissionais aprovadas que atendem sua região nesse horário.
               Depois do primeiro serviço concluído, você pode pedir a mesma profissional nos próximos.
             </p>
@@ -392,7 +392,7 @@ export function AgendarForm({
 
       {/* Resumo ------------------------------------------------------------ */}
       <aside className="lg:sticky lg:top-24">
-        <div className="overflow-hidden rounded-cartao border border-pedra-200 bg-white shadow-[0_18px_40px_-24px_rgb(10_34_56_/_0.45)]">
+        <div className="overflow-hidden rounded-cartao border border-areia-200 bg-white shadow-[0_18px_40px_-24px_rgb(15_43_76_/_0.28)]">
           <Image
             src={servicoPorTipo(tipo).foto}
             alt=""
@@ -401,16 +401,16 @@ export function AgendarForm({
             className="aspect-[16/9] w-full object-cover"
           />
           <div className="p-5">
-            <p className="text-sm text-pedra-600">
+            <p className="text-sm text-areia-600">
               {servicoPorTipo(tipo).nome}, {duracaoEfetiva} horas
             </p>
-            <p key={total} className="troca numeros titulo mt-2 text-4xl text-mar-900">
+            <p key={total} className="troca numeros titulo mt-2 text-4xl text-marinho-900">
               {total === null ? "Sob orçamento" : formatBRLRedondo(total)}
             </p>
-            <p className="mt-1 text-xs text-pedra-500">Valor de Curitiba e RMC; o litoral de SC é 25% maior.</p>
+            <p className="mt-1 text-xs text-areia-500">Valor de Curitiba e RMC; o litoral de SC é 25% maior.</p>
 
             {state?.message && (
-              <p className="mt-4 rounded-botao bg-folha-50 p-3 text-sm leading-relaxed text-folha-700">
+              <p className="mt-4 rounded-botao bg-laranja-50 p-3 text-sm leading-relaxed text-laranja-700">
                 {state.message}
               </p>
             )}
@@ -418,7 +418,7 @@ export function AgendarForm({
             <Button type="submit" disabled={pending} size="lg" className="mt-5 w-full">
               {pending ? "Agendando…" : "Agendar e pagar"}
             </Button>
-            <p className="mt-3 text-xs leading-relaxed text-pedra-500">
+            <p className="mt-3 text-xs leading-relaxed text-areia-500">
               O valor fica retido na plataforma e só é repassado à profissional depois que o serviço
               termina.
             </p>

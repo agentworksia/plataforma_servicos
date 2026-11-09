@@ -15,23 +15,23 @@ export default async function AdminRankingPage() {
 
   return (
     <section>
-      <h1 className="titulo text-2xl text-mar-900">Ranking das profissionais</h1>
-      <p className="mt-2 max-w-3xl leading-relaxed text-pedra-600">
+      <h1 className="titulo text-2xl text-marinho-900">Ranking das profissionais</h1>
+      <p className="mt-2 max-w-3xl leading-relaxed text-areia-600">
         Define a ordem em que as ofertas são enviadas. A pontuação é calculada na hora da leitura e não
         aparece para a cliente nem para a profissional — cada uma vê apenas a própria média de avaliação.
       </p>
 
-      <div className="mt-5 rounded-cartao border border-pedra-200 bg-white p-5">
-        <p className="text-sm font-medium text-pedra-800">Como os 100 pontos são divididos</p>
-        <ul className="mt-3 grid gap-2 text-sm text-pedra-600 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-5 rounded-cartao border border-areia-200 bg-white p-5">
+        <p className="text-sm font-medium text-areia-800">Como os 100 pontos são divididos</p>
+        <ul className="mt-3 grid gap-2 text-sm text-areia-600 sm:grid-cols-2 lg:grid-cols-4">
           {EXPLICACAO_PESOS.map((p) => (
             <li key={p.nome} className="flex items-baseline gap-2">
-              <span className="numeros titulo-secao text-mar-800">{p.peso}</span>
+              <span className="numeros titulo-secao text-marinho-800">{p.peso}</span>
               <span>{p.nome}</span>
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-xs leading-relaxed text-pedra-500">
+        <p className="mt-3 text-xs leading-relaxed text-areia-500">
           Quem ainda não foi avaliada entra com nota neutra 4,0, para não ficar presa no fim da fila. Uma
           cliente que pede uma profissional específica passa na frente do ranking, desde que ela esteja
           disponível no horário.
@@ -47,7 +47,7 @@ export default async function AdminRankingPage() {
         ) : (
           <table className="w-full min-w-[760px] text-sm">
             <thead>
-              <tr className="border-b border-pedra-200 text-left text-pedra-500">
+              <tr className="border-b border-areia-200 text-left text-areia-500">
                 <th className="py-2 pr-3 font-medium">#</th>
                 <th className="py-2 pr-4 font-medium">Profissional</th>
                 <th className="py-2 pr-4 font-medium">Pontos</th>
@@ -69,33 +69,33 @@ export default async function AdminRankingPage() {
                     : "—";
                 const st = STATUS_PROFISSIONAL[l.status];
                 return (
-                  <tr key={l.id} className="border-b border-pedra-100">
-                    <td className="numeros py-3 pr-3 text-pedra-400">{i + 1}</td>
+                  <tr key={l.id} className="border-b border-areia-100">
+                    <td className="numeros py-3 pr-3 text-areia-400">{i + 1}</td>
                     <td className="py-3 pr-4">
-                      <div className="font-medium text-pedra-900">{l.nome}</div>
-                      <div className="text-pedra-500">{l.email}</div>
+                      <div className="font-medium text-areia-900">{l.nome}</div>
+                      <div className="text-areia-500">{l.email}</div>
                     </td>
-                    <td className="numeros py-3 pr-4 font-medium text-mar-800">
+                    <td className="numeros py-3 pr-4 font-medium text-marinho-800">
                       {formatNota(l.pontuacao.total)}
                     </td>
                     <td className="py-3 pr-4">
                       <Badge cor={l.faixa.cor}>{l.faixa.nome}</Badge>
                     </td>
-                    <td className="numeros py-3 pr-4 text-pedra-600">
+                    <td className="numeros py-3 pr-4 text-areia-600">
                       {m.mediaNota
                         ? `${formatNota(m.mediaNota)} (${m.totalAvaliacoes})`
                         : "sem avaliação"}
                     </td>
-                    <td className="numeros py-3 pr-4 text-pedra-600">{m.servicosConcluidos}</td>
-                    <td className="numeros py-3 pr-4 text-pedra-600">{aceite}</td>
-                    <td className="numeros py-3 pr-4 text-pedra-600">{m.cancelamentosProprios}</td>
+                    <td className="numeros py-3 pr-4 text-areia-600">{m.servicosConcluidos}</td>
+                    <td className="numeros py-3 pr-4 text-areia-600">{aceite}</td>
+                    <td className="numeros py-3 pr-4 text-areia-600">{m.cancelamentosProprios}</td>
                     <td className="py-3 pr-4">
                       <Badge cor={st.cor}>{st.label}</Badge>
                     </td>
                     <td className="py-3 text-right">
                       <Link
                         href={`/admin/profissionais/${l.id}`}
-                        className="font-medium text-mar-700 hover:underline"
+                        className="font-medium text-marinho-700 hover:underline"
                       >
                         Ver
                       </Link>

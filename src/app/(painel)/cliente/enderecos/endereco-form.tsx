@@ -24,7 +24,7 @@ export type Endereco = {
 };
 
 const campoSelect =
-  "flex h-10 w-full rounded-botao border border-pedra-300 bg-white px-3 text-sm text-pedra-900 focus-visible:border-mar-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mar-600/25";
+  "flex h-10 w-full rounded-botao border border-areia-300 bg-white px-3 text-sm text-areia-900 focus-visible:border-marinho-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-marinho-600/25";
 
 export function EnderecoForm({ endereco, aoFechar }: { endereco?: Endereco; aoFechar?: () => void }) {
   const [state, action, pending] = useActionState<EnderecoState, FormData>(salvarEndereco, undefined);
@@ -106,14 +106,14 @@ export function CartaoEndereco({ endereco }: { endereco: Endereco }) {
   const [editando, setEditando] = useState(false);
 
   return (
-    <li className="rounded-cartao border border-pedra-200 bg-white p-5">
+    <li className="rounded-cartao border border-areia-200 bg-white p-5">
       {editando ? (
         <EnderecoForm endereco={endereco} aoFechar={() => setEditando(false)} />
       ) : (
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="text-sm">
-            <p className="titulo-secao text-pedra-900">{endereco.apelido ?? endereco.logradouro}</p>
-            <p className="mt-1 leading-relaxed text-pedra-600">
+            <p className="titulo-secao text-areia-900">{endereco.apelido ?? endereco.logradouro}</p>
+            <p className="mt-1 leading-relaxed text-areia-600">
               {endereco.logradouro}, {endereco.numero}
               {endereco.complemento ? ` — ${endereco.complemento}` : ""}
               <br />
@@ -152,8 +152,8 @@ export function NovoEndereco() {
     return <Button onClick={() => setAberto(true)}>Adicionar endereço</Button>;
   }
   return (
-    <div className="rounded-cartao border border-pedra-200 bg-white p-5">
-      <p className="titulo-secao mb-4 text-pedra-900">Novo endereço</p>
+    <div className="rounded-cartao border border-areia-200 bg-white p-5">
+      <p className="titulo-secao mb-4 text-areia-900">Novo endereço</p>
       <EnderecoForm aoFechar={() => setAberto(false)} />
     </div>
   );

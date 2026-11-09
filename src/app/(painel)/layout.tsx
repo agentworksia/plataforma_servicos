@@ -36,11 +36,11 @@ export default async function PainelLayout({ children }: { children: ReactNode }
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-30 border-b border-pedra-200 bg-pedra-50/85 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-areia-200 bg-areia-50/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
           <Logo />
           <div className="flex items-center gap-3 text-sm">
-            <span className="hidden text-pedra-500 sm:inline">{user.email}</span>
+            <span className="hidden text-areia-500 sm:inline">{user.email}</span>
             <form action={logoutAction}>
               <button type="submit" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
                 Sair

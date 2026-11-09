@@ -40,13 +40,13 @@ export function AcoesProfissional({ id, status }: { id: string; status: Professi
         )}
 
         {status === "PENDENTE" && (
-          <details className="rounded-lg border border-pedra-200">
-            <summary className="cursor-pointer list-none px-4 py-2 text-sm font-medium text-pedra-700 hover:bg-pedra-50">
+          <details className="rounded-lg border border-areia-200">
+            <summary className="cursor-pointer list-none px-4 py-2 text-sm font-medium text-areia-700 hover:bg-areia-50">
               Reprovar
             </summary>
-            <form action={reprovar} className="space-y-2 border-t border-pedra-200 p-3">
+            <form action={reprovar} className="space-y-2 border-t border-areia-200 p-3">
               <input type="hidden" name="id" value={id} />
-              <label className="text-sm font-medium text-pedra-800" htmlFor="motivo">
+              <label className="text-sm font-medium text-areia-800" htmlFor="motivo">
                 Motivo da reprovação
               </label>
               <Textarea id="motivo" name="motivo" required maxLength={500} placeholder="Ex.: documento ilegível." />

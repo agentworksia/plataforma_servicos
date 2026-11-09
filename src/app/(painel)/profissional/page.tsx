@@ -82,8 +82,8 @@ export default async function ProfissionalPage() {
   return (
     <section className="space-y-8">
       <div>
-        <h1 className="titulo text-2xl text-mar-900">Ofertas de serviço</h1>
-        <p className="mt-1 text-pedra-600">Aceite ou recuse cada oferta dentro do prazo.</p>
+        <h1 className="titulo text-2xl text-marinho-900">Ofertas de serviço</h1>
+        <p className="mt-1 text-areia-600">Aceite ou recuse cada oferta dentro do prazo.</p>
       </div>
 
       {aviso && (
@@ -94,26 +94,26 @@ export default async function ProfissionalPage() {
       )}
 
       <div className="space-y-3">
-        <h2 className="font-semibold text-pedra-900">Ofertas pendentes</h2>
+        <h2 className="font-semibold text-areia-900">Ofertas pendentes</h2>
         {ofertas.length === 0 ? (
           <EmptyState titulo="Sem ofertas no momento" descricao="Quando um serviço combinar com seu perfil e agenda, aparece aqui." />
         ) : (
           <ul className="space-y-3">
             {ofertas.map((o) => (
-              <li key={o.id} className="rounded-xl border border-pedra-200 p-4">
+              <li key={o.id} className="rounded-xl border border-areia-200 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="text-sm">
-                    <div className="font-medium text-pedra-900">
+                    <div className="font-medium text-areia-900">
                       {LABEL_SERVICO[o.booking.tipoServico] ?? o.booking.tipoServico}
                       {o.abrangeSerie && (
-                        <span className="ml-2 rounded bg-mar-100 px-1.5 py-0.5 text-xs text-mar-800">série recorrente</span>
+                        <span className="ml-2 rounded bg-marinho-100 px-1.5 py-0.5 text-xs text-marinho-800">série recorrente</span>
                       )}
                     </div>
-                    <div className="text-pedra-500">
+                    <div className="text-areia-500">
                       {formatData(o.booking.data)} · {minutosParaHora(o.booking.inicioMin)} · {o.booking.duracaoHoras}h ·{" "}
                       {o.booking.address.bairro}, {o.booking.address.cidade}
                     </div>
-                    <div className="mt-1 text-pedra-700">
+                    <div className="mt-1 text-areia-700">
                       Você recebe {formatBRL(o.booking.repasseProfissional)}
                       {o.abrangeSerie ? " por serviço" : ""}
                     </div>
@@ -134,19 +134,19 @@ export default async function ProfissionalPage() {
       </div>
 
       <div className="space-y-3">
-        <h2 className="font-semibold text-pedra-900">Próximos serviços</h2>
+        <h2 className="font-semibold text-areia-900">Próximos serviços</h2>
         {proximos.length === 0 ? (
-          <p className="text-sm text-pedra-500">Nada agendado.</p>
+          <p className="text-sm text-areia-500">Nada agendado.</p>
         ) : (
-          <ul className="divide-y divide-pedra-100 rounded-xl border border-pedra-200">
+          <ul className="divide-y divide-areia-100 rounded-xl border border-areia-200">
             {proximos.map((b) => (
               <li key={b.id}>
-                <Link href={`/profissional/servicos/${b.id}`} className="flex items-center justify-between px-4 py-3 text-sm hover:bg-pedra-50">
+                <Link href={`/profissional/servicos/${b.id}`} className="flex items-center justify-between px-4 py-3 text-sm hover:bg-areia-50">
                   <span>
                     <strong>{formatData(b.data)}</strong> · {minutosParaHora(b.inicioMin)} · {b.duracaoHoras}h —{" "}
                     {LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}, {b.address.bairro}
                   </span>
-                  <span className="text-mar-700">abrir</span>
+                  <span className="text-marinho-700">abrir</span>
                 </Link>
               </li>
             ))}

@@ -15,7 +15,7 @@ export async function SiteHeader() {
   const session = await getSession();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-pedra-200 bg-pedra-50/85 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-areia-200 bg-areia-50/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
         <Logo />
 
@@ -24,7 +24,7 @@ export async function SiteHeader() {
             <Link
               key={l.href}
               href={l.href}
-              className="rounded-botao px-3 py-2 text-pedra-600 hover:bg-pedra-100 hover:text-mar-800"
+              className="rounded-botao px-3 py-2 text-areia-600 hover:bg-areia-100 hover:text-marinho-800"
             >
               {l.label}
             </Link>

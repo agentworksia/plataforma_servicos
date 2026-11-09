@@ -17,10 +17,10 @@ export function RedefinirSenhaForm({ token }: { token: string }) {
   if (concluido) {
     return (
       <div className="space-y-4">
-        <p className="leading-relaxed text-pedra-700">
+        <p className="leading-relaxed text-areia-700">
           Senha trocada. As sessões abertas em outros aparelhos foram encerradas.
         </p>
-        <Link href="/login" className="inline-block text-sm text-mar-700 hover:underline">
+        <Link href="/login" className="inline-block text-sm text-marinho-700 hover:underline">
           Entrar com a senha nova
         </Link>
       </div>

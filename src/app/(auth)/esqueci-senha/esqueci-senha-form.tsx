@@ -19,14 +19,14 @@ export function EsqueciSenhaForm() {
   if (state?.enviado) {
     return (
       <div className="space-y-4">
-        <p className="leading-relaxed text-pedra-700">
-          Se existir uma conta com <span className="font-medium text-pedra-900">{state.email}</span>,
+        <p className="leading-relaxed text-areia-700">
+          Se existir uma conta com <span className="font-medium text-areia-900">{state.email}</span>,
           acabamos de enviar um link para criar uma senha nova.
         </p>
-        <p className="text-sm leading-relaxed text-pedra-500">
+        <p className="text-sm leading-relaxed text-areia-500">
           O link vale por uma hora e só funciona uma vez. Confira também a caixa de spam.
         </p>
-        <Link href="/login" className="inline-block text-sm text-mar-700 hover:underline">
+        <Link href="/login" className="inline-block text-sm text-marinho-700 hover:underline">
           Voltar para o login
         </Link>
       </div>
@@ -36,7 +36,7 @@ export function EsqueciSenhaForm() {
   return (
     <form action={action} className="space-y-5">
       <fieldset>
-        <legend className="text-sm font-medium text-pedra-800">Como quer receber o link?</legend>
+        <legend className="text-sm font-medium text-areia-800">Como quer receber o link?</legend>
         <div className="mt-2 space-y-2">
           {CANAIS_RECUPERACAO.map((c) => (
             <label
@@ -45,8 +45,8 @@ export function EsqueciSenhaForm() {
                 "flex items-center gap-2.5 rounded-botao border p-3 text-sm",
                 !c.disponivel && "cursor-not-allowed opacity-60",
                 c.disponivel && canal === c.value
-                  ? "cursor-pointer border-mar-600 bg-mar-50 text-mar-900"
-                  : "cursor-pointer border-pedra-200 text-pedra-700",
+                  ? "cursor-pointer border-marinho-600 bg-marinho-50 text-marinho-900"
+                  : "cursor-pointer border-areia-200 text-areia-700",
               )}
             >
               <input
@@ -56,11 +56,11 @@ export function EsqueciSenhaForm() {
                 checked={canal === c.value}
                 disabled={!c.disponivel}
                 onChange={() => setCanal(c.value)}
-                className="accent-mar-700"
+                className="accent-marinho-700"
               />
               <span>{c.label}</span>
               {!c.disponivel && (
-                <span className="ml-auto rounded-full bg-pedra-100 px-2 py-0.5 text-xs text-pedra-600">
+                <span className="ml-auto rounded-full bg-areia-100 px-2 py-0.5 text-xs text-areia-600">
                   em breve
                 </span>
               )}
@@ -81,7 +81,7 @@ export function EsqueciSenhaForm() {
       </Button>
 
       <p className="text-center text-sm">
-        <Link href="/login" className="text-mar-700 hover:underline">
+        <Link href="/login" className="text-marinho-700 hover:underline">
           Lembrei a senha, voltar para o login
         </Link>
       </p>

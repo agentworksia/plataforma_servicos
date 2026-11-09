@@ -45,8 +45,8 @@ export default async function AdminPrecosPage() {
 
   return (
     <section>
-      <h1 className="titulo text-2xl text-mar-900">Tabela de preços</h1>
-      <p className="mt-1 max-w-3xl text-pedra-600">
+      <h1 className="titulo text-2xl text-marinho-900">Tabela de preços</h1>
+      <p className="mt-1 max-w-3xl text-areia-600">
         Preço por tipo × duração × cidade. O valor base já é o preço final que o
         cliente vê — o multiplicador fica em 1 e só serve para um ajuste pontual
         sem mexer na tabela.
@@ -57,20 +57,20 @@ export default async function AdminPrecosPage() {
         if (doEstado.length === 0) return null;
         return (
           <div key={uf} className="mt-8">
-            <h2 className="titulo-secao text-pedra-800">{nome}</h2>
+            <h2 className="titulo-secao text-areia-800">{nome}</h2>
             <div className="mt-3 space-y-3">
               {doEstado.map((grupo) => (
                 <details
                   key={grupo.nome}
-                  className="rounded-xl border border-pedra-200"
+                  className="rounded-xl border border-areia-200"
                 >
-                  <summary className="cursor-pointer px-4 py-3 font-medium text-pedra-800 hover:bg-pedra-50">
+                  <summary className="cursor-pointer px-4 py-3 font-medium text-areia-800 hover:bg-areia-50">
                     {grupo.nome}
                   </summary>
-                  <div className="overflow-x-auto border-t border-pedra-200 p-4">
+                  <div className="overflow-x-auto border-t border-areia-200 p-4">
                     <table className="w-full min-w-[560px] text-sm">
                       <thead>
-                        <tr className="text-left text-pedra-500">
+                        <tr className="text-left text-areia-500">
                           <th className="pb-2 pr-3 font-medium">Serviço</th>
                           <th className="pb-2 pr-3 font-medium">Duração</th>
                           <th className="pb-2 pr-3 font-medium">
@@ -85,11 +85,11 @@ export default async function AdminPrecosPage() {
                       </thead>
                       <tbody>
                         {grupo.regras.map((r) => (
-                          <tr key={r.id} className="border-t border-pedra-100">
-                            <td className="py-2 pr-3 text-pedra-800">
+                          <tr key={r.id} className="border-t border-areia-100">
+                            <td className="py-2 pr-3 text-areia-800">
                               {LABEL[r.tipoServico] ?? r.tipoServico}
                             </td>
-                            <td className="py-2 pr-3 text-pedra-600">
+                            <td className="py-2 pr-3 text-areia-600">
                               {r.duracaoHoras}h
                             </td>
                             <td colSpan={4} className="py-2">
@@ -118,7 +118,7 @@ export default async function AdminPrecosPage() {
                                   ).toString()}
                                   className="h-9 w-20"
                                 />
-                                <label className="flex items-center gap-1 text-pedra-600">
+                                <label className="flex items-center gap-1 text-areia-600">
                                   <input
                                     type="checkbox"
                                     name="ativo"

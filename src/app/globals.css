@@ -1,75 +1,75 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
 @theme {
-  /* mar — azuis do logo da Prime Diárias. O 700 é o navy da marca, o 400 é o azul do
-     risco e das estrelas. Mesma matiz (~205°) da ponta clara à escura. */
-  --color-mar-50: #eff6fb;
-  --color-mar-100: #daeaf4;
-  --color-mar-200: #b8d5e9;
-  --color-mar-300: #8dbbda;
-  --color-mar-400: #549dcd;
-  --color-mar-500: #3380b4;
-  --color-mar-600: #1f6392;
-  --color-mar-700: #123e61;
-  --color-mar-800: #0e3150;
-  --color-mar-900: #0a2238;
+  /* marinho — os azuis do logo. 800 é o navy da marca (#0f2b4c), 500 é o azul do
+     círculo (#3b6ea5). Mesma matiz do claro ao escuro. */
+  --color-marinho-50: #eef2f7;
+  --color-marinho-100: #d8e1ec;
+  --color-marinho-200: #b0c2d7;
+  --color-marinho-300: #7f9cbb;
+  --color-marinho-400: #5580a8;
+  --color-marinho-500: #3b6ea5;
+  --color-marinho-600: #2d5781;
+  --color-marinho-700: #14355c;
+  --color-marinho-800: #0f2b4c;
+  --color-marinho-900: #0a1e36;
 
-  /* folha — o verde da folha do logo. Único acento quente: nota, numeração, destaque. */
-  --color-folha-50: #f2f7ec;
-  --color-folha-100: #e3eed6;
-  --color-folha-200: #c9dfb3;
-  --color-folha-300: #a9c988;
-  --color-folha-400: #8bb163;
-  --color-folha-500: #6e934c;
-  --color-folha-600: #587840;
-  --color-folha-700: #445c33;
+  /* areia — neutros quentes a partir do creme da marca (#f4f0e8 = areia-100,
+     o fundo da página). O 500 foi escurecido até passar AA sobre esse creme. */
+  --color-areia-50: #faf8f4;
+  --color-areia-100: #f4f0e8;
+  --color-areia-200: #e7e1d5;
+  --color-areia-300: #d2cabb;
+  --color-areia-400: #a9a195;
+  --color-areia-500: #6e6859;
+  --color-areia-600: #585245;
+  --color-areia-700: #423d34;
+  --color-areia-800: #2b2822;
+  --color-areia-900: #1a1814;
 
-  /* pedra — neutros frios puxando para o azul, para assentar no navy. */
-  --color-pedra-50: #f4f7f9;
-  --color-pedra-100: #e8edf2;
-  --color-pedra-200: #d8e0e8;
-  --color-pedra-300: #bcc8d4;
-  --color-pedra-400: #94a3b4;
-  --color-pedra-500: #68788a;
-  --color-pedra-600: #53606f;
-  --color-pedra-700: #3d4854;
-  --color-pedra-800: #2b343d;
-  --color-pedra-900: #18202a;
+  /* laranja — o acento do logo, só na interseção. O 500 é a cor da marca e serve
+     para preenchimento e marca grande; texto e botão usam o 600, que passa AA. */
+  --color-laranja-50: #fef3ec;
+  --color-laranja-100: #fcdcc6;
+  --color-laranja-200: #f9bb94;
+  --color-laranja-300: #f69a5e;
+  --color-laranja-400: #f07731;
+  --color-laranja-500: #e8590c;
+  --color-laranja-600: #c2470a;
+  --color-laranja-700: #973708;
 
   /* raio por função, não um valor único para tudo */
   --radius-botao: 0.625rem;
-  --radius-cartao: 0.875rem;
-  --radius-foto: 1.25rem;
+  --radius-cartao: 1rem;
+  --radius-foto: 1.5rem;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-pedra-50);
-  color: var(--color-pedra-900);
+  background-color: var(--color-areia-100);
+  color: var(--color-areia-900);
 }
 
 ::selection {
-  background-color: var(--color-mar-200);
-  color: var(--color-mar-900);
+  background-color: var(--color-laranja-200);
+  color: var(--color-laranja-700);
 }
 
-/* Archivo variável: a largura estendida é a assinatura tipográfica dos títulos.
-   O logotipo carrega o serifado; a interface fica no grotesco, por legibilidade. */
+/* A marca é geométrica e minúscula; os títulos seguem por peso e aperto do
+   espacejamento, sem largura estendida — aquilo era assinatura do logo antigo. */
 .titulo {
-  font-stretch: 114%;
-  font-weight: 650;
-  letter-spacing: -0.022em;
-  line-height: 1.06;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 
 .titulo-secao {
-  font-stretch: 108%;
-  font-weight: 620;
-  letter-spacing: -0.014em;
+  font-weight: 650;
+  letter-spacing: -0.018em;
 }
 
 /* Números de preço: tabulares para não dançarem ao trocar a duração. */

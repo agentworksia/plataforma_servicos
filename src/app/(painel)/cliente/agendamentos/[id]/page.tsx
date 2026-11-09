@@ -14,9 +14,9 @@ export const metadata: Metadata = { title: "Agendamento" };
 
 function Linha({ rotulo, children }: { rotulo: string; children: React.ReactNode }) {
   return (
-    <div className="flex justify-between gap-4 border-b border-pedra-100 py-2 text-sm last:border-0">
-      <span className="text-pedra-500">{rotulo}</span>
-      <span className="text-right text-pedra-900">{children}</span>
+    <div className="flex justify-between gap-4 border-b border-areia-100 py-2 text-sm last:border-0">
+      <span className="text-areia-500">{rotulo}</span>
+      <span className="text-right text-areia-900">{children}</span>
     </div>
   );
 }
@@ -59,19 +59,19 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
   return (
     <section className="space-y-6">
       <div>
-        <Link href="/cliente" className="text-sm text-mar-700 hover:underline">
+        <Link href="/cliente" className="text-sm text-marinho-700 hover:underline">
           ← Meus agendamentos
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h1 className="titulo text-2xl text-mar-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</h1>
+          <h1 className="titulo text-2xl text-marinho-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</h1>
           <Badge cor={st.cor}>{st.label}</Badge>
         </div>
       </div>
 
       {b.seriesId && (
-        <p className="text-sm text-pedra-600">
+        <p className="text-sm text-areia-600">
           Parte de uma série recorrente ·{" "}
-          <Link href={`/cliente/series/${b.seriesId}`} className="text-mar-700 hover:underline">
+          <Link href={`/cliente/series/${b.seriesId}`} className="text-marinho-700 hover:underline">
             ver todas as ocorrências
           </Link>
         </p>
@@ -84,7 +84,7 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
         </p>
       )}
 
-      <div className="rounded-xl border border-pedra-200 p-5">
+      <div className="rounded-xl border border-areia-200 p-5">
         <Linha rotulo="Data">{formatData(b.data)}</Linha>
         <Linha rotulo="Horário">
           {minutosParaHora(b.inicioMin)} · {b.duracaoHoras} horas
@@ -97,8 +97,8 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
         {b.observacoesCliente && <Linha rotulo="Observações">{b.observacoesCliente}</Linha>}
       </div>
 
-      <div className="rounded-xl border border-pedra-200 p-5">
-        <h2 className="font-semibold text-pedra-900">Pagamento</h2>
+      <div className="rounded-xl border border-areia-200 p-5">
+        <h2 className="font-semibold text-areia-900">Pagamento</h2>
         <div className="mt-2">
           <Linha rotulo="Serviço">{formatBRL(b.valorServico)}</Linha>
           {b.valorExtras > 0 && <Linha rotulo="Extras">{formatBRL(b.valorExtras)}</Linha>}
@@ -107,14 +107,14 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
           <Linha rotulo="Status">{b.payment ? STATUS_PAGAMENTO[b.payment.status] : "—"}</Linha>
         </div>
         {b.payment?.pixCopiaCola && (
-          <p className="mt-3 break-all rounded bg-pedra-100 p-2 text-xs text-pedra-600">{b.payment.pixCopiaCola}</p>
+          <p className="mt-3 break-all rounded bg-areia-100 p-2 text-xs text-areia-600">{b.payment.pixCopiaCola}</p>
         )}
       </div>
 
       {b.review && (
-        <div className="rounded-xl border border-pedra-200 p-5 text-sm">
-          <h2 className="font-semibold text-pedra-900">Sua avaliação</h2>
-          <p className="mt-1 text-pedra-700">
+        <div className="rounded-xl border border-areia-200 p-5 text-sm">
+          <h2 className="font-semibold text-areia-900">Sua avaliação</h2>
+          <p className="mt-1 text-areia-700">
             <strong>{b.review.nota}/5</strong>
             {b.review.comentario ? ` — "${b.review.comentario}"` : ""}
           </p>
@@ -122,15 +122,15 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
       )}
 
       {podeAvaliar && (
-        <div className="rounded-xl border border-pedra-200 p-5">
-          <h2 className="font-semibold text-pedra-900">Avaliar o serviço</h2>
+        <div className="rounded-xl border border-areia-200 p-5">
+          <h2 className="font-semibold text-areia-900">Avaliar o serviço</h2>
           <ActionForm action={avaliarServico} submitLabel="Enviar avaliação" className="mt-3">
             <input type="hidden" name="bookingId" value={b.id} />
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-pedra-800" htmlFor="nota">
+              <label className="text-sm font-medium text-areia-800" htmlFor="nota">
                 Nota
               </label>
-              <select id="nota" name="nota" defaultValue="5" className="flex h-10 w-full rounded-lg border border-pedra-300 bg-white px-3 text-sm">
+              <select id="nota" name="nota" defaultValue="5" className="flex h-10 w-full rounded-lg border border-areia-300 bg-white px-3 text-sm">
                 {[5, 4, 3, 2, 1].map((n) => (
                   <option key={n} value={n}>
                     {n} — {["", "péssimo", "ruim", "ok", "bom", "excelente"][n]}
@@ -144,9 +144,9 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
       )}
 
       {podeCancelar && (
-        <div className="rounded-xl border border-pedra-200 p-5">
-          <h2 className="font-semibold text-pedra-900">Cancelar</h2>
-          <p className="mt-1 text-sm text-pedra-600">
+        <div className="rounded-xl border border-areia-200 p-5">
+          <h2 className="font-semibold text-areia-900">Cancelar</h2>
+          <p className="mt-1 text-sm text-areia-600">
             Sem custo até 24h antes do serviço. Depois disso, o valor não é reembolsado.
           </p>
           <ActionForm
@@ -160,7 +160,7 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
             <input
               name="motivo"
               placeholder="Motivo (opcional)"
-              className="flex h-10 w-full rounded-lg border border-pedra-300 bg-white px-3 text-sm"
+              className="flex h-10 w-full rounded-lg border border-areia-300 bg-white px-3 text-sm"
             />
           </ActionForm>
         </div>

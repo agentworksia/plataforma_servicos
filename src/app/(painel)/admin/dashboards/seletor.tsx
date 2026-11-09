@@ -5,7 +5,7 @@ import { DIMENSOES, PERIODOS } from "@/lib/admin/painel-opcoes";
 import { cn } from "@/lib/utils";
 
 const campoSelect =
-  "h-10 rounded-botao border border-pedra-300 bg-white px-3 text-sm text-pedra-900 focus-visible:border-mar-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mar-600/25";
+  "h-10 rounded-botao border border-areia-300 bg-white px-3 text-sm text-areia-900 focus-visible:border-marinho-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-marinho-600/25";
 
 export function SeletorPainel({ dimensao, periodo }: { dimensao: string; periodo: string }) {
   const router = useRouter();
@@ -20,7 +20,7 @@ export function SeletorPainel({ dimensao, periodo }: { dimensao: string; periodo
   return (
     <div className="flex flex-wrap items-end gap-4">
       <div className="space-y-1.5">
-        <label htmlFor="dimensao" className="block text-sm font-medium text-pedra-800">
+        <label htmlFor="dimensao" className="block text-sm font-medium text-areia-800">
           Abrir por
         </label>
         <select
@@ -38,7 +38,7 @@ export function SeletorPainel({ dimensao, periodo }: { dimensao: string; periodo
       </div>
 
       <div className="space-y-1.5">
-        <span className="block text-sm font-medium text-pedra-800">Período</span>
+        <span className="block text-sm font-medium text-areia-800">Período</span>
         <div className="flex gap-1">
           {PERIODOS.map((p) => (
             <button
@@ -48,8 +48,8 @@ export function SeletorPainel({ dimensao, periodo }: { dimensao: string; periodo
               className={cn(
                 "h-10 rounded-botao px-3 text-sm transition-colors",
                 p.value === periodo
-                  ? "bg-mar-700 font-medium text-white"
-                  : "border border-pedra-200 bg-white text-pedra-600 hover:border-pedra-300",
+                  ? "bg-marinho-700 font-medium text-white"
+                  : "border border-areia-200 bg-white text-areia-600 hover:border-areia-300",
               )}
             >
               {p.label}

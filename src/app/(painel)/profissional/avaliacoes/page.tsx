@@ -23,9 +23,9 @@ export default async function AvaliacoesPage() {
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="titulo text-2xl text-mar-900">Avaliações recebidas</h1>
+        <h1 className="titulo text-2xl text-marinho-900">Avaliações recebidas</h1>
         {media !== null && (
-          <p className="mt-1 text-pedra-600">
+          <p className="mt-1 text-areia-600">
             Média <strong>{media.toFixed(1)}</strong> em {reviews.length} avaliação(ões).
           </p>
         )}
@@ -36,14 +36,14 @@ export default async function AvaliacoesPage() {
       ) : (
         <ul className="space-y-3">
           {reviews.map((r) => (
-            <li key={r.id} className="rounded-xl border border-pedra-200 p-4 text-sm">
+            <li key={r.id} className="rounded-xl border border-areia-200 p-4 text-sm">
               <div className="flex items-center justify-between">
-                <span className="font-medium text-pedra-900">
+                <span className="font-medium text-areia-900">
                   {r.nota}/5 · {LABEL_SERVICO[r.booking.tipoServico] ?? r.booking.tipoServico}
                 </span>
-                <span className="text-pedra-400">{formatData(r.criadoEm)}</span>
+                <span className="text-areia-400">{formatData(r.criadoEm)}</span>
               </div>
-              {r.comentario && <p className="mt-1 text-pedra-700">&ldquo;{r.comentario}&rdquo;</p>}
+              {r.comentario && <p className="mt-1 text-areia-700">&ldquo;{r.comentario}&rdquo;</p>}
             </li>
           ))}
         </ul>

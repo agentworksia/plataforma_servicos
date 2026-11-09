@@ -35,8 +35,8 @@ export default async function AgendarPage({
     <>
       <SiteHeader />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-12">
-        <h1 className="titulo text-3xl text-mar-900 sm:text-4xl">Agendar um serviço</h1>
-        <p className="mt-3 max-w-2xl leading-relaxed text-pedra-600">
+        <h1 className="titulo text-3xl text-marinho-900 sm:text-4xl">Agendar um serviço</h1>
+        <p className="mt-3 max-w-2xl leading-relaxed text-areia-600">
           Atendemos {CIDADES_PR.slice(0, 3).join(", ")} e mais {CIDADES_PR.length - 3} cidades da Região
           Metropolitana, além de {CIDADES_SC.length} cidades do litoral de Santa Catarina. O preço aparece
           aqui do lado e não muda depois.
@@ -51,7 +51,7 @@ export default async function AgendarPage({
         </div>
 
         <p className="mt-8 text-sm">
-          <Link href="/cliente" className="text-mar-700 hover:underline">
+          <Link href="/cliente" className="text-marinho-700 hover:underline">
             Ver meus agendamentos
           </Link>
         </p>

@@ -43,8 +43,8 @@ export default async function AdminProfissionaisPage({
 
   return (
     <section>
-      <h1 className="titulo text-2xl text-mar-900">Profissionais</h1>
-      <p className="mt-1 text-pedra-600">Aprovar, reprovar ou suspender contas de diaristas.</p>
+      <h1 className="titulo text-2xl text-marinho-900">Profissionais</h1>
+      <p className="mt-1 text-areia-600">Aprovar, reprovar ou suspender contas de diaristas.</p>
 
       <div className="mt-4 flex flex-wrap gap-2 text-sm">
         <FiltroLink label="Todos" href="/admin/profissionais" ativo={!filtro} />
@@ -64,7 +64,7 @@ export default async function AdminProfissionaisPage({
         ) : (
           <table className="w-full min-w-[640px] text-sm">
             <thead>
-              <tr className="border-b border-pedra-200 text-left text-pedra-500">
+              <tr className="border-b border-areia-200 text-left text-areia-500">
                 <th className="py-2 pr-4 font-medium">Nome</th>
                 <th className="py-2 pr-4 font-medium">Regiões</th>
                 <th className="py-2 pr-4 font-medium">Docs</th>
@@ -78,24 +78,24 @@ export default async function AdminProfissionaisPage({
                 const cidades = [...new Set(p.areas.map((a) => a.serviceArea.cidade))];
                 const st = STATUS_PROFISSIONAL[p.status];
                 return (
-                  <tr key={p.id} className="border-b border-pedra-100">
+                  <tr key={p.id} className="border-b border-areia-100">
                     <td className="py-3 pr-4">
-                      <div className="font-medium text-pedra-900">{p.user.name ?? "—"}</div>
-                      <div className="text-pedra-500">{p.user.email}</div>
+                      <div className="font-medium text-areia-900">{p.user.name ?? "—"}</div>
+                      <div className="text-areia-500">{p.user.email}</div>
                     </td>
-                    <td className="py-3 pr-4 text-pedra-600">
+                    <td className="py-3 pr-4 text-areia-600">
                       {cidades.slice(0, 2).join(", ")}
                       {cidades.length > 2 ? ` +${cidades.length - 2}` : ""}
                     </td>
-                    <td className="py-3 pr-4 text-pedra-600">{p._count.documentos}</td>
-                    <td className="py-3 pr-4 text-pedra-600">{formatData(p.criadoEm)}</td>
+                    <td className="py-3 pr-4 text-areia-600">{p._count.documentos}</td>
+                    <td className="py-3 pr-4 text-areia-600">{formatData(p.criadoEm)}</td>
                     <td className="py-3 pr-4">
                       <Badge cor={st.cor}>{st.label}</Badge>
                     </td>
                     <td className="py-3 text-right">
                       <Link
                         href={`/admin/profissionais/${p.id}`}
-                        className="font-medium text-mar-700 hover:underline"
+                        className="font-medium text-marinho-700 hover:underline"
                       >
                         Ver
                       </Link>
@@ -117,7 +117,7 @@ function FiltroLink({ label, href, ativo }: { label: string; href: string; ativo
       href={href}
       className={cn(
         "rounded-lg px-3 py-1.5 font-medium",
-        ativo ? "bg-mar-600 text-white" : "bg-pedra-100 text-pedra-600 hover:bg-pedra-200",
+        ativo ? "bg-marinho-600 text-white" : "bg-areia-100 text-areia-600 hover:bg-areia-200",
       )}
     >
       {label}

@@ -16,11 +16,11 @@ export default async function RedefinirSenhaPage({
 
   return (
     <AuthCard className="max-w-md">
-      <h1 className="titulo text-2xl text-mar-900">Criar uma senha nova</h1>
+      <h1 className="titulo text-2xl text-marinho-900">Criar uma senha nova</h1>
 
       {valido ? (
         <>
-          <p className="mt-2 text-sm leading-relaxed text-pedra-600">
+          <p className="mt-2 text-sm leading-relaxed text-areia-600">
             Escolha uma senha de pelo menos 8 caracteres.
           </p>
           <div className="mt-6">
@@ -29,12 +29,12 @@ export default async function RedefinirSenhaPage({
         </>
       ) : (
         <div className="mt-4 space-y-4">
-          <p className="leading-relaxed text-pedra-700">
+          <p className="leading-relaxed text-areia-700">
             Esse link expirou ou já foi usado. Cada link vale por uma hora e serve uma vez só.
           </p>
           <Link
             href="/esqueci-senha"
-            className="inline-block text-sm font-medium text-mar-700 hover:underline"
+            className="inline-block text-sm font-medium text-marinho-700 hover:underline"
           >
             Pedir um link novo
           </Link>
