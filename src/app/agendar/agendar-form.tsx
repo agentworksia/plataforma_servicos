@@ -14,6 +14,7 @@ import {
   type Duracao,
 } from "@/lib/pricing/tabela";
 import { formatBRLRedondo, formatDuracao, formatNota } from "@/lib/format";
+import { pracaPorNome } from "@/lib/regioes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -72,9 +73,15 @@ export function AgendarForm({
   const disponiveis = duracoesDisponiveis(tipo);
   // Pós-obra não vende 8 h: se o cliente vinha com ela marcada, cai para a maior disponível.
   const duracaoEfetiva = disponiveis.includes(duracao) ? duracao : disponiveis[disponiveis.length - 1];
+  // O resumo precisa bater com o que o servidor vai cobrar, e o servidor cobra pela
+  // praça do endereço: o litoral de SC é mais caro. Enquanto o endereço é novo e a
+  // cidade ainda não foi digitada, fica a tabela de Curitiba, com o aviso embaixo.
+  const cidadeEscolhida = usarNovo ? "" : (enderecos.find((en) => en.id === enderecoId)?.cidade ?? "");
+  const praca = cidadeEscolhida ? pracaPorNome(cidadeEscolhida) : undefined;
+  const multiplicadorRegiao = praca?.multiplicadorRegiao ?? 1;
   // A data entra no cálculo porque o passeio custa mais no fim de semana. O servidor
   // recalcula de qualquer jeito; aqui é só para o cliente ver o preço certo antes de pagar.
-  const total = precoDeTabela(tipo, duracaoEfetiva, 1, data || undefined);
+  const total = precoDeTabela(tipo, duracaoEfetiva, multiplicadorRegiao, data || undefined);
   const acrescimoFds = ACRESCIMO_FIM_DE_SEMANA[tipo];
   const fdsAplicado = !!acrescimoFds && !!data && ehFimDeSemana(data);
 
@@ -432,7 +439,7 @@ export function AgendarForm({
               {total === null ? "Sob orçamento" : formatBRLRedondo(total)}
             </p>
             <p className="mt-1 text-xs text-areia-500">
-              Valor de Curitiba e RMC; o litoral de SC é 25% maior.
+              {praca ? `Valor de ${praca.nome}.` : "Valor de Curitiba e RMC; o litoral de SC é 25% maior."}
               {fdsAplicado ? " Já com os 30% de fim de semana." : ""}
             </p>
 

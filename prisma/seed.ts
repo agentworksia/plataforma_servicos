@@ -2,18 +2,14 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
-import type { ServiceType } from "../src/generated/prisma/enums";
 import { pgSsl } from "../src/lib/pg-ssl";
-import { DURACOES, TABELA_BASE, precoDeTabela, type Duracao } from "../src/lib/pricing/tabela";
-import { PRACAS } from "../src/lib/regioes";
+import { precoDeTabela, type Duracao } from "../src/lib/pricing/tabela";
+import { aplicarTabelaDePrecos } from "./tabela-precos";
 
 // Usa DATABASE_URL (mesmo caminho do runtime, com sslmode que o node-postgres entende).
 const connectionString = process.env.DATABASE_URL ?? process.env.DIRECT_URL ?? "";
 const adapter = new PrismaPg({ connectionString, ssl: pgSsl(connectionString) });
 const db = new PrismaClient({ adapter });
-
-// A tabela de preços é a mesma que as telas públicas mostram — fonte única em lib/pricing/tabela.
-const TIPOS = Object.keys(TABELA_BASE) as ServiceType[];
 
 async function main() {
   // --- Configurações -------------------------------------------------------
@@ -27,51 +23,7 @@ async function main() {
     await db.setting.upsert({ where: { chave }, create: { chave, valor, descricao }, update: { descricao } });
   }
 
-  // --- Regiões + tabela de preços ---------------------------------------
-  // O preço de praça já entra calculado em valorBase (multiplicador 1), para o que o
-  // admin edita na tela ser exatamente o que o cliente vê.
-  for (const praca of PRACAS) {
-    // where compound com campo nullable não é aceito no upsert do Prisma; faz find + create.
-    const existente = await db.serviceArea.findFirst({ where: { cidade: praca.nome, bairro: null } });
-    const area = existente
-      ? await db.serviceArea.update({ where: { id: existente.id }, data: { ativo: true, uf: praca.uf } })
-      : await db.serviceArea.create({ data: { cidade: praca.nome, uf: praca.uf, ativo: true } });
-
-    for (const tipo of TIPOS) {
-      for (const duracao of DURACOES) {
-        const chave = {
-          tipoServico_duracaoMinutos_serviceAreaId: {
-            tipoServico: tipo,
-            duracaoMinutos: duracao,
-            serviceAreaId: area.id,
-          },
-        };
-        const valor = precoDeTabela(tipo, duracao, praca.multiplicadorRegiao);
-
-        // Duração que saiu da tabela (pós-obra de 8 h) é removida, não desativada —
-        // senão sobra preço velho no banco de quem rodou o seed anterior.
-        if (valor === null) {
-          await db.pricingRule.deleteMany({
-            where: { tipoServico: tipo, duracaoMinutos: duracao, serviceAreaId: area.id },
-          });
-          continue;
-        }
-
-        await db.pricingRule.upsert({
-          where: chave,
-          create: {
-            tipoServico: tipo,
-            duracaoMinutos: duracao,
-            serviceAreaId: area.id,
-            valorBase: valor,
-            multiplicador: 1,
-          },
-          // Reaplica a tabela: rodar o seed de novo corrige preços antigos no banco.
-          update: { valorBase: valor, multiplicador: 1, ativo: true },
-        });
-      }
-    }
-  }
+  await aplicarTabelaDePrecos(db);
 
   // --- Usuários de demonstração (apenas para desenvolvimento) -------------
   const senhaHash = await bcrypt.hash("senha12345", 10);
