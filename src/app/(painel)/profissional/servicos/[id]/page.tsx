@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatData, formatBRL, minutosParaHora } from "@/lib/format";
+import { formatDuracao, formatData, formatBRL, minutosParaHora } from "@/lib/format";
 import { LABEL_SERVICO, STATUS_BOOKING } from "@/lib/bookings/display";
 import { concluirServico, iniciarServico } from "@/lib/professionals/servico-actions";
 import { ActionForm } from "@/components/action-form";
@@ -23,7 +23,7 @@ export default async function ServicoDetalhePage({ params }: { params: Promise<{
       tipoServico: true,
       data: true,
       inicioMin: true,
-      duracaoHoras: true,
+      duracaoMinutos: true,
       status: true,
       repasseProfissional: true,
       observacoesCliente: true,
@@ -51,7 +51,7 @@ export default async function ServicoDetalhePage({ params }: { params: Promise<{
       </div>
 
       <div className="space-y-2 rounded-xl border border-areia-200 p-5 text-sm">
-        <p><strong>Data:</strong> {formatData(b.data)} · {minutosParaHora(b.inicioMin)} · {b.duracaoHoras}h</p>
+        <p><strong>Data:</strong> {formatData(b.data)} · {minutosParaHora(b.inicioMin)} · {formatDuracao(b.duracaoMinutos)}</p>
         <p><strong>Endereço:</strong> {b.address.logradouro}, {b.address.numero}
           {b.address.complemento ? ` · ${b.address.complemento}` : ""} — {b.address.bairro}, {b.address.cidade}
           {b.address.referencia ? ` (${b.address.referencia})` : ""}</p>

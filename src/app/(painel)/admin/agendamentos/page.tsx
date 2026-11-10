@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatData, formatBRL, minutosParaHora } from "@/lib/format";
+import { formatDuracao, formatData, formatBRL, minutosParaHora } from "@/lib/format";
 import { LABEL_SERVICO, STATUS_BOOKING } from "@/lib/bookings/display";
 import { atribuirManualmente, reprocessarFila } from "@/lib/admin/bookings-actions";
 import { ActionForm } from "@/components/action-form";
@@ -35,7 +35,7 @@ export default async function AdminAgendamentosPage({ searchParams }: { searchPa
       tipoServico: true,
       data: true,
       inicioMin: true,
-      duracaoHoras: true,
+      duracaoMinutos: true,
       status: true,
       valorTotal: true,
       address: { select: { bairro: true, cidade: true } },
@@ -86,7 +86,7 @@ export default async function AdminAgendamentosPage({ searchParams }: { searchPa
                     {LABEL_SERVICO[b.tipoServico] ?? b.tipoServico} · {formatBRL(b.valorTotal)}
                   </div>
                   <div className="text-areia-500">
-                    {formatData(b.data)} · {minutosParaHora(b.inicioMin)} · {b.duracaoHoras}h · {b.address.bairro}, {b.address.cidade}
+                    {formatData(b.data)} · {minutosParaHora(b.inicioMin)} · {formatDuracao(b.duracaoMinutos)} · {b.address.bairro}, {b.address.cidade}
                   </div>
                   <div className="text-areia-500">
                     Cliente: {b.client.user.name} · Profissional: {b.professional?.user.name ?? "—"}

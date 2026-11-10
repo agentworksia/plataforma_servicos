@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatData, formatBRL, minutosParaHora } from "@/lib/format";
+import { formatDuracao, formatData, formatBRL, minutosParaHora } from "@/lib/format";
 import { LABEL_SERVICO, STATUS_BOOKING } from "@/lib/bookings/display";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -23,7 +23,7 @@ export default async function ClientePage() {
           tipoServico: true,
           data: true,
           inicioMin: true,
-          duracaoHoras: true,
+          duracaoMinutos: true,
           status: true,
           valorTotal: true,
           address: { select: { bairro: true, cidade: true } },
@@ -70,7 +70,7 @@ function Lista({
     tipoServico: string;
     data: Date;
     inicioMin: number;
-    duracaoHoras: number;
+    duracaoMinutos: number;
     status: keyof typeof STATUS_BOOKING;
     valorTotal: number;
     address: { bairro: string; cidade: string };
@@ -89,7 +89,7 @@ function Lista({
                 <div className="text-sm">
                   <div className="font-medium text-areia-900">{LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}</div>
                   <div className="text-areia-500">
-                    {formatData(b.data)} · {minutosParaHora(b.inicioMin)} · {b.duracaoHoras}h · {b.address.bairro}, {b.address.cidade}
+                    {formatData(b.data)} · {minutosParaHora(b.inicioMin)} · {formatDuracao(b.duracaoMinutos)} · {b.address.bairro}, {b.address.cidade}
                   </div>
                 </div>
                 <div className="flex shrink-0 items-center gap-3">

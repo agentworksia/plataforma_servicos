@@ -3,10 +3,16 @@ import Image from "next/image";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SeletorPreco } from "@/components/seletor-preco";
+import { MarcaAnimada } from "@/components/marca-animada";
 import { buttonVariants } from "@/components/ui/button";
 import { SERVICOS } from "@/lib/servicos";
-import { DURACOES, precoDeTabela, precoMinimo } from "@/lib/pricing/tabela";
-import { formatBRLRedondo } from "@/lib/format";
+import {
+  ACRESCIMO_FIM_DE_SEMANA,
+  duracoesDisponiveis,
+  precoDeTabela,
+  precoMinimo,
+} from "@/lib/pricing/tabela";
+import { formatBRLRedondo, formatDuracao } from "@/lib/format";
 import { CIDADES_SC } from "@/lib/regioes";
 import { cn } from "@/lib/utils";
 
@@ -47,6 +53,12 @@ const GARANTIAS = [
   },
 ];
 
+// A tabela por hora não comporta o passeio com cão, que é vendido por passeio e tem
+// regra de fim de semana. Ele ganha um bloco próprio logo abaixo dela.
+const SERVICOS_POR_HORA = SERVICOS.filter((s) => s.tipo !== "DOG_WALKER");
+const DURACOES_POR_HORA = duracoesDisponiveis("DIARIA_PADRAO");
+const ACRESCIMO_PASSEIO = ACRESCIMO_FIM_DE_SEMANA.DOG_WALKER ?? 0;
+
 export default function HomePage() {
   return (
     <>
@@ -54,7 +66,7 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* Capa: bloco navy da marca. Texto e símbolo em colunas separadas, para o
-            3D nunca invadir o título — foi o que quebrou na primeira montagem. */}
+            desenho nunca invadir o título — foi o que quebrou na primeira montagem. */}
         <section className="bg-marinho-800">
           <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-14 lg:py-24">
             <div>
@@ -75,15 +87,10 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="entra-foto hidden overflow-hidden rounded-foto lg:block">
-              <Image
-                src="/fotos/capa-marca.jpg"
-                alt=""
-                width={700}
-                height={592}
-                priority
-                className="w-full object-cover"
-              />
+            {/* No celular a marca abre a página, pequena, acima do título; no desktop
+                ocupa a coluna da direita dentro do painel. */}
+            <div className="entra-foto order-first mx-auto w-40 rounded-foto lg:order-none lg:mx-0 lg:w-auto lg:bg-marinho-900/40 lg:p-10">
+              <MarcaAnimada className="mx-auto w-full max-w-sm" />
             </div>
           </div>
         </section>
@@ -91,13 +98,13 @@ export default function HomePage() {
         {/* Serviços --------------------------------------------------------- */}
         <section className="mx-auto max-w-6xl px-4 py-16">
           <h2 className="titulo-secao max-w-lg text-3xl text-marinho-900">
-            Quatro serviços, todos cobrados por hora
+            Cinco serviços, com preço fechado antes de você confirmar
           </h2>
           <p className="mt-3 max-w-2xl leading-relaxed text-areia-600">
             Clique no serviço para agendar já com ele escolhido. Os valores abaixo são os de Curitiba.
           </p>
 
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {SERVICOS.map((s) => (
               <li key={s.tipo}>
                 <Link
@@ -159,20 +166,20 @@ export default function HomePage() {
               <thead>
                 <tr className="border-b border-areia-300">
                   <th className="py-3 pr-4 text-sm font-medium text-areia-600">Serviço</th>
-                  {DURACOES.map((h) => (
+                  {DURACOES_POR_HORA.map((h) => (
                     <th key={h} className="py-3 pr-4 text-sm font-medium text-areia-600">
-                      {h} horas
+                      {formatDuracao(h)}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {SERVICOS.map((s) => (
+                {SERVICOS_POR_HORA.map((s) => (
                   <tr key={s.tipo} className="border-b border-areia-200">
                     <th scope="row" className="py-4 pr-4 font-medium text-areia-900">
                       {s.nome}
                     </th>
-                    {DURACOES.map((h) => {
+                    {DURACOES_POR_HORA.map((h) => {
                       const valor = precoDeTabela(s.tipo, h);
                       return (
                         <td key={h} className="numeros py-4 pr-4 text-marinho-800">
@@ -194,6 +201,36 @@ export default function HomePage() {
             Pós-obra acima de seis horas quase sempre pede equipe, então sai da tabela e passa por
             orçamento — a plataforma avisa antes de cobrar qualquer coisa.
           </p>
+
+          <div className="mt-10 grid gap-6 rounded-cartao border border-areia-200 bg-white p-6 sm:grid-cols-[1fr_auto] sm:items-center">
+            <div>
+              <h3 className="titulo-secao text-xl text-marinho-900">Passeio com o cão</h3>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-areia-600">
+                O dog walker é cobrado por passeio, não por hora. No sábado e no domingo o valor sobe{" "}
+                {Math.round(ACRESCIMO_PASSEIO * 100)}% — e já aparece ajustado assim que você escolhe a
+                data.
+              </p>
+            </div>
+            <ul className="flex gap-3">
+              {duracoesDisponiveis("DOG_WALKER").map((d) => {
+                const dia = precoDeTabela("DOG_WALKER", d)!;
+                return (
+                  <li
+                    key={d}
+                    className="min-w-28 rounded-botao border border-areia-200 px-4 py-3 text-center"
+                  >
+                    <span className="block text-xs text-areia-600">{formatDuracao(d)}</span>
+                    <span className="numeros titulo-secao mt-0.5 block text-xl text-marinho-800">
+                      {formatBRLRedondo(dia)}
+                    </span>
+                    <span className="numeros mt-1 block text-xs text-areia-500">
+                      fim de semana {formatBRLRedondo(Math.round(dia * (1 + ACRESCIMO_PASSEIO)))}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </section>
 
         {/* Onde atendemos --------------------------------------------------- */}

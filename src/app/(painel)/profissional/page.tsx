@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatData, formatBRL, minutosParaHora } from "@/lib/format";
+import { formatDuracao, formatData, formatBRL, minutosParaHora } from "@/lib/format";
 import { LABEL_SERVICO } from "@/lib/bookings/display";
 import { aceitarOferta, recusarOferta } from "@/lib/professionals/ofertas-actions";
 import { ActionForm } from "@/components/action-form";
@@ -56,7 +56,7 @@ export default async function ProfissionalPage() {
                 tipoServico: true,
                 data: true,
                 inicioMin: true,
-                duracaoHoras: true,
+                duracaoMinutos: true,
                 repasseProfissional: true,
                 address: { select: { bairro: true, cidade: true } },
               },
@@ -71,7 +71,7 @@ export default async function ProfissionalPage() {
             tipoServico: true,
             data: true,
             inicioMin: true,
-            duracaoHoras: true,
+            duracaoMinutos: true,
             status: true,
             address: { select: { bairro: true, cidade: true } },
           },
@@ -110,7 +110,7 @@ export default async function ProfissionalPage() {
                       )}
                     </div>
                     <div className="text-areia-500">
-                      {formatData(o.booking.data)} · {minutosParaHora(o.booking.inicioMin)} · {o.booking.duracaoHoras}h ·{" "}
+                      {formatData(o.booking.data)} · {minutosParaHora(o.booking.inicioMin)} · {formatDuracao(o.booking.duracaoMinutos)} ·{" "}
                       {o.booking.address.bairro}, {o.booking.address.cidade}
                     </div>
                     <div className="mt-1 text-areia-700">
@@ -143,7 +143,7 @@ export default async function ProfissionalPage() {
               <li key={b.id}>
                 <Link href={`/profissional/servicos/${b.id}`} className="flex items-center justify-between px-4 py-3 text-sm hover:bg-areia-50">
                   <span>
-                    <strong>{formatData(b.data)}</strong> · {minutosParaHora(b.inicioMin)} · {b.duracaoHoras}h —{" "}
+                    <strong>{formatData(b.data)}</strong> · {minutosParaHora(b.inicioMin)} · {formatDuracao(b.duracaoMinutos)} —{" "}
                     {LABEL_SERVICO[b.tipoServico] ?? b.tipoServico}, {b.address.bairro}
                   </span>
                   <span className="text-marinho-700">abrir</span>

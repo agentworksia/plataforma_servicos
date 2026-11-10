@@ -36,6 +36,14 @@ export function dataDeInput(iso: string): Date {
   return new Date(`${iso}T12:00:00.000Z`);
 }
 
+/** Duração em minutos -> "30 min", "1 h", "4 h", "1 h 30 min". */
+export function formatDuracao(minutos: number): string {
+  if (minutos < 60) return `${minutos} min`;
+  const h = Math.floor(minutos / 60);
+  const m = minutos % 60;
+  return m === 0 ? `${h} h` : `${h} h ${m} min`;
+}
+
 /** Minutos desde 00:00 -> "HH:mm". */
 export function minutosParaHora(min: number): string {
   const h = Math.floor(min / 60);

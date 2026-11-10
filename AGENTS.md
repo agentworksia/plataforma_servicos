@@ -67,7 +67,8 @@ public/fotos/            fotos dos serviços (Unsplash, licença livre)
 ## Convenções
 
 - **Dinheiro é sempre `Int` em centavos** (BRL). Formatação em `src/lib/format.ts`.
-- Horários na agenda: `Int` = minutos desde 00:00.
+- Horários na agenda **e duração do serviço**: `Int` = minutos. Duração em minutos porque o
+  dog walker vende meia hora — `formatDuracao()` traduz para "30 min" / "4 h" na tela.
 - Preço vem de `lib/pricing/tabela.ts`. `null` ali significa "não vendido nessa duração" e vira
   orçamento — é assim que pós-obra de 8 h sai da tabela. O seed grava o preço de praça já
   calculado em `valorBase` com `multiplicador` 1, para o que o admin edita ser o que o cliente vê.
@@ -122,3 +123,6 @@ Regras de negócio que não são óbvias pelo código:
 - **Pós-obra** (`Booking.detalhesPosObra`): descrição obrigatória, mínimo de 60 caracteres. O
   roteiro de perguntas e o exemplo ficam em `lib/servicos.ts`. Vendido só em 4 h e 6 h; acima
   disso é orçamento.
+- **Dog walker**: vendido por passeio (30 min ou 1 h), não por hora, e fora da tabela da capa.
+  Sábado e domingo custam 30% a mais (`ACRESCIMO_FIM_DE_SEMANA` em `lib/pricing/tabela.ts`).
+  O acréscimo é recalculado no servidor a partir da data gravada — o formulário só o exibe.

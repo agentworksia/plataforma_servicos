@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatData, formatBRL, minutosParaHora } from "@/lib/format";
+import { formatDuracao, formatData, formatBRL, minutosParaHora } from "@/lib/format";
 import { LABEL_SERVICO, STATUS_BOOKING, STATUS_PAGAMENTO } from "@/lib/bookings/display";
 import { avaliarServico, cancelarAgendamento } from "@/lib/bookings/cliente-actions";
 import { ActionForm } from "@/components/action-form";
@@ -33,7 +33,7 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
       tipoServico: true,
       data: true,
       inicioMin: true,
-      duracaoHoras: true,
+      duracaoMinutos: true,
       status: true,
       seriesId: true,
       valorServico: true,
@@ -87,7 +87,7 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
       <div className="rounded-xl border border-areia-200 p-5">
         <Linha rotulo="Data">{formatData(b.data)}</Linha>
         <Linha rotulo="Horário">
-          {minutosParaHora(b.inicioMin)} · {b.duracaoHoras} horas
+          {minutosParaHora(b.inicioMin)} · {formatDuracao(b.duracaoMinutos)}
         </Linha>
         <Linha rotulo="Endereço">
           {b.address.logradouro}, {b.address.numero}

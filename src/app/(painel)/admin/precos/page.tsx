@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
 import { atualizarPreco } from "@/lib/admin/config-actions";
 import { ActionForm } from "@/components/action-form";
+import { formatDuracao } from "@/lib/format";
 import { Input } from "@/components/ui/input";
 import { TIPOS_SERVICO } from "@/lib/validation/profissional";
 
@@ -20,7 +21,7 @@ export default async function AdminPrecosPage() {
       { serviceArea: { uf: "asc" } },
       { serviceArea: { cidade: "asc" } },
       { tipoServico: "asc" },
-      { duracaoHoras: "asc" },
+      { duracaoMinutos: "asc" },
     ],
   });
 
@@ -90,7 +91,7 @@ export default async function AdminPrecosPage() {
                               {LABEL[r.tipoServico] ?? r.tipoServico}
                             </td>
                             <td className="py-2 pr-3 text-areia-600">
-                              {r.duracaoHoras}h
+                              {formatDuracao(r.duracaoMinutos)}
                             </td>
                             <td colSpan={4} className="py-2">
                               <ActionForm

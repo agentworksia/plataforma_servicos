@@ -6,8 +6,14 @@ import { criarAgendamento } from "@/lib/bookings/actions";
 import type { FormState } from "@/lib/auth/actions";
 import { RECORRENCIAS, MIN_DETALHES_POS_OBRA } from "@/lib/validation/agendamento";
 import { SERVICOS, ROTEIRO_POS_OBRA, EXEMPLO_POS_OBRA, servicoPorTipo } from "@/lib/servicos";
-import { duracoesDisponiveis, precoDeTabela, type Duracao } from "@/lib/pricing/tabela";
-import { formatBRLRedondo, formatNota } from "@/lib/format";
+import {
+  ACRESCIMO_FIM_DE_SEMANA,
+  duracoesDisponiveis,
+  ehFimDeSemana,
+  precoDeTabela,
+  type Duracao,
+} from "@/lib/pricing/tabela";
+import { formatBRLRedondo, formatDuracao, formatNota } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,7 +63,8 @@ export function AgendarForm({
   const v = (k: string) => (typeof raw[k] === "string" ? (raw[k] as string) : "");
 
   const [tipo, setTipo] = useState<ServiceType>((v("tipoServico") as ServiceType) || tipoInicial);
-  const [duracao, setDuracao] = useState<Duracao>((Number(v("duracaoHoras")) as Duracao) || 4);
+  const [duracao, setDuracao] = useState<Duracao>((Number(v("duracaoMinutos")) as Duracao) || 240);
+  const [data, setData] = useState<string>(v("data"));
   const [enderecoId, setEnderecoId] = useState<string>(enderecos[0]?.id ?? "novo");
   const [detalhes, setDetalhes] = useState<string>(v("detalhesPosObra"));
   const usarNovo = enderecoId === "novo";
@@ -65,7 +72,11 @@ export function AgendarForm({
   const disponiveis = duracoesDisponiveis(tipo);
   // Pós-obra não vende 8 h: se o cliente vinha com ela marcada, cai para a maior disponível.
   const duracaoEfetiva = disponiveis.includes(duracao) ? duracao : disponiveis[disponiveis.length - 1];
-  const total = precoDeTabela(tipo, duracaoEfetiva);
+  // A data entra no cálculo porque o passeio custa mais no fim de semana. O servidor
+  // recalcula de qualquer jeito; aqui é só para o cliente ver o preço certo antes de pagar.
+  const total = precoDeTabela(tipo, duracaoEfetiva, 1, data || undefined);
+  const acrescimoFds = ACRESCIMO_FIM_DE_SEMANA[tipo];
+  const fdsAplicado = !!acrescimoFds && !!data && ehFimDeSemana(data);
 
   function trocarTipo(novo: ServiceType) {
     setTipo(novo);
@@ -139,24 +150,30 @@ export function AgendarForm({
                   >
                     <input
                       type="radio"
-                      name="duracaoHoras"
+                      name="duracaoMinutos"
                       value={h}
                       checked={ativo}
                       onChange={() => setDuracao(h)}
                       className="sr-only"
                     />
-                    {h} horas
+                    {formatDuracao(h)}
                   </label>
                 );
               })}
             </div>
+            {!!acrescimoFds && (
+              <p className="mt-2 text-xs leading-relaxed text-areia-500">
+                No sábado e no domingo o passeio custa{" "}
+                {Math.round(acrescimoFds * 100)}% a mais. O valor ao lado já considera a data escolhida.
+              </p>
+            )}
             {tipo === "POS_OBRA" && (
               <p className="mt-2 text-xs leading-relaxed text-areia-500">
                 Pós-obra acima de seis horas quase sempre pede equipe, então passa por orçamento. Descreva
                 a obra abaixo e a gente retorna com o valor.
               </p>
             )}
-            <Erro msg={e.duracaoHoras?.[0]} />
+            <Erro msg={e.duracaoMinutos?.[0]} />
           </div>
         </Secao>
 
@@ -306,7 +323,14 @@ export function AgendarForm({
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="space-y-1.5">
               <Label htmlFor="data">Data</Label>
-              <Input id="data" name="data" type="date" defaultValue={v("data")} required />
+              <Input
+                id="data"
+                name="data"
+                type="date"
+                value={data}
+                onChange={(ev) => setData(ev.target.value)}
+                required
+              />
               <Erro msg={e.data?.[0]} />
             </div>
             <div className="space-y-1.5">
@@ -402,12 +426,15 @@ export function AgendarForm({
           />
           <div className="p-5">
             <p className="text-sm text-areia-600">
-              {servicoPorTipo(tipo).nome}, {duracaoEfetiva} horas
+              {servicoPorTipo(tipo).nome}, {formatDuracao(duracaoEfetiva)}
             </p>
             <p key={total} className="troca numeros titulo mt-2 text-4xl text-marinho-900">
               {total === null ? "Sob orçamento" : formatBRLRedondo(total)}
             </p>
-            <p className="mt-1 text-xs text-areia-500">Valor de Curitiba e RMC; o litoral de SC é 25% maior.</p>
+            <p className="mt-1 text-xs text-areia-500">
+              Valor de Curitiba e RMC; o litoral de SC é 25% maior.
+              {fdsAplicado ? " Já com os 30% de fim de semana." : ""}
+            </p>
 
             {state?.message && (
               <p className="mt-4 rounded-botao bg-laranja-50 p-3 text-sm leading-relaxed text-laranja-700">

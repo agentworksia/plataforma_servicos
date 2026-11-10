@@ -31,7 +31,7 @@ export async function montarFilaDeOfertas(bookingId: string): Promise<string[]> 
   if (!booking) throw new Error("Agendamento não encontrado.");
 
   const inicio = booking.inicioMin;
-  const fim = booking.inicioMin + booking.duracaoHoras * 60;
+  const fim = booking.inicioMin + booking.duracaoMinutos;
   const diaSemana = booking.data.getUTCDay();
   const jaOfertados = booking.offers.map((o) => o.professionalId);
 
@@ -53,7 +53,7 @@ export async function montarFilaDeOfertas(bookingId: string): Promise<string[]> 
       userId: true,
       reviews: { select: { nota: true } },
       bookings: {
-        select: { status: true, data: true, inicioMin: true, duracaoHoras: true, canceladoPor: true },
+        select: { status: true, data: true, inicioMin: true, duracaoMinutos: true, canceladoPor: true },
       },
       ofertas: { select: { status: true } },
     },
@@ -69,7 +69,7 @@ export async function montarFilaDeOfertas(bookingId: string): Promise<string[]> 
       return !ocupados.some(
         (b) =>
           b.data.getTime() === booking.data.getTime() &&
-          intervalosColidem(inicio, fim, b.inicioMin, b.inicioMin + b.duracaoHoras * 60),
+          intervalosColidem(inicio, fim, b.inicioMin, b.inicioMin + b.duracaoMinutos),
       );
     })
     .map((c) => {

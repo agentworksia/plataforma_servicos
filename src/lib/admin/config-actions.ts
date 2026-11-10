@@ -5,21 +5,13 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
 import { reaisParaCentavos } from "@/lib/format";
+import { TABELA_BASE, duracoesDisponiveis, precoDeTabela } from "@/lib/pricing/tabela";
+import { pracaPorNome } from "@/lib/regioes";
 import type { ServiceType } from "@/generated/prisma/enums";
 
 export type ConfigState = { erro?: string } | undefined;
 
-const TIPOS: ServiceType[] = ["DIARIA_PADRAO", "PASSADORIA", "POS_OBRA", "CORPORATIVA"];
-const DURACOES = [4, 6, 8];
-// Preço-base padrão (centavos) por tipo × duração, usado ao habilitar uma região nova
-// que ainda não tenha tabela própria.
-const PRECO_BASE: Record<ServiceType, Record<number, number>> = {
-  DIARIA_PADRAO: { 4: 16000, 6: 22000, 8: 28000 },
-  PASSADORIA: { 4: 14000, 6: 19000, 8: 24000 },
-  POS_OBRA: { 4: 24000, 6: 33000, 8: 42000 },
-  CORPORATIVA: { 4: 20000, 6: 28000, 8: 36000 },
-};
-const MULT: Record<ServiceType, number> = { DIARIA_PADRAO: 1, PASSADORIA: 1, POS_OBRA: 1.5, CORPORATIVA: 1.2 };
+const TIPOS = Object.keys(TABELA_BASE) as ServiceType[];
 
 const precoSchema = z.object({
   id: z.string().min(1),
@@ -84,14 +76,17 @@ export async function criarRegiao(_prev: ConfigState, formData: FormData): Promi
   const area = await db.serviceArea.create({
     data: { cidade: parsed.data.cidade, bairro: parsed.data.bairro ?? null, uf: parsed.data.uf, ativo: true },
   });
+  // A região nova nasce com a tabela-base da praça, já calculada em valorBase e com
+  // multiplicador 1 — o que o admin editar na tela de preços é o que o cliente vê.
+  const multiplicadorPraca = pracaPorNome(parsed.data.cidade)?.multiplicadorRegiao ?? 1;
   await db.pricingRule.createMany({
     data: TIPOS.flatMap((tipo) =>
-      DURACOES.map((duracaoHoras) => ({
+      duracoesDisponiveis(tipo).map((duracaoMinutos) => ({
         tipoServico: tipo,
-        duracaoHoras,
+        duracaoMinutos,
         serviceAreaId: area.id,
-        valorBase: PRECO_BASE[tipo][duracaoHoras],
-        multiplicador: MULT[tipo],
+        valorBase: precoDeTabela(tipo, duracaoMinutos, multiplicadorPraca)!,
+        multiplicador: 1,
       })),
     ),
   });

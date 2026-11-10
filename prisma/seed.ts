@@ -40,9 +40,9 @@ async function main() {
     for (const tipo of TIPOS) {
       for (const duracao of DURACOES) {
         const chave = {
-          tipoServico_duracaoHoras_serviceAreaId: {
+          tipoServico_duracaoMinutos_serviceAreaId: {
             tipoServico: tipo,
-            duracaoHoras: duracao,
+            duracaoMinutos: duracao,
             serviceAreaId: area.id,
           },
         };
@@ -52,7 +52,7 @@ async function main() {
         // senão sobra preço velho no banco de quem rodou o seed anterior.
         if (valor === null) {
           await db.pricingRule.deleteMany({
-            where: { tipoServico: tipo, duracaoHoras: duracao, serviceAreaId: area.id },
+            where: { tipoServico: tipo, duracaoMinutos: duracao, serviceAreaId: area.id },
           });
           continue;
         }
@@ -61,7 +61,7 @@ async function main() {
           where: chave,
           create: {
             tipoServico: tipo,
-            duracaoHoras: duracao,
+            duracaoMinutos: duracao,
             serviceAreaId: area.id,
             valorBase: valor,
             multiplicador: 1,
@@ -79,7 +79,9 @@ async function main() {
   await db.user.upsert({
     where: { email: "admin@plataforma.local" },
     create: { email: "admin@plataforma.local", name: "Admin", role: "ADMIN", passwordHash: senhaHash },
-    update: { passwordHash: senhaHash, role: "ADMIN" },
+    // A senha do admin NÃO é reescrita: essa conta existe em produção e a senha de
+    // demonstração já foi trocada. Rodar o seed para reaplicar preços não pode derrubá-la.
+    update: { role: "ADMIN" },
   });
 
   const cliente = await db.user.upsert({
@@ -135,7 +137,7 @@ async function main() {
       create: {
         userId: usuario.id,
         status: "APROVADA",
-        tiposServico: ["DIARIA_PADRAO", "PASSADORIA"],
+        tiposServico: ["DIARIA_PADRAO", "PASSADORIA", "DOG_WALKER"],
         aprovadoEm: new Date(),
       },
       update: { status: "APROVADA" },
@@ -149,8 +151,9 @@ async function main() {
       });
     }
 
-    // Disponível de segunda a sexta, das 8h às 18h.
-    for (const diaSemana of [1, 2, 3, 4, 5]) {
+    // Disponível todos os dias das 8h às 18h — o passeio com cão é vendido também
+    // no sábado e no domingo, quando custa 30% a mais.
+    for (const diaSemana of [0, 1, 2, 3, 4, 5, 6]) {
       const id = `demo-disp-${demo.slug}-${diaSemana}`;
       await db.availability.upsert({
         where: { id },
@@ -162,7 +165,7 @@ async function main() {
     // Serviços já concluídos, cada um com a avaliação que a cliente deu.
     for (const [n, nota] of demo.notas.entries()) {
       const bookingId = `demo-servico-${demo.slug}-${n}`;
-      const duracao: Duracao = 4;
+      const duracao: Duracao = 240;
       const valorTotal = precoDeTabela("DIARIA_PADRAO", duracao)!;
       const taxaPlataforma = Math.round(valorTotal * 0.2);
       const data = new Date(Date.UTC(2026, 6, 6 + indice + n * 7, 12));
@@ -177,7 +180,7 @@ async function main() {
           tipoServico: "DIARIA_PADRAO",
           data,
           inicioMin: 480,
-          duracaoHoras: duracao,
+          duracaoMinutos: duracao,
           status: "CONCLUIDO",
           concluidoEm: data,
           valorServico: valorTotal,

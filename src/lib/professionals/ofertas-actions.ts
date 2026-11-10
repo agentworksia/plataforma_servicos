@@ -21,20 +21,20 @@ function colide(aIni: number, aFim: number, bIni: number, bFim: number) {
 async function aceitarSerie(seriesId: string, professionalId: string) {
   const ocorrencias = await db.booking.findMany({
     where: { seriesId, status: "AGUARDANDO_PROFISSIONAL" },
-    select: { id: true, data: true, inicioMin: true, duracaoHoras: true },
+    select: { id: true, data: true, inicioMin: true, duracaoMinutos: true },
   });
   const agenda = await db.booking.findMany({
     where: { professionalId, status: { in: ["AGENDADO", "EM_ANDAMENTO"] } },
-    select: { data: true, inicioMin: true, duracaoHoras: true },
+    select: { data: true, inicioMin: true, duracaoMinutos: true },
   });
 
   await db.bookingSeries.update({ where: { id: seriesId }, data: { titularProfessionalId: professionalId } });
 
   for (const oc of ocorrencias) {
     const ini = oc.inicioMin;
-    const fim = oc.inicioMin + oc.duracaoHoras * 60;
+    const fim = oc.inicioMin + oc.duracaoMinutos;
     const conflita = agenda.some(
-      (a) => a.data.getTime() === oc.data.getTime() && colide(ini, fim, a.inicioMin, a.inicioMin + a.duracaoHoras * 60),
+      (a) => a.data.getTime() === oc.data.getTime() && colide(ini, fim, a.inicioMin, a.inicioMin + a.duracaoMinutos),
     );
     await db.bookingOffer.updateMany({
       where: { bookingId: oc.id, status: "PENDENTE" },
@@ -44,7 +44,7 @@ async function aceitarSerie(seriesId: string, professionalId: string) {
       await atribuirProximaDaFila(oc.id);
     } else {
       await db.booking.update({ where: { id: oc.id }, data: { professionalId, status: "AGENDADO" } });
-      agenda.push({ data: oc.data, inicioMin: oc.inicioMin, duracaoHoras: oc.duracaoHoras });
+      agenda.push({ data: oc.data, inicioMin: oc.inicioMin, duracaoMinutos: oc.duracaoMinutos });
     }
   }
 }

@@ -35,6 +35,13 @@ export const SERVICOS: Servico[] = [
     resumo: "Depois da reforma: tinta, cimento e pó fino.",
   },
   {
+    tipo: "DOG_WALKER",
+    nome: "Dog walker",
+    foto: "/fotos/dog-walker.jpg",
+    desc: "Passeio com o seu cão, de meia hora ou uma hora. No sábado e no domingo o passeio custa 30% a mais.",
+    resumo: "Passeio com o cão, de 30 min ou 1 h.",
+  },
+  {
     tipo: "CORPORATIVA",
     nome: "Corporativa",
     foto: "/fotos/corporativa.jpg",

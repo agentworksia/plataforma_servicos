@@ -7,6 +7,7 @@ export const TIPOS_SERVICO = [
   { value: "PASSADORIA", label: "Passadoria" },
   { value: "POS_OBRA", label: "Limpeza pós-obra" },
   { value: "CORPORATIVA", label: "Corporativa / governamental" },
+  { value: "DOG_WALKER", label: "Dog walker (passeio com cães)" },
 ] as const;
 
 export const TIPOS_CHAVE_PIX = [
@@ -45,7 +46,7 @@ export const cadastroProfissionalSchema = z
     senha: z.string().min(8, "Mínimo de 8 caracteres").max(72),
     confirmarSenha: z.string(),
     tiposServico: z
-      .array(z.enum(["DIARIA_PADRAO", "PASSADORIA", "POS_OBRA", "CORPORATIVA"]))
+      .array(z.enum(["DIARIA_PADRAO", "PASSADORIA", "POS_OBRA", "CORPORATIVA", "DOG_WALKER"]))
       .min(1, "Escolha ao menos um tipo de serviço"),
     serviceAreaIds: z.array(z.string().min(1)).min(1, "Escolha ao menos uma região"),
     repassePixTipo: z.enum(["CPF", "EMAIL", "TELEFONE", "ALEATORIA"]),

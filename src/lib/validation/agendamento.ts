@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { duracoesDisponiveis, type Duracao } from "@/lib/pricing/tabela";
+import { DURACOES, duracoesDisponiveis } from "@/lib/pricing/tabela";
 
 const digitos = (v: string) => v.replace(/\D/g, "");
 
-export const DURACOES_VALIDAS = [4, 6, 8] as const;
+export const DURACOES_VALIDAS = DURACOES;
 
 /** Mínimo para o relato do pós-obra valer alguma coisa para quem vai executar. */
 export const MIN_DETALHES_POS_OBRA = 60;
@@ -17,7 +17,7 @@ export const RECORRENCIAS = [
 
 export const agendamentoSchema = z
   .object({
-    tipoServico: z.enum(["DIARIA_PADRAO", "PASSADORIA", "POS_OBRA", "CORPORATIVA"]),
+    tipoServico: z.enum(["DIARIA_PADRAO", "PASSADORIA", "POS_OBRA", "CORPORATIVA", "DOG_WALKER"]),
 
     enderecoId: z.string().trim().optional(),
     cep: z.string().trim().transform(digitos).optional(),
@@ -33,7 +33,7 @@ export const agendamentoSchema = z
 
     data: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
     inicio: z.string().regex(/^\d{2}:\d{2}$/, "Horário inválido"),
-    duracaoHoras: z.coerce.number().refine((v) => (DURACOES_VALIDAS as readonly number[]).includes(v), "Duração inválida"),
+    duracaoMinutos: z.coerce.number().refine((v) => (DURACOES_VALIDAS as readonly number[]).includes(v), "Duração inválida"),
     recorrencia: z.enum(["AVULSA", "SEMANAL", "QUINZENAL", "MENSAL"]),
     metodoPagamento: z.enum(["PIX", "CARTAO"]),
     observacoes: z.string().trim().max(500).optional(),
@@ -59,10 +59,10 @@ export const agendamentoSchema = z
   })
   .refine(
     (d) =>
-      (duracoesDisponiveis(d.tipoServico) as readonly number[]).includes(d.duracaoHoras),
+      (duracoesDisponiveis(d.tipoServico) as readonly number[]).includes(d.duracaoMinutos),
     {
       error: "Essa duração não é vendida para o serviço escolhido.",
-      path: ["duracaoHoras"],
+      path: ["duracaoMinutos"],
     },
   )
   .refine(

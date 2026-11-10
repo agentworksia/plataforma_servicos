@@ -2,22 +2,23 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { DURACOES, precoDeTabela, type Duracao } from "@/lib/pricing/tabela";
-import { formatBRLRedondo } from "@/lib/format";
+import { duracoesDisponiveis, precoDeTabela, type Duracao } from "@/lib/pricing/tabela";
+import { formatBRLRedondo, formatDuracao } from "@/lib/format";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const POR_EXTENSO: Record<Duracao, string> = { 4: "Quatro", 6: "Seis", 8: "Oito" };
+const POR_EXTENSO: Partial<Record<Duracao, string>> = { 240: "Quatro", 360: "Seis", 480: "Oito" };
+const DURACOES_DIARIA = duracoesDisponiveis("DIARIA_PADRAO");
 
 export function SeletorPreco() {
-  const [duracao, setDuracao] = useState<Duracao>(6);
+  const [duracao, setDuracao] = useState<Duracao>(360);
 
   return (
     <div className="rounded-cartao border border-areia-200 bg-white p-5 shadow-[0_18px_40px_-24px_rgb(15_43_76_/_0.28)] sm:p-6">
       <p className="text-sm text-areia-600">Diária padrão em Curitiba e região</p>
 
       <div role="radiogroup" aria-label="Duração do serviço" className="mt-3 flex gap-1.5">
-        {DURACOES.map((h) => {
+        {DURACOES_DIARIA.map((h) => {
           const ativo = h === duracao;
           return (
             <button
@@ -33,7 +34,7 @@ export function SeletorPreco() {
                   : "border border-areia-200 bg-white text-areia-600 hover:border-areia-300 hover:text-areia-900",
               )}
             >
-              {h} horas
+              {formatDuracao(h)}
             </button>
           );
         })}

@@ -29,4 +29,5 @@ export const LABEL_SERVICO: Record<string, string> = {
   PASSADORIA: "Passadoria",
   POS_OBRA: "Limpeza pós-obra",
   CORPORATIVA: "Corporativa / governamental",
+  DOG_WALKER: "Dog walker (passeio com cães)",
 };

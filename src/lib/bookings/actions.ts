@@ -44,7 +44,7 @@ async function registrarPagamento(bookingId: string, valorCentavos: number, p: D
 function dadosBooking(
   tipoServico: ServiceType,
   inicioMin: number,
-  duracaoHoras: number,
+  duracaoMinutos: number,
   preco: PrecoCalculado,
   observacoes?: string,
   preferidaId?: string,
@@ -53,7 +53,7 @@ function dadosBooking(
   return {
     tipoServico,
     inicioMin,
-    duracaoHoras,
+    duracaoMinutos,
     status: "AGUARDANDO_PROFISSIONAL" as const,
     valorServico: preco.valorServico,
     valorExtras: preco.valorExtras,
@@ -73,7 +73,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
 
   const campos = [
     "tipoServico", "enderecoId", "cep", "logradouro", "numero", "complemento", "bairro", "cidade",
-    "referencia", "metragem", "numeroComodos", "data", "inicio", "duracaoHoras", "recorrencia",
+    "referencia", "metragem", "numeroComodos", "data", "inicio", "duracaoMinutos", "recorrencia",
     "metodoPagamento", "observacoes", "preferidaId", "detalhesPosObra",
   ];
   const brutos = Object.fromEntries(campos.map((k) => [k, formData.get(k) ? String(formData.get(k)) : undefined]));
@@ -130,7 +130,12 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
 
   let preco: PrecoCalculado;
   try {
-    preco = await calcularPreco({ tipoServico: d.tipoServico, duracaoHoras: d.duracaoHoras, serviceAreaId });
+    preco = await calcularPreco({
+      tipoServico: d.tipoServico,
+      duracaoMinutos: d.duracaoMinutos,
+      serviceAreaId,
+      data: d.data,
+    });
   } catch (err) {
     return { message: err instanceof Error ? err.message : "Não foi possível calcular o preço.", values: valores };
   }
@@ -163,7 +168,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
         addressId: endereco.id,
         recorrencia: "AVULSA",
         data: dataDeInput(d.data),
-        ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes, preferidaId, d.detalhesPosObra),
+        ...dadosBooking(d.tipoServico, inicioMin, d.duracaoMinutos, preco, d.observacoes, preferidaId, d.detalhesPosObra),
       },
     });
     await registrarPagamento(booking.id, preco.valorTotal, pgto);
@@ -183,7 +188,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
       clientId: cliente.id,
       addressId: endereco.id,
       tipoServico: d.tipoServico,
-      duracaoHoras: d.duracaoHoras,
+      duracaoMinutos: d.duracaoMinutos,
       recorrencia: d.recorrencia,
       diaSemana: inicio.getUTCDay(),
       inicioMin,
@@ -202,7 +207,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
           seriesId: serie.id,
           recorrencia: d.recorrencia,
           data,
-          ...dadosBooking(d.tipoServico, inicioMin, d.duracaoHoras, preco, d.observacoes, preferidaId, d.detalhesPosObra),
+          ...dadosBooking(d.tipoServico, inicioMin, d.duracaoMinutos, preco, d.observacoes, preferidaId, d.detalhesPosObra),
         },
       }),
     ),

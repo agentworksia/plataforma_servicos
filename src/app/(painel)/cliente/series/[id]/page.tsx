@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatData, formatBRL, minutosParaHora } from "@/lib/format";
+import { formatDuracao, formatData, formatBRL, minutosParaHora } from "@/lib/format";
 import { LABEL_SERVICO, STATUS_BOOKING } from "@/lib/bookings/display";
 import { RECORRENCIAS } from "@/lib/validation/agendamento";
 import { cancelarSerie } from "@/lib/bookings/series-actions";
@@ -26,7 +26,7 @@ export default async function SerieDetalhePage({ params }: { params: Promise<{ i
       tipoServico: true,
       recorrencia: true,
       inicioMin: true,
-      duracaoHoras: true,
+      duracaoMinutos: true,
       ativo: true,
       titular: { select: { user: { select: { name: true } } } },
       address: { select: { bairro: true, cidade: true } },
@@ -57,7 +57,7 @@ export default async function SerieDetalhePage({ params }: { params: Promise<{ i
           <Badge cor={serie.ativo ? "verde" : "neutro"}>{serie.ativo ? "Ativa" : "Cancelada"}</Badge>
         </div>
         <p className="mt-1 text-sm text-areia-600">
-          {minutosParaHora(serie.inicioMin)} · {serie.duracaoHoras}h · {serie.address.bairro}, {serie.address.cidade}
+          {minutosParaHora(serie.inicioMin)} · {formatDuracao(serie.duracaoMinutos)} · {serie.address.bairro}, {serie.address.cidade}
           {serie.titular ? ` · profissional fixa: ${serie.titular.user.name}` : ""}
         </p>
       </div>
