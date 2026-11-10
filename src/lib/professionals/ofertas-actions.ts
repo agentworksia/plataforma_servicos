@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
 import { atribuirProximaDaFila } from "@/lib/matching";
+import { criarCobrancaDoAceite } from "@/lib/bookings/cobranca";
 
 export type OfertaState = { erro?: string } | undefined;
 
@@ -30,6 +31,8 @@ async function aceitarSerie(seriesId: string, professionalId: string) {
 
   await db.bookingSeries.update({ where: { id: seriesId }, data: { titularProfessionalId: professionalId } });
 
+  const aceitas: string[] = [];
+
   for (const oc of ocorrencias) {
     const ini = oc.inicioMin;
     const fim = oc.inicioMin + oc.duracaoMinutos;
@@ -45,7 +48,17 @@ async function aceitarSerie(seriesId: string, professionalId: string) {
     } else {
       await db.booking.update({ where: { id: oc.id }, data: { professionalId, status: "AGENDADO" } });
       agenda.push({ data: oc.data, inicioMin: oc.inicioMin, duracaoMinutos: oc.duracaoMinutos });
+      aceitas.push(oc.id);
     }
+  }
+
+  // Numa série só a próxima ocorrência é cobrada agora. As seguintes são cobradas pela
+  // rota de cron, perto da data — ninguém paga doze faxinas de uma vez.
+  const primeira = aceitas[0];
+  if (primeira) {
+    await criarCobrancaDoAceite(primeira).catch((err) =>
+      console.error("[oferta] cobrança da série falhou", err),
+    );
   }
 }
 
@@ -81,12 +94,24 @@ export async function aceitarOferta(_prev: OfertaState, formData: FormData): Pro
   } else {
     await db.$transaction([
       db.bookingOffer.update({ where: { id: oferta.id }, data: { status: "ACEITA", respondidoEm: new Date() } }),
-      db.booking.update({ where: { id: oferta.bookingId }, data: { professionalId, status: "AGENDADO" } }),
+      db.booking.update({ where: { id: oferta.bookingId }, data: { professionalId } }),
       db.bookingOffer.updateMany({
         where: { bookingId: oferta.bookingId, status: "PENDENTE", id: { not: oferta.id } },
         data: { status: "EXPIRADA", respondidoEm: new Date() },
       }),
     ]);
+    // O status passa a AGUARDANDO_PAGAMENTO (ou AGENDADO, se a cobrança já nascer paga)
+    // dentro desta função, junto com a criação da cobrança.
+    try {
+      await criarCobrancaDoAceite(oferta.bookingId);
+    } catch (err) {
+      console.error("[oferta] aceite sem cobrança", err);
+      // Desfaz o aceite: deixar a profissional achando que o serviço é dela, sem
+      // cobrança para a cliente, é pior do que pedir para ela tentar de novo.
+      await db.booking.update({ where: { id: oferta.bookingId }, data: { professionalId: null } });
+      await db.bookingOffer.update({ where: { id: oferta.id }, data: { status: "PENDENTE", respondidoEm: null } });
+      return { erro: "Não consegui gerar a cobrança deste serviço. Tente de novo em instantes." };
+    }
   }
   revalidatePath("/profissional");
   return undefined;

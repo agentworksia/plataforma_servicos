@@ -168,6 +168,64 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
       </section>
 
       <section className="space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-areia-500">Seu endereço</h2>
+        <p className="text-sm leading-relaxed text-areia-600">
+          Esses dados abrem a conta que recebe o seu pagamento. Eles vão para o provedor financeiro
+          e não aparecem para as clientes.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="cep">CEP</Label>
+            <Input id="cep" name="cep" inputMode="numeric" placeholder="80000-000" defaultValue={v("cep")} required />
+            <Erro msg={e.cep?.[0]} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="rendaMensal">Renda mensal aproximada (R$)</Label>
+            <Input
+              id="rendaMensal"
+              name="rendaMensal"
+              type="number"
+              min="1"
+              step="1"
+              placeholder="2000"
+              defaultValue={v("rendaMensal")}
+              required
+            />
+            <Erro msg={e.rendaMensal?.[0]} />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label htmlFor="logradouro">Rua</Label>
+            <Input id="logradouro" name="logradouro" defaultValue={v("logradouro")} required />
+            <Erro msg={e.logradouro?.[0]} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="numeroEnd">Número</Label>
+            <Input id="numeroEnd" name="numeroEnd" defaultValue={v("numeroEnd")} required />
+            <Erro msg={e.numeroEnd?.[0]} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="complemento">Complemento</Label>
+            <Input id="complemento" name="complemento" defaultValue={v("complemento")} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="bairro">Bairro</Label>
+            <Input id="bairro" name="bairro" defaultValue={v("bairro")} required />
+            <Erro msg={e.bairro?.[0]} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="cidade">Cidade</Label>
+            <Input id="cidade" name="cidade" defaultValue={v("cidade")} required />
+            <Erro msg={e.cidade?.[0]} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="uf">UF</Label>
+            <Input id="uf" name="uf" maxLength={2} placeholder="PR" defaultValue={v("uf")} required />
+            <Erro msg={e.uf?.[0]} />
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-4">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-areia-500">Dados de repasse (Pix)</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">

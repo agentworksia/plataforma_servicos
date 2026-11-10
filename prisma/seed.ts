@@ -14,7 +14,12 @@ const db = new PrismaClient({ adapter });
 async function main() {
   // --- Configurações -------------------------------------------------------
   const settings: Array<[string, string, string]> = [
-    ["TAXA_PLATAFORMA_PCT", "20", "Percentual retido pela plataforma sobre o valor total."],
+    ["TAXA_PLATAFORMA_PCT", "15", "Percentual retido pela plataforma sobre o valor total."],
+    [
+      "ASSINATURA_COBRANCA_INICIO",
+      "2099-01-01",
+      "A partir desta data a mensalidade passa a ser exigida para entrar na fila de ofertas.",
+    ],
     ["PRAZO_LIBERACAO_REPASSE_DIAS", "2", "Dias após a conclusão para liberar o repasse sem disputa."],
     ["PRAZO_CANCELAMENTO_SEM_CUSTO_HORAS", "24", "Antecedência mínima para cancelamento sem custo."],
     ["PRAZO_OFERTA_MINUTOS", "60", "Tempo que a profissional tem para aceitar/recusar uma oferta."],

@@ -52,8 +52,8 @@ export default async function ClientePagamentosPage() {
       <div>
         <h1 className="titulo text-2xl text-marinho-900">Meus pagamentos</h1>
         <p className="mt-1 max-w-2xl text-areia-600">
-          Cada pagamento fica retido na plataforma e só é repassado à profissional depois que o serviço é
-          concluído.
+          Você paga depois que uma profissional aceita o serviço. Cancelando com 24 horas de
+          antecedência, o valor volta integralmente.
         </p>
       </div>
 

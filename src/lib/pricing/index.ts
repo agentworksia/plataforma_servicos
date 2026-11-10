@@ -53,7 +53,7 @@ export async function calcularPreco(input: CalcularPrecoInput): Promise<PrecoCal
     : [];
   const valorExtras = extras.reduce((soma, e) => soma + e.valor, 0);
 
-  const taxaPct = await getSettingNumber("TAXA_PLATAFORMA_PCT", 20);
+  const taxaPct = await getSettingNumber("TAXA_PLATAFORMA_PCT", 15);
   const valorTotal = valorServico + valorExtras;
   const taxaPlataforma = Math.round(valorTotal * (taxaPct / 100));
 

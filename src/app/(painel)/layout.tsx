@@ -17,6 +17,7 @@ const NAV_POR_PAPEL: Record<Role, NavItem[]> = {
     { href: "/profissional", label: "Ofertas" },
     { href: "/profissional/agenda", label: "Agenda" },
     { href: "/profissional/ganhos", label: "Ganhos" },
+    { href: "/profissional/assinatura", label: "Plano" },
     { href: "/profissional/avaliacoes", label: "Avaliações" },
   ],
   ADMIN: [

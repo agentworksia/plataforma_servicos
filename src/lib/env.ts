@@ -24,6 +24,24 @@ const serverSchema = z.object({
 
   PAYMENT_PROVIDER: z.enum(["fake", "mercadopago", "pagarme", "stripe", "asaas", "iugu"]).default("fake"),
 
+  // Asaas. Só exigidas quando PAYMENT_PROVIDER=asaas — a checagem está em payments/asaas.ts,
+  // para o build e o ambiente de desenvolvimento não quebrarem sem elas.
+  ASAAS_API_KEY: z.string().min(1).optional(),
+  ASAAS_AMBIENTE: z.enum(["sandbox", "producao"]).default("sandbox"),
+  /** Token que o Asaas devolve no header asaas-access-token. 32+ caracteres. */
+  ASAAS_WEBHOOK_TOKEN: z.string().min(32).optional(),
+  /**
+   * Split liga o repasse automático para a carteira da profissional. Desligado, o valor
+   * inteiro fica na conta da plataforma e o repasse sai por transferência na conclusão.
+   */
+  ASAAS_SPLIT: z
+    .enum(["on", "off"])
+    .default("on")
+    .transform((v) => v === "on"),
+
+  /** Protege /api/cron/*. A Vercel manda no header Authorization: Bearer <valor>. */
+  CRON_SECRET: z.string().min(16).optional(),
+
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
 });
 

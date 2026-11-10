@@ -20,8 +20,8 @@ export function SiteFooter() {
             <span className="titulo text-base">{MARCA.nome}</span>
           </div>
           <p className="mt-3 text-sm leading-relaxed text-areia-600">
-            Limpeza residencial e corporativa em {MARCA.regiao}. O pagamento fica retido na plataforma até o
-            serviço terminar.
+            Limpeza residencial e corporativa em {MARCA.regiao}. Você só paga depois que uma profissional
+            aceita o serviço.
           </p>
         </div>
 

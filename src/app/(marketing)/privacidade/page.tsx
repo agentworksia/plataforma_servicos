@@ -11,7 +11,19 @@ export default function PrivacidadePage() {
       <h2 className="mt-6 titulo-secao text-xl text-areia-900">Dados que coletamos</h2>
       <p>
         Nome, e-mail, telefone e endereço para a prestação do serviço. Das profissionais, também coletamos CPF,
-        data de nascimento, foto de perfil, documento com foto e dados de repasse (chave Pix).
+        data de nascimento, foto de perfil, documento com foto, endereço residencial, renda mensal aproximada
+        e dados de repasse (chave Pix). O endereço e a renda são exigidos pela instituição de pagamento para
+        abrir a conta em nome da profissional, que é para onde o valor do serviço é creditado.
+      </p>
+
+      <h2 className="mt-6 titulo-secao text-xl text-areia-900">Com quem compartilhamos</h2>
+      <p>
+        A plataforma não vende dados. Compartilhamos o mínimo necessário com fornecedores que operam a
+        infraestrutura, todos atuando como operadores de dados: a instituição de pagamento (dados de
+        identificação e endereço, para emitir cobranças e abrir a conta de recebimento), o provedor de
+        hospedagem e banco de dados, e o provedor de e-mail transacional. Dados de cartão de crédito não
+        passam pelos nossos servidores: o pagamento com cartão acontece em ambiente da própria instituição
+        de pagamento.
       </p>
 
       <h2 className="mt-6 titulo-secao text-xl text-areia-900">Como usamos</h2>

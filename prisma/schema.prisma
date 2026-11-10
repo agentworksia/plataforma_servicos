@@ -42,6 +42,18 @@ enum ServiceType {
   DOG_WALKER
 }
 
+enum PlanoAssinatura {
+  MENSAL
+  ANUAL
+}
+
+enum StatusAssinatura {
+  PENDENTE
+  ATIVA
+  ATRASADA
+  CANCELADA
+}
+
 enum Recurrence {
   AVULSA
   SEMANAL
@@ -51,6 +63,7 @@ enum Recurrence {
 
 enum BookingStatus {
   AGUARDANDO_PROFISSIONAL
+  AGUARDANDO_PAGAMENTO
   AGENDADO
   EM_ANDAMENTO
   CONCLUIDO
@@ -215,6 +228,22 @@ model ProfessionalProfile {
   repassePixTipo  String?
   repassePixChave String?
 
+  // Conta Asaas da profissional. O split manda a parte dela direto para esta carteira,
+  // então sem walletId ela não pode receber — a fila de ofertas confere isso.
+  asaasAccountId String?
+  asaasWalletId  String?
+
+  // Endereço e renda são exigidos pelo Asaas para abrir a subconta; não existiam no
+  // cadastro antes. Ficam aqui, e não em Address, porque Address é do cliente.
+  cep         String?
+  logradouro  String?
+  numeroEnd   String?
+  complemento String?
+  bairro      String?
+  cidade      String?
+  uf          String?
+  rendaMensal Int? // centavos
+
   aprovadoEm       DateTime?
   aprovadoPor      String?
   motivoReprovacao String?
@@ -233,6 +262,7 @@ model ProfessionalProfile {
   seriesTitular   BookingSeries[]
   payouts         Payout[]
   reviews         Review[]
+  assinatura      Assinatura?
 
   @@index([status])
   @@map("professional_profiles")
@@ -422,6 +452,13 @@ model Booking {
   status         BookingStatus @default(AGUARDANDO_PROFISSIONAL)
   professionalId String?
 
+  // A cliente escolhe no agendamento, mas a cobrança só nasce no aceite da profissional.
+  metodoPagamento PaymentMethod @default(PIX)
+
+  // Prazo para a cliente pagar depois que a profissional aceitou. Vencido, o horário
+  // volta para a fila — a profissional não fica com a agenda presa por quem sumiu.
+  pagamentoExpiraEm DateTime?
+
   // Profissional que o cliente pediu. A fila de ofertas tenta ela primeiro; se recusar ou
   // não estiver disponível, o serviço segue para a fila normal.
   preferidaId String?
@@ -507,7 +544,7 @@ model Payment {
   id           String        @id @default(cuid())
   bookingId    String        @unique
   provider     String        @default("fake")
-  providerId   String?
+  providerId   String?       @unique
   metodo       PaymentMethod
   status       PaymentStatus @default(PENDENTE)
   valor        Int
@@ -586,6 +623,68 @@ model Lead {
 
   @@index([status])
   @@map("leads")
+}
+
+// ---------------------------------------------------------------------------
+// Assinatura da profissional (mensalidade para receber ofertas)
+// ---------------------------------------------------------------------------
+
+model Assinatura {
+  id             String           @id @default(cuid())
+  professionalId String           @unique
+  plano          PlanoAssinatura
+  status         StatusAssinatura @default(PENDENTE)
+  metodo         PaymentMethod
+  valorCentavos  Int
+
+  provider     String  @default("fake")
+  providerId   String? @unique
+  checkoutUrl  String?
+  pixCopiaCola String?
+
+  // Até quando o acesso está pago. É o único campo que a fila de ofertas consulta:
+  // assim um atraso de webhook não tira a profissional do ar no mesmo segundo.
+  ativaAte        DateTime?
+  proximaCobranca DateTime?
+  canceladaEm     DateTime?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  professional ProfessionalProfile  @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  cobrancas    AssinaturaCobranca[]
+
+  @@index([status])
+  @@map("assinaturas")
+}
+
+model AssinaturaCobranca {
+  id           String        @id @default(cuid())
+  assinaturaId String
+  providerId   String?       @unique
+  valor        Int
+  status       PaymentStatus @default(PENDENTE)
+  vencimento   DateTime      @db.Date
+  pagoEm       DateTime?
+  criadoEm     DateTime      @default(now())
+
+  assinatura Assinatura @relation(fields: [assinaturaId], references: [id], onDelete: Cascade)
+
+  @@index([assinaturaId])
+  @@map("assinatura_cobrancas")
+}
+
+// Um evento de webhook já processado. O provedor reenvia o mesmo evento quando não
+// recebe 200, e sem esta trava o reenvio processaria o pagamento duas vezes.
+model WebhookEvento {
+  id         String   @id @default(cuid())
+  provider   String
+  eventoId   String
+  tipo       String
+  recebidoEm DateTime @default(now())
+
+  @@unique([provider, eventoId])
+  @@map("webhook_eventos")
 }
 
 model Setting {

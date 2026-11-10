@@ -12,11 +12,13 @@ export default function ComoFuncionaPage() {
         Você escolhe o tipo de serviço, informa o endereço (atendemos Curitiba, a Região Metropolitana e o
         litoral de Santa Catarina),
         define data, horário, duração (4, 6 ou 8 horas) e a recorrência. O preço aparece na hora, calculado
-        por tabela. O pagamento é feito online e fica retido até a conclusão do serviço.
+        por tabela. Você só paga depois que uma profissional aceita o seu serviço.
       </p>
       <p className="mt-2 text-areia-700">
-        A plataforma atribui automaticamente uma profissional verificada — você não precisa procurar nem
-        negociar. Ao final, você avalia o serviço, e é isso que libera o repasse para a profissional.
+        A plataforma procura automaticamente uma profissional verificada — você não precisa procurar nem
+        negociar. Quando alguém aceita, chega o Pix ou o link de cartão, e o serviço fica confirmado
+        assim que você paga. Se o serviço não acontecer, ou se você cancelar com 24 horas de
+        antecedência, o valor volta integralmente. Ao final, você avalia o serviço.
       </p>
 
       <h2 className="mt-8 titulo-secao text-xl text-areia-900">Para quem trabalha</h2>

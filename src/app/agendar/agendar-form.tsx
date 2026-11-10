@@ -450,11 +450,11 @@ export function AgendarForm({
             )}
 
             <Button type="submit" disabled={pending} size="lg" className="mt-5 w-full">
-              {pending ? "Agendando…" : "Agendar e pagar"}
+              {pending ? "Agendando…" : "Confirmar agendamento"}
             </Button>
             <p className="mt-3 text-xs leading-relaxed text-areia-500">
-              O valor fica retido na plataforma e só é repassado à profissional depois que o serviço
-              termina.
+              Nada é cobrado agora. Assim que uma profissional aceitar, a cobrança chega para você
+              pagar — e o horário fica reservado enquanto isso.
             </p>
           </div>
         </div>

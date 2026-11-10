@@ -49,6 +49,23 @@ export const cadastroProfissionalSchema = z
       .array(z.enum(["DIARIA_PADRAO", "PASSADORIA", "POS_OBRA", "CORPORATIVA", "DOG_WALKER"]))
       .min(1, "Escolha ao menos um tipo de serviço"),
     serviceAreaIds: z.array(z.string().min(1)).min(1, "Escolha ao menos uma região"),
+    // Endereço e renda vão para o Asaas abrir a conta que recebe o repasse. Sem eles a
+    // subconta não é criada e a profissional não consegue receber.
+    cep: z
+      .string()
+      .trim()
+      .transform(digitos)
+      .refine((v) => v.length === 8, "CEP deve ter 8 dígitos"),
+    logradouro: z.string().trim().min(3, "Informe a rua").max(200),
+    numeroEnd: z.string().trim().min(1, "Informe o número").max(20),
+    complemento: z.string().trim().max(120).default(""),
+    bairro: z.string().trim().min(2, "Informe o bairro").max(120),
+    cidade: z.string().trim().min(2, "Informe a cidade").max(120),
+    uf: z.string().trim().length(2, "UF com 2 letras").toUpperCase(),
+    rendaMensal: z.coerce
+      .number()
+      .min(1, "Informe uma renda mensal aproximada")
+      .max(1_000_000, "Valor acima do permitido"),
     repassePixTipo: z.enum(["CPF", "EMAIL", "TELEFONE", "ALEATORIA"]),
     repassePixChave: z.string().trim().min(3, "Informe a chave Pix").max(140),
     aceiteTermos: z.literal(true, { error: "É preciso aceitar os termos e a política de privacidade" }),

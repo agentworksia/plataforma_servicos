@@ -27,6 +27,59 @@ async function notificarAprovacao(profileId: string) {
   }
 }
 
+/**
+ * Abre a conta que vai receber o repasse. Roda na aprovação, e não no cadastro, para
+ * não criar conta de terceiro para quem ainda pode ser reprovada.
+ * Falha aqui não derruba a aprovação: sem carteira a profissional simplesmente não
+ * entra na fila, e o admin reaprova depois de corrigir o dado.
+ */
+async function abrirContaDeRepasse(profileId: string) {
+  const p = await db.professionalProfile.findUnique({
+    where: { id: profileId },
+    select: {
+      id: true,
+      cpf: true,
+      asaasWalletId: true,
+      dataNascimento: true,
+      cep: true,
+      logradouro: true,
+      numeroEnd: true,
+      complemento: true,
+      bairro: true,
+      rendaMensal: true,
+      user: { select: { name: true, email: true, telefone: true } },
+    },
+  });
+  if (!p || p.asaasWalletId) return;
+  if (!p.cpf || !p.cep || !p.logradouro || !p.numeroEnd || !p.bairro || !p.user.telefone) {
+    console.warn(`[aprovação] ${profileId} sem dados para abrir a conta de repasse.`);
+    return;
+  }
+
+  try {
+    const { payments } = await import("@/lib/payments");
+    const conta = await payments.criarSubconta({
+      nome: p.user.name ?? "Profissional",
+      email: p.user.email,
+      cpf: p.cpf,
+      celular: p.user.telefone,
+      nascimento: p.dataNascimento ?? undefined,
+      rendaMensalCentavos: p.rendaMensal ?? 0,
+      cep: p.cep,
+      logradouro: p.logradouro,
+      numero: p.numeroEnd,
+      complemento: p.complemento ?? undefined,
+      bairro: p.bairro,
+    });
+    await db.professionalProfile.update({
+      where: { id: profileId },
+      data: { asaasAccountId: conta.accountId, asaasWalletId: conta.walletId },
+    });
+  } catch (err) {
+    console.error("[aprovação] não consegui abrir a conta de repasse", err);
+  }
+}
+
 async function mudarStatus(
   profileId: string,
   data: { status: "APROVADA" | "REPROVADA" | "SUSPENSA"; motivoReprovacao?: string | null },
@@ -42,7 +95,10 @@ async function mudarStatus(
       aprovadoPor: data.status === "APROVADA" ? admin.id : null,
     },
   });
-  if (data.status === "APROVADA" && antes?.status !== "APROVADA") await notificarAprovacao(profileId);
+  if (data.status === "APROVADA" && antes?.status !== "APROVADA") {
+    await abrirContaDeRepasse(profileId);
+    await notificarAprovacao(profileId);
+  }
   revalidatePath("/admin/profissionais");
   revalidatePath(`/admin/profissionais/${profileId}`);
   revalidatePath("/admin");

@@ -11,41 +11,16 @@ import { atribuirProximaDaFila } from "@/lib/matching";
 import { datasDaSerie } from "@/lib/bookings/recorrencia";
 import { podeEscolher } from "@/lib/professionals/historico";
 import { pracaPorNome, UF_PADRAO } from "@/lib/regioes";
-import { payments } from "@/lib/payments";
 import { horaParaMinutos, dataDeInput } from "@/lib/format";
 import type { FormState } from "@/lib/auth/actions";
 import type { PaymentMethod, ServiceType } from "@/generated/prisma/enums";
-
-type DadosPagamento = { metodo: PaymentMethod; nome: string; email: string; descricao: string };
-
-async function registrarPagamento(bookingId: string, valorCentavos: number, p: DadosPagamento) {
-  const cobranca = await payments.criarCobranca({
-    bookingId,
-    valorCentavos,
-    metodo: p.metodo,
-    descricao: p.descricao,
-    pagador: { nome: p.nome, email: p.email },
-  });
-  await db.payment.create({
-    data: {
-      bookingId,
-      provider: cobranca.provider,
-      providerId: cobranca.providerId,
-      metodo: p.metodo,
-      status: cobranca.status,
-      valor: valorCentavos,
-      pixCopiaCola: cobranca.pixCopiaCola ?? null,
-      checkoutUrl: cobranca.checkoutUrl ?? null,
-      pagoEm: cobranca.status === "PAGO_RETIDO" ? new Date() : null,
-    },
-  });
-}
 
 function dadosBooking(
   tipoServico: ServiceType,
   inicioMin: number,
   duracaoMinutos: number,
   preco: PrecoCalculado,
+  metodoPagamento: PaymentMethod,
   observacoes?: string,
   preferidaId?: string,
   detalhesPosObra?: string,
@@ -55,6 +30,7 @@ function dadosBooking(
     inicioMin,
     duracaoMinutos,
     status: "AGUARDANDO_PROFISSIONAL" as const,
+    metodoPagamento,
     valorServico: preco.valorServico,
     valorExtras: preco.valorExtras,
     taxaPlataforma: preco.taxaPlataforma,
@@ -153,12 +129,6 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
   }
 
   const inicioMin = horaParaMinutos(d.inicio);
-  const pgto: DadosPagamento = {
-    metodo: d.metodoPagamento,
-    nome: user.name ?? "Cliente",
-    email: user.email ?? "",
-    descricao: `Serviço de limpeza (${d.tipoServico}) em ${endereco.cidade}`,
-  };
 
   // --- avulsa -----------------------------------------------------------------
   if (d.recorrencia === "AVULSA") {
@@ -168,10 +138,11 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
         addressId: endereco.id,
         recorrencia: "AVULSA",
         data: dataDeInput(d.data),
-        ...dadosBooking(d.tipoServico, inicioMin, d.duracaoMinutos, preco, d.observacoes, preferidaId, d.detalhesPosObra),
+        ...dadosBooking(d.tipoServico, inicioMin, d.duracaoMinutos, preco, d.metodoPagamento, d.observacoes, preferidaId, d.detalhesPosObra),
       },
     });
-    await registrarPagamento(booking.id, preco.valorTotal, pgto);
+    // Nada é cobrado aqui: a cobrança nasce quando uma profissional aceita, porque é
+    // só nesse momento que existe uma carteira de destino para o split.
     try {
       await atribuirProximaDaFila(booking.id);
     } catch (err) {
@@ -198,7 +169,7 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
     },
   });
 
-  const bookings = await Promise.all(
+  await Promise.all(
     datas.map((data) =>
       db.booking.create({
         data: {
@@ -207,13 +178,11 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
           seriesId: serie.id,
           recorrencia: d.recorrencia,
           data,
-          ...dadosBooking(d.tipoServico, inicioMin, d.duracaoMinutos, preco, d.observacoes, preferidaId, d.detalhesPosObra),
+          ...dadosBooking(d.tipoServico, inicioMin, d.duracaoMinutos, preco, d.metodoPagamento, d.observacoes, preferidaId, d.detalhesPosObra),
         },
       }),
     ),
   );
-  await Promise.all(bookings.map((b) => registrarPagamento(b.id, preco.valorTotal, pgto)));
-
   // oferta da série inteira para o topo da fila (na primeira ocorrência)
   try {
     const { atribuirSerie } = await import("@/lib/matching/serie");

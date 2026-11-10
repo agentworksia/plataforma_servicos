@@ -27,8 +27,9 @@ Florianópolis. O nome comercial fica só em `src/lib/marca.ts`; o logo em `publ
   Papéis `CLIENTE` / `PROFISSIONAL` / `ADMIN` na sessão.
 - **Supabase Storage** para foto de perfil e documentos (bucket privado, LGPD).
 - **Resend** para e-mail transacional.
-- **Pagamento**: interface `PaymentProvider` (`src/lib/payments/`) com implementação `fake` no
-  MVP. Trocar por provider real = implementar a interface + `PAYMENT_PROVIDER`.
+- **Pagamento**: interface `PaymentProvider` (`src/lib/payments/`), com `fake` e `asaas`.
+  Trocar de provedor = implementar a interface + `PAYMENT_PROVIDER`. Segurança, variáveis e
+  pendências em [`SEGURANCA-PAGAMENTOS.md`](SEGURANCA-PAGAMENTOS.md).
 - Deploy na **Vercel**.
 
 ## Estrutura
@@ -112,6 +113,21 @@ falta contratar provedor; quando houver, é ligar o canal em `lib/auth/recuperac
 em claro no link e só o hash SHA-256 fica no banco, reaproveitando `VerificationToken`.
 
 Regras de negócio que não são óbvias pelo código:
+
+- **A cobrança nasce no aceite, não no agendamento.** O split do Asaas precisa da carteira de
+  destino, e a profissional só é conhecida depois que alguém aceita a oferta. Fluxo: agendar →
+  fila → aceite → cobrança (`lib/bookings/cobranca.ts`) → webhook confirma → `AGENDADO`. Entre
+  o aceite e o pagamento o serviço fica em `AGUARDANDO_PAGAMENTO`, com prazo de 12 h; vencido,
+  a rota de cron devolve o horário à fila.
+- **Split, não retenção.** O Asaas credita a parte da profissional junto com o pagamento e não
+  tem campo para segurar. O que protege a cliente é o estorno, que o Asaas reverte também no
+  split. Por isso nenhum texto do site promete retenção — se for reescrever, não reintroduza.
+- **Mensalidade da profissional** (`lib/assinaturas/`): R$ 19,90/mês ou R$ 14,90 × 12 no anual.
+  Sem plano em dia a profissional não entra na fila — mas só a partir da data em
+  `Setting.ASSINATURA_COBRANCA_INICIO`, que nasce em 2099 para a regra não valer sozinha num
+  deploy. A comissão da plataforma é 15% (`Setting.TAXA_PLATAFORMA_PCT`), igual para todas.
+- **Subconta Asaas** é aberta na aprovação do cadastro, não no cadastro: não se cria conta em
+  nome de quem ainda pode ser reprovada. Sem `asaasWalletId` a profissional não entra na fila.
 
 - **Ranking interno** (`lib/ranking`): 100 pontos divididos entre avaliação (50), serviços
   concluídos (20), ofertas aceitas (20) e ausência de cancelamento próprio (10). Define a ordem

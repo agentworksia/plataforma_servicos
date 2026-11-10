@@ -51,8 +51,7 @@ export function SeletorPreco() {
         Agendar esta diária
       </Link>
       <p className="mt-3 text-xs leading-relaxed text-areia-500">
-        Você paga na hora de agendar. O valor fica retido e só chega à profissional depois que o serviço
-        termina e você confirma.
+        Você não paga agora. A cobrança chega quando uma profissional aceitar o serviço.
       </p>
     </div>
   );

@@ -23,12 +23,12 @@ const PASSOS = [
   },
   {
     titulo: "Veja o preço e pague",
-    texto: "O valor vem da tabela e aparece antes de confirmar. Sem visita, sem orçamento. Pix ou cartão.",
+    texto: "O valor vem da tabela e aparece antes de confirmar. Sem visita, sem orçamento. Você ainda não paga nada.",
   },
   {
-    titulo: "A plataforma chama a profissional",
+    titulo: "A profissional aceita e você paga",
     texto:
-      "Entre as aprovadas que atendem sua região naquele horário. Se você já tem uma preferida, ela é chamada primeiro.",
+      "A plataforma chama quem atende sua região naquele horário — a sua preferida primeiro. Aceita a oferta, chega o Pix ou o link de cartão.",
   },
   {
     titulo: "Você avalia no final",
@@ -43,9 +43,9 @@ const GARANTIAS = [
       "Toda profissional envia documento com foto e comprovante de endereço. A conta só é liberada depois que alguém da equipe confere — não é aprovação automática.",
   },
   {
-    titulo: "O dinheiro fica com a plataforma",
+    titulo: "Você só paga quando alguém aceita",
     texto:
-      "Você paga ao agendar, mas o valor fica retido. Ele só é repassado à profissional depois que o serviço é concluído.",
+      "Nada é cobrado no agendamento. A cobrança chega depois que uma profissional aceita o serviço — e se ele não acontecer, o valor volta integralmente.",
   },
   {
     titulo: "Cancelamento sem custo até 24 h antes",

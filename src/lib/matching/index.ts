@@ -1,5 +1,6 @@
 import "server-only";
 import { db } from "@/lib/db";
+import { cobrancaJaValendo, exigeCarteira } from "@/lib/assinaturas";
 import { getSetting } from "@/lib/settings";
 import { calcularPontuacao } from "@/lib/ranking/pontuacao";
 
@@ -35,9 +36,19 @@ export async function montarFilaDeOfertas(bookingId: string): Promise<string[]> 
   const diaSemana = booking.data.getUTCDay();
   const jaOfertados = booking.offers.map((o) => o.professionalId);
 
+  // Mensalidade em dia é condição para entrar na fila — mas só a partir da data que o
+  // admin configurou, para a regra não derrubar quem já trabalhava no dia do deploy.
+  const exigirAssinatura = await cobrancaJaValendo();
+  const agora = new Date();
+
   const candidatos = await db.professionalProfile.findMany({
     where: {
       status: "APROVADA",
+      ...(exigirAssinatura
+        ? { assinatura: { is: { status: "ATIVA", ativaAte: { gte: agora } } } }
+        : {}),
+      // Sem carteira o split não tem destino: a cobrança seria recusada pelo Asaas.
+      ...(exigeCarteira() ? { asaasWalletId: { not: null } } : {}),
       id: { notIn: jaOfertados.length ? jaOfertados : ["__none__"] },
       tiposServico: { has: booking.tipoServico },
       areas: {

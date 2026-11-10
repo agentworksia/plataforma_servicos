@@ -85,7 +85,7 @@ export default async function SerieDetalhePage({ params }: { params: Promise<{ i
       {serie.ativo && temFuturas && (
         <div className="rounded-xl border border-areia-200 p-4">
           <p className="text-sm text-areia-600">
-            Cancelar a série encerra as ocorrências futuras ainda não realizadas e reembolsa os valores retidos.
+            Cancelar a série encerra as ocorrências futuras ainda não realizadas e reembolsa o que já foi pago.
           </p>
           <div className="mt-3">
             <ActionForm

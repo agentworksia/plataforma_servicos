@@ -2,6 +2,7 @@ import type { BookingStatus, PaymentStatus, PayoutStatus } from "@/generated/pri
 
 export const STATUS_BOOKING: Record<BookingStatus, { label: string; cor: "amarelo" | "verde" | "vermelho" | "neutro" }> = {
   AGUARDANDO_PROFISSIONAL: { label: "Aguardando profissional", cor: "amarelo" },
+  AGUARDANDO_PAGAMENTO: { label: "Aguardando pagamento", cor: "amarelo" },
   AGENDADO: { label: "Agendado", cor: "verde" },
   EM_ANDAMENTO: { label: "Em andamento", cor: "verde" },
   CONCLUIDO: { label: "Concluído", cor: "neutro" },
@@ -10,7 +11,7 @@ export const STATUS_BOOKING: Record<BookingStatus, { label: string; cor: "amarel
 
 export const STATUS_PAGAMENTO: Record<PaymentStatus, string> = {
   PENDENTE: "Pendente",
-  PAGO_RETIDO: "Pago (retido)",
+  PAGO_RETIDO: "Pago",
   LIBERADO: "Liberado",
   REEMBOLSADO: "Reembolsado",
   PARCIALMENTE_REEMBOLSADO: "Reembolso parcial",

@@ -24,9 +24,12 @@ export default function TermosPage() {
 
       <h2 className="mt-6 titulo-secao text-xl text-areia-900">3. Pagamento e cancelamento</h2>
       <p>
-        O valor do serviço é cobrado no momento do agendamento e fica retido até a conclusão. Cancelamentos
-        feitos com pelo menos 24 horas de antecedência são reembolsados integralmente; após esse prazo não há
-        reembolso.
+        O valor do serviço é cobrado depois que uma profissional aceita o atendimento, e não no momento do
+        agendamento. A cobrança tem prazo para ser paga; vencido o prazo sem pagamento, o horário volta a
+        ficar disponível. Confirmado o pagamento, a parte da profissional é creditada a ela e a plataforma
+        retém sua comissão. Cancelamentos feitos com pelo menos 24 horas de antecedência são reembolsados
+        integralmente, e o estorno alcança também a parte já creditada à profissional; após esse prazo não
+        há reembolso.
       </p>
 
       <h2 className="mt-6 titulo-secao text-xl text-areia-900">4. Responsabilidades</h2>
