@@ -36,7 +36,9 @@ export default async function PainelLayout({ children }: { children: ReactNode }
   const user = await requireUser();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    // Fundo opaco de propósito: o painel mostra valores e datas, e a marca d'água do
+    // layout raiz atravessaria os cartões, que estruturam só com borda.
+    <div className="relative flex min-h-screen flex-col bg-areia-100">
       <header className="sticky top-0 z-30 border-b border-areia-200 bg-areia-50/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
           <Logo />
