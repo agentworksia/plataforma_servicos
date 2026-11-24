@@ -36,7 +36,16 @@ const serverSchema = z.object({
   // e não aqui: um valor malformado numa variável de feature não pode derrubar o site
   // inteiro — foi exatamente o que aconteceu em 24/11/2026.
   ASAAS_API_KEY: z.string().optional(),
-  ASAAS_AMBIENTE: z.enum(["sandbox", "producao"]).default("sandbox").catch("sandbox"),
+  ASAAS_AMBIENTE: z
+    .enum(["sandbox", "producao"])
+    .default("sandbox")
+    // Cair para sandbox é o lado seguro do erro: nunca manda dinheiro real sem querer.
+    // Mas é silencioso, então grita no log — senão uma variável escrita errada deixa a
+    // produção batendo no sandbox sem ninguém perceber.
+    .catch((ctx) => {
+      console.error("ASAAS_AMBIENTE inválido; usando 'sandbox'.", ctx.error.issues);
+      return "sandbox";
+    }),
   /** Token que o Asaas devolve no header asaas-access-token. Mínimo de 32 conferido no uso. */
   ASAAS_WEBHOOK_TOKEN: z.string().optional(),
   /**
@@ -46,7 +55,10 @@ const serverSchema = z.object({
   ASAAS_SPLIT: z
     .enum(["on", "off"])
     .default("on")
-    .catch("on")
+    .catch((ctx) => {
+      console.error("ASAAS_SPLIT inválido; usando 'on'.", ctx.error.issues);
+      return "on";
+    })
     .transform((v) => v === "on"),
 
   /** Protege /api/cron/*. A Vercel manda no header Authorization: Bearer <valor>. */
