@@ -9,7 +9,7 @@ const ANTECEDENCIA_HORAS = 48;
 
 function autorizado(request: Request): boolean {
   const esperado = env.CRON_SECRET;
-  if (!esperado) return false;
+  if (!esperado || esperado.length < 16) return false;
   const recebido = (request.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
   const a = Buffer.from(recebido);
   const b = Buffer.from(esperado);

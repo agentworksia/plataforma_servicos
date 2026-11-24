@@ -258,8 +258,11 @@ export class AsaasPaymentProvider implements PaymentProvider {
   async interpretarWebhook(req: Request): Promise<WebhookEvento> {
     const esperado = env.ASAAS_WEBHOOK_TOKEN;
     // Falha fechada: sem token configurado o endpoint recusa tudo. O contrário deixaria
-    // qualquer pessoa confirmar pagamento com um curl.
-    if (!esperado) throw new Error("ASAAS_WEBHOOK_TOKEN não configurado; webhook recusado.");
+    // qualquer pessoa confirmar pagamento com um curl. O tamanho mínimo é conferido aqui
+    // porque o env deixou de reprovar — um token curto é erro de configuração, não de quem chamou.
+    if (!esperado || esperado.length < 32) {
+      throw new Error("ASAAS_WEBHOOK_TOKEN ausente ou com menos de 32 caracteres; webhook recusado.");
+    }
 
     const recebido = req.headers.get("asaas-access-token") ?? "";
     if (!tokensIguais(recebido, esperado)) throw new Error("Token de webhook inválido.");

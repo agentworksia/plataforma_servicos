@@ -22,14 +22,23 @@ const serverSchema = z.object({
   RESEND_API_KEY: z.string().min(1).optional(), // e-mail transacional (nenhuma feature envia ainda)
   EMAIL_FROM: z.string().min(1).optional(),
 
-  PAYMENT_PROVIDER: z.enum(["fake", "mercadopago", "pagarme", "stripe", "asaas", "iugu"]).default("fake"),
+  PAYMENT_PROVIDER: z
+    .enum(["fake", "mercadopago", "pagarme", "stripe", "asaas", "iugu"])
+    .default("fake")
+    .catch((ctx) => {
+      console.error("PAYMENT_PROVIDER inválido; caindo para 'fake'.", ctx.error.issues);
+      return "fake";
+    }),
 
   // Asaas. Só exigidas quando PAYMENT_PROVIDER=asaas — a checagem está em payments/asaas.ts,
   // para o build e o ambiente de desenvolvimento não quebrarem sem elas.
-  ASAAS_API_KEY: z.string().min(1).optional(),
-  ASAAS_AMBIENTE: z.enum(["sandbox", "producao"]).default("sandbox"),
-  /** Token que o Asaas devolve no header asaas-access-token. 32+ caracteres. */
-  ASAAS_WEBHOOK_TOKEN: z.string().min(32).optional(),
+  // Estas aceitam qualquer coisa de propósito. O formato é conferido no ponto de uso,
+  // e não aqui: um valor malformado numa variável de feature não pode derrubar o site
+  // inteiro — foi exatamente o que aconteceu em 24/11/2026.
+  ASAAS_API_KEY: z.string().optional(),
+  ASAAS_AMBIENTE: z.enum(["sandbox", "producao"]).default("sandbox").catch("sandbox"),
+  /** Token que o Asaas devolve no header asaas-access-token. Mínimo de 32 conferido no uso. */
+  ASAAS_WEBHOOK_TOKEN: z.string().optional(),
   /**
    * Split liga o repasse automático para a carteira da profissional. Desligado, o valor
    * inteiro fica na conta da plataforma e o repasse sai por transferência na conclusão.
@@ -37,10 +46,11 @@ const serverSchema = z.object({
   ASAAS_SPLIT: z
     .enum(["on", "off"])
     .default("on")
+    .catch("on")
     .transform((v) => v === "on"),
 
   /** Protege /api/cron/*. A Vercel manda no header Authorization: Bearer <valor>. */
-  CRON_SECRET: z.string().min(16).optional(),
+  CRON_SECRET: z.string().optional(),
 
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
 });
