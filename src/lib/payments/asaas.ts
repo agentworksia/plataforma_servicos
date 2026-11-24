@@ -286,7 +286,10 @@ export class AsaasPaymentProvider implements PaymentProvider {
       case "PAYMENT_DELETED":
       case "PAYMENT_CHARGEBACK_REQUESTED":
         return { tipo: "PAGAMENTO_FALHOU", eventoId, providerId, assinaturaProviderId };
-      case "PAYMENT_REFUNDED": {
+      // O Asaas manda um evento próprio para estorno parcial. Sem ele aqui, um
+      // reembolso parcial passaria batido e o pagamento ficaria marcado como pago.
+      case "PAYMENT_REFUNDED":
+      case "PAYMENT_PARTIALLY_REFUNDED": {
         const valor = cobranca.refunds?.[0]?.value ?? cobranca.value ?? 0;
         return { tipo: "REEMBOLSO_CONFIRMADO", eventoId, providerId, valorCentavos: Math.round(valor * 100) };
       }
