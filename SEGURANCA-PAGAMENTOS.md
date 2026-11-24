@@ -81,7 +81,14 @@ instituição de pagamento. A política não mencionava compartilhamento com ter
 acrescentada a seção "Com quem compartilhamos", nomeando os operadores e registrando que
 dados de cartão não passam pelos nossos servidores.
 
-### 1.9 Rota de cron desprotegida
+### 1.9 Webhook aberto enquanto o provider é `fake`
+
+Depois de subir, o endpoint respondia `200` a um `POST` anônimo: o provider `fake` devolvia
+"evento ignorado" sem conferir nada. Não confirmava pagamento nenhum, mas contrariava a regra
+de falhar fechado. O `fake` passou a recusar — ele não tem origem real de webhook, então nada
+que chegue ali é legítimo.
+
+### 1.10 Rota de cron desprotegida
 
 `/api/cron/cobrancas` devolve horário à fila e dispara cobrança. Protegida por `CRON_SECRET`
 com comparação em tempo constante e falha fechada.

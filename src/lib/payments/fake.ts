@@ -67,7 +67,10 @@ export class FakePaymentProvider implements PaymentProvider {
   }
 
   async interpretarWebhook(): Promise<WebhookEvento> {
-    return { tipo: "IGNORADO" };
+    // O provider fake não tem origem real de webhook, então nada que chegue aqui é
+    // legítimo. Recusar (em vez de devolver IGNORADO com 200) mantém o endpoint
+    // fechado enquanto o provedor de verdade não está ligado.
+    throw new Error("Provider fake não recebe webhook.");
   }
 }
 
