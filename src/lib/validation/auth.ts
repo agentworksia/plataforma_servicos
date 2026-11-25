@@ -1,9 +1,10 @@
 import { z } from "zod";
+import { emailSchema } from "@/lib/validation/email";
 
 const digitos = (v: string) => v.replace(/\D/g, "");
 
 export const loginSchema = z.object({
-  email: z.email("E-mail inválido").trim().toLowerCase(),
+  email: emailSchema,
   senha: z.string().min(1, "Informe a senha"),
 });
 export type LoginInput = z.infer<typeof loginSchema>;
@@ -16,7 +17,7 @@ export const CANAIS_RECUPERACAO = [
 
 export const solicitarRecuperacaoSchema = z.object({
   canal: z.enum(["EMAIL", "SMS"]).default("EMAIL"),
-  email: z.email("E-mail inválido").trim().toLowerCase(),
+  email: emailSchema,
 });
 
 export const redefinirSenhaSchema = z
@@ -33,7 +34,7 @@ export const redefinirSenhaSchema = z
 export const cadastroClienteSchema = z
   .object({
     nome: z.string().trim().min(2, "Informe seu nome completo").max(120),
-    email: z.email("E-mail inválido").trim().toLowerCase(),
+    email: emailSchema,
     telefone: z
       .string()
       .trim()

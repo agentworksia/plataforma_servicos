@@ -15,6 +15,10 @@ export default async function CadastroPage() {
     <AuthCard className="max-w-md">
       <h1 className="titulo-secao text-xl text-areia-900">Criar conta</h1>
       <p className="mt-1 text-sm text-areia-600">Para agendar serviços de limpeza.</p>
+      <p className="mt-2 text-sm leading-relaxed text-areia-600">
+        Criar conta é grátis e <strong>não tem mensalidade</strong>: você paga só o serviço que
+        agendar. A mensalidade existe apenas para quem trabalha como diarista.
+      </p>
 
       <div className="mt-6">
         <CadastroClienteForm />

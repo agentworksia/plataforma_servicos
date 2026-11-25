@@ -5,7 +5,7 @@ import Link from "next/link";
 import { solicitarRecuperacao, type RecuperacaoState } from "@/lib/auth/recuperacao";
 import { CANAIS_RECUPERACAO } from "@/lib/validation/auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { CampoEmail } from "@/components/ui/campo-email";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
@@ -71,7 +71,7 @@ export function EsqueciSenhaForm() {
 
       <div className="space-y-1.5">
         <Label htmlFor="email">E-mail cadastrado</Label>
-        <Input id="email" name="email" type="email" autoComplete="email" required />
+        <CampoEmail id="email" name="email" autoComplete="email" required />
       </div>
 
       {state?.erro && <p className="text-sm text-red-700">{state.erro}</p>}

@@ -5,6 +5,7 @@ import { cadastroProfissionalAction, type FormState } from "@/lib/auth/actions";
 import { TIPOS_CHAVE_PIX, TIPOS_SERVICO } from "@/lib/validation/profissional";
 import { downscaleImagem } from "@/lib/image";
 import { Button } from "@/components/ui/button";
+import { CampoEmail } from "@/components/ui/campo-email";
 import { CampoSenha } from "@/components/ui/campo-senha";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,7 +60,7 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="email">E-mail</Label>
-            <Input id="email" name="email" type="email" defaultValue={v("email")} autoComplete="email" required />
+            <CampoEmail id="email" name="email" defaultValue={v("email")} autoComplete="email" required />
             <Erro msg={e.email?.[0]} />
           </div>
           <div className="space-y-1.5">

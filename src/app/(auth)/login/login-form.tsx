@@ -4,8 +4,8 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { loginAction, type LoginState } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
+import { CampoEmail } from "@/components/ui/campo-email";
 import { CampoSenha } from "@/components/ui/campo-senha";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
@@ -15,7 +15,7 @@ export function LoginForm() {
     <form action={action} className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="email">E-mail</Label>
-        <Input id="email" name="email" type="email" autoComplete="email" required />
+        <CampoEmail id="email" name="email" autoComplete="email" required />
       </div>
 
       <div className="space-y-1.5">

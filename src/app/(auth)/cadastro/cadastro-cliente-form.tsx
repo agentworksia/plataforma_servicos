@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { cadastroClienteAction, type FormState } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
+import { CampoEmail } from "@/components/ui/campo-email";
 import { CampoSenha } from "@/components/ui/campo-senha";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +29,7 @@ export function CadastroClienteForm() {
 
       <div className="space-y-1.5">
         <Label htmlFor="email">E-mail</Label>
-        <Input id="email" name="email" type="email" defaultValue={v("email")} autoComplete="email" required />
+        <CampoEmail id="email" name="email" defaultValue={v("email")} autoComplete="email" required />
         <Erro msg={e.email?.[0]} />
       </div>
 

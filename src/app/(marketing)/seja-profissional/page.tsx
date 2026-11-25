@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { PLANOS } from "@/lib/assinaturas/planos";
-import { formatBRL } from "@/lib/format";
+import { PlanosResumo } from "@/components/planos-resumo";
 import { getSettingNumber } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
@@ -28,19 +27,7 @@ export default async function SejaProfissionalPage() {
 
       {/* O preço aparece antes do cadastro de propósito: ela manda documento e foto para
           entrar, e descobrir a mensalidade só depois da aprovação seria pegadinha. */}
-      <section className="mt-8 rounded-cartao border border-areia-200 bg-white p-5 sm:p-6">
-        <h2 className="titulo-secao text-lg text-marinho-900">Quanto custa para você</h2>
-        <p className="mt-2 leading-relaxed text-areia-700">
-          O cadastro é gratuito. Para receber ofertas, o perfil precisa de uma mensalidade de{" "}
-          <strong>{formatBRL(PLANOS.MENSAL.valorCentavos)} por mês</strong>, que você cancela
-          quando quiser — ou <strong>{formatBRL(PLANOS.ANUAL.valorCentavos)} por mês</strong> no
-          plano anual, em 12 parcelas no cartão de crédito.
-        </p>
-        <p className="mt-3 leading-relaxed text-areia-700">
-          Além dela, a plataforma fica com {taxaPct}% de cada serviço. O resto é seu e cai na sua
-          conta quando a cliente paga.
-        </p>
-      </section>
+      <PlanosResumo taxaPct={taxaPct} className="mt-8" />
 
       <div className="mt-8">
         <Link href="/cadastro/profissional" className={cn(buttonVariants({ size: "lg" }))}>

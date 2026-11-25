@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { emailSchema } from "@/lib/validation/email";
 
 const digitos = (v: string) => v.replace(/\D/g, "");
 
@@ -30,7 +31,7 @@ function maiorDeIdade(dataISO: string): boolean {
 export const cadastroProfissionalSchema = z
   .object({
     nome: z.string().trim().min(2, "Informe seu nome completo").max(120),
-    email: z.email("E-mail inválido").trim().toLowerCase(),
+    email: emailSchema,
     telefone: z
       .string()
       .trim()
