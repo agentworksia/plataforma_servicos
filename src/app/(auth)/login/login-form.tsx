@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { loginAction, type LoginState } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
+import { CampoSenha } from "@/components/ui/campo-senha";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -24,7 +25,7 @@ export function LoginForm() {
             Esqueci minha senha
           </Link>
         </div>
-        <Input id="senha" name="senha" type="password" autoComplete="current-password" required />
+        <CampoSenha id="senha" name="senha" autoComplete="current-password" required />
       </div>
 
       {state?.error && <p className="text-sm text-red-600">{state.error}</p>}

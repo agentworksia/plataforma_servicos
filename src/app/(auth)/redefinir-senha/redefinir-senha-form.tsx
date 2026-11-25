@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { redefinirSenha, type RedefinicaoState } from "@/lib/auth/recuperacao";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { CampoSenha } from "@/components/ui/campo-senha";
 import { Label } from "@/components/ui/label";
 
 export function RedefinirSenhaForm({ token }: { token: string }) {
@@ -33,10 +33,9 @@ export function RedefinirSenhaForm({ token }: { token: string }) {
 
       <div className="space-y-1.5">
         <Label htmlFor="senha">Senha nova</Label>
-        <Input
+        <CampoSenha
           id="senha"
           name="senha"
-          type="password"
           autoComplete="new-password"
           required
           minLength={8}
@@ -46,10 +45,9 @@ export function RedefinirSenhaForm({ token }: { token: string }) {
 
       <div className="space-y-1.5">
         <Label htmlFor="confirmarSenha">Repita a senha nova</Label>
-        <Input
+        <CampoSenha
           id="confirmarSenha"
           name="confirmarSenha"
-          type="password"
           autoComplete="new-password"
           required
         />

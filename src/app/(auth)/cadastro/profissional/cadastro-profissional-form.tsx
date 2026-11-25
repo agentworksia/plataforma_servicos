@@ -5,6 +5,7 @@ import { cadastroProfissionalAction, type FormState } from "@/lib/auth/actions";
 import { TIPOS_CHAVE_PIX, TIPOS_SERVICO } from "@/lib/validation/profissional";
 import { downscaleImagem } from "@/lib/image";
 import { Button } from "@/components/ui/button";
+import { CampoSenha } from "@/components/ui/campo-senha";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -78,12 +79,12 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="senha">Senha</Label>
-            <Input id="senha" name="senha" type="password" autoComplete="new-password" required />
+            <CampoSenha id="senha" name="senha" autoComplete="new-password" required />
             <Erro msg={e.senha?.[0]} />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="confirmarSenha">Confirmar senha</Label>
-            <Input id="confirmarSenha" name="confirmarSenha" type="password" autoComplete="new-password" required />
+            <CampoSenha id="confirmarSenha" name="confirmarSenha" autoComplete="new-password" required />
             <Erro msg={e.confirmarSenha?.[0]} />
           </div>
         </div>
