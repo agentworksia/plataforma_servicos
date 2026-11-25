@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { getSession, painelHref } from "@/lib/auth/dal";
 import { AuthCard } from "@/components/auth-card";
+import { PLANOS } from "@/lib/assinaturas/planos";
+import { formatBRL } from "@/lib/format";
 import { CadastroProfissionalForm } from "./cadastro-profissional-form";
 
 export const metadata: Metadata = { title: "Cadastro de profissional" };
@@ -24,6 +26,12 @@ export default async function CadastroProfissionalPage() {
       <h1 className="titulo-secao text-xl text-areia-900">Cadastro de profissional</h1>
       <p className="mt-1 text-sm text-areia-600">
         Após o envio, sua conta fica <strong>em análise</strong>. Avisamos por e-mail quando for aprovada.
+      </p>
+      <p className="mt-3 rounded-botao bg-areia-50 p-3 text-sm leading-relaxed text-areia-700">
+        O cadastro é gratuito. Depois de aprovada, receber ofertas custa{" "}
+        <strong>{formatBRL(PLANOS.MENSAL.valorCentavos)} por mês</strong> — ou{" "}
+        {formatBRL(PLANOS.ANUAL.valorCentavos)} por mês no plano anual, em 12 parcelas no cartão.
+        Você escolhe o plano depois da aprovação.
       </p>
 
       <div className="mt-6">

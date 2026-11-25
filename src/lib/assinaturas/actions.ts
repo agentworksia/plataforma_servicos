@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { cancelarPlano, contratarPlano } from "@/lib/assinaturas";
+import { cancelarPlano, contratarPlano, metodoAceito, PLANOS } from "@/lib/assinaturas";
 
 export type AssinaturaState = { erro?: string; ok?: string } | undefined;
 
@@ -34,8 +34,13 @@ export async function assinarPlano(
   });
   if (!parsed.success) return { erro: "Escolha um plano e uma forma de pagamento." };
 
+  const { plano, metodo } = parsed.data;
+  if (!metodoAceito(plano, metodo)) {
+    return { erro: `O plano ${PLANOS[plano].nome} é pago só no cartão de crédito.` };
+  }
+
   try {
-    await contratarPlano(professionalId, parsed.data.plano, parsed.data.metodo);
+    await contratarPlano(professionalId, plano, metodo);
   } catch (err) {
     console.error("[assinatura] contratação falhou", err);
     return { erro: "Não consegui gerar a cobrança agora. Tente de novo em instantes." };

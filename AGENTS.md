@@ -122,10 +122,15 @@ Regras de negócio que não são óbvias pelo código:
 - **Split, não retenção.** O Asaas credita a parte da profissional junto com o pagamento e não
   tem campo para segurar. O que protege a cliente é o estorno, que o Asaas reverte também no
   split. Por isso nenhum texto do site promete retenção — se for reescrever, não reintroduza.
-- **Mensalidade da profissional** (`lib/assinaturas/`): R$ 19,90/mês ou R$ 14,90 × 12 no anual.
-  Sem plano em dia a profissional não entra na fila — mas só a partir da data em
-  `Setting.ASSINATURA_COBRANCA_INICIO`, que nasce em 2099 para a regra não valer sozinha num
-  deploy. A comissão da plataforma é 15% (`Setting.TAXA_PLATAFORMA_PCT`), igual para todas.
+- **Mensalidade da profissional** (`lib/assinaturas/planos.ts`, fonte única dos valores):
+  R$ 17,99/mês, ou R$ 14,99 × 12 no anual. O **anual só aceita cartão** — parcelar é coisa de
+  cartão; no Pix as 12 vezes seriam 12 cobranças avulsas. `Plano.metodos` manda, e a server
+  action valida contra ele, não só a tela. Sem plano em dia a profissional não entra na fila, a
+  partir da data em `Setting.ASSINATURA_COBRANCA_INICIO` — **em vigor desde 25/11/2026**; o
+  seed nasce em 2099 e só reescreve a descrição, então mudar o valor no banco é permanente.
+  O preço aparece em `/seja-profissional` e no topo do cadastro: ela manda documento e foto
+  para entrar, e descobrir a mensalidade só depois da aprovação seria pegadinha.
+  A comissão da plataforma é 15% (`Setting.TAXA_PLATAFORMA_PCT`), igual para todas.
 - **Subconta Asaas** é aberta na aprovação do cadastro, não no cadastro: não se cria conta em
   nome de quem ainda pode ser reprovada. Sem `asaasWalletId` a profissional não entra na fila.
 

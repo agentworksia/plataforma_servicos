@@ -18,6 +18,14 @@ export function EscolhaDePlano({ planos, atual }: { planos: Plano[]; atual: Plan
   const [plano, setPlano] = useState<PlanoAssinatura>(atual ?? "ANUAL");
   const [metodo, setMetodo] = useState<string>("PIX");
 
+  const planoAtual = planos.find((p) => p.id === plano) ?? planos[0];
+  const metodosDoPlano = METODOS.filter((m) => planoAtual.metodos.includes(m.value));
+  // Derivado em vez de sincronizado por efeito: trocar para um plano que não aceita o
+  // método escolhido já envia o método certo, sem render intermediário inválido.
+  const metodoEfetivo = metodosDoPlano.some((m) => m.value === metodo)
+    ? metodo
+    : metodosDoPlano[0].value;
+
   return (
     <form action={action} className="mt-5 space-y-5">
       <div role="radiogroup" aria-label="Plano" className="grid gap-3 sm:grid-cols-2">
@@ -61,9 +69,18 @@ export function EscolhaDePlano({ planos, atual }: { planos: Plano[]; atual: Plan
 
       <div>
         <p className="text-sm font-medium text-areia-800">Como você quer pagar</p>
+        {metodosDoPlano.length === 1 ? (
+          <>
+            <input type="hidden" name="metodo" value={metodoEfetivo} />
+            <p className="mt-2 text-sm text-areia-600">
+              O plano {planoAtual.nome.toLowerCase()} é parcelado, e só o cartão de crédito
+              parcela — no Pix seriam doze cobranças avulsas.
+            </p>
+          </>
+        ) : (
         <div className="mt-2 flex gap-1.5">
-          {METODOS.map((m) => {
-            const ativo = metodo === m.value;
+          {metodosDoPlano.map((m) => {
+            const ativo = metodoEfetivo === m.value;
             return (
               <label
                 key={m.value}
@@ -87,6 +104,7 @@ export function EscolhaDePlano({ planos, atual }: { planos: Plano[]; atual: Plan
             );
           })}
         </div>
+        )}
       </div>
 
       <Button type="submit" disabled={pending}>

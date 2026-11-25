@@ -132,8 +132,8 @@ export default async function AssinaturaPage() {
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-areia-600">
           No anual você paga {descontoAnualPct()}% a menos por mês e economiza{" "}
-          {formatBRL(economiaAnualCentavos())} no ano. As duas opções são cobradas mês a mês, no
-          cartão ou no Pix.
+          {formatBRL(economiaAnualCentavos())} no ano, em 12 parcelas no cartão de crédito. O
+          mensal é cobrado mês a mês, no cartão ou no Pix, e você cancela quando quiser.
         </p>
         <EscolhaDePlano planos={LISTA_PLANOS} atual={assinatura?.plano ?? null} />
       </section>
