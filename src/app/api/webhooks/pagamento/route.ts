@@ -101,13 +101,24 @@ export async function POST(request: Request) {
 }
 
 /**
- * Confirma o pagamento do serviço e só então coloca o agendamento na fila. É aqui que
- * mora a regra: nenhuma profissional é acionada antes de o dinheiro entrar.
+ * Confirma o pagamento do serviço.
+ *
+ * Dois caminhos, e a diferença é se a profissional já é conhecida:
+ *  - fluxo normal (cobrança nasce no aceite): a profissional já aceitou e o serviço
+ *    está em AGUARDANDO_PAGAMENTO. Pagar fecha o combinado — vira AGENDADO;
+ *  - agendamento sem profissional: aí sim o pagamento é o gatilho da fila.
+ *
+ * Chamar a fila no primeiro caso ofereceria a outra pessoa um serviço já aceito e pago.
  */
 async function confirmarPagamentoDeServico(providerId: string) {
   const pagamento = await db.payment.findUnique({
     where: { providerId },
-    select: { id: true, bookingId: true, status: true },
+    select: {
+      id: true,
+      bookingId: true,
+      status: true,
+      booking: { select: { status: true, professionalId: true } },
+    },
   });
   if (!pagamento) {
     console.warn(`[webhook:pagamento] cobrança desconhecida ${providerId}`);
@@ -119,6 +130,16 @@ async function confirmarPagamentoDeServico(providerId: string) {
     where: { id: pagamento.id },
     data: { status: "PAGO_RETIDO", pagoEm: new Date() },
   });
+
+  if (pagamento.booking.professionalId) {
+    if (pagamento.booking.status === "AGUARDANDO_PAGAMENTO") {
+      await db.booking.update({
+        where: { id: pagamento.bookingId },
+        data: { status: "AGENDADO", pagamentoExpiraEm: null },
+      });
+    }
+    return;
+  }
 
   try {
     await atribuirProximaDaFila(pagamento.bookingId);
