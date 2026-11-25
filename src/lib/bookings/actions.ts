@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
 import { agendamentoSchema } from "@/lib/validation/agendamento";
+import { documentoValido } from "@/lib/validation/documento";
 import { resolverServiceArea } from "@/lib/areas";
 import { calcularPreco, type PrecoCalculado } from "@/lib/pricing";
 import { atribuirProximaDaFila } from "@/lib/matching";
@@ -44,13 +45,16 @@ function dadosBooking(
 
 export async function criarAgendamento(_prev: FormState, formData: FormData): Promise<FormState> {
   const user = await requireRole("CLIENTE");
-  const cliente = await db.clientProfile.findUnique({ where: { userId: user.id }, select: { id: true } });
+  const cliente = await db.clientProfile.findUnique({
+    where: { userId: user.id },
+    select: { id: true, tipo: true, cpf: true, cnpj: true },
+  });
   if (!cliente) return { message: "Perfil de cliente não encontrado." };
 
   const campos = [
     "tipoServico", "enderecoId", "cep", "logradouro", "numero", "complemento", "bairro", "cidade",
     "referencia", "metragem", "numeroComodos", "data", "inicio", "duracaoMinutos", "recorrencia",
-    "metodoPagamento", "observacoes", "preferidaId", "detalhesPosObra",
+    "metodoPagamento", "observacoes", "preferidaId", "detalhesPosObra", "documento",
   ];
   const brutos = Object.fromEntries(campos.map((k) => [k, formData.get(k) ? String(formData.get(k)) : undefined]));
 
@@ -60,6 +64,24 @@ export async function criarAgendamento(_prev: FormState, formData: FormData): Pr
   }
   const d = parsed.data;
   const valores = brutos as Record<string, string>;
+
+  // --- documento de quem paga ------------------------------------------------
+  // O Asaas recusa a cobrança sem CPF/CNPJ, e a cobrança nasce no aceite da
+  // profissional — longe desta tela. Por isso o documento é exigido aqui, e não lá.
+  const rotulo = cliente.tipo === "PJ" ? "CNPJ" : "CPF";
+  const documentoAtual = cliente.tipo === "PJ" ? cliente.cnpj : cliente.cpf;
+  if (!documentoAtual) {
+    if (!d.documento) {
+      return { errors: { documento: [`Informe seu ${rotulo} para emitirmos a cobrança.`] }, values: valores };
+    }
+    if (!documentoValido(d.documento, cliente.tipo)) {
+      return { errors: { documento: [`${rotulo} inválido.`] }, values: valores };
+    }
+    await db.clientProfile.update({
+      where: { id: cliente.id },
+      data: cliente.tipo === "PJ" ? { cnpj: d.documento } : { cpf: d.documento },
+    });
+  }
 
   // --- endereço --------------------------------------------------------------
   let endereco;

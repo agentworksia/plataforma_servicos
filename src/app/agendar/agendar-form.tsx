@@ -53,10 +53,14 @@ export function AgendarForm({
   enderecos,
   profissionais,
   tipoInicial,
+  tipoPessoa,
+  documentoPendente,
 }: {
   enderecos: Endereco[];
   profissionais: Profissional[];
   tipoInicial: ServiceType;
+  tipoPessoa: "PF" | "PJ";
+  documentoPendente: boolean;
 }) {
   const [state, action, pending] = useActionState<FormState, FormData>(criarAgendamento, undefined);
   const e = state?.errors ?? {};
@@ -396,6 +400,24 @@ export function AgendarForm({
         </Secao>
 
         <Secao titulo="Pagamento">
+          {documentoPendente && (
+            <div className="space-y-1.5">
+              <Label htmlFor="documento">{tipoPessoa === "PJ" ? "CNPJ" : "CPF"}</Label>
+              <Input
+                id="documento"
+                name="documento"
+                inputMode="numeric"
+                defaultValue={v("documento")}
+                placeholder={tipoPessoa === "PJ" ? "00.000.000/0000-00" : "000.000.000-00"}
+                required
+              />
+              <p className="text-sm text-areia-600">
+                A instituição de pagamento exige o documento de quem paga para emitir a cobrança.
+                Pedimos uma vez só.
+              </p>
+              <Erro msg={e.documento?.[0]} />
+            </div>
+          )}
           <div className="space-y-1.5">
             <Label htmlFor="metodoPagamento">Forma de pagamento</Label>
             <select

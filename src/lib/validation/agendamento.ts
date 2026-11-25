@@ -38,6 +38,15 @@ export const agendamentoSchema = z
     metodoPagamento: z.enum(["PIX", "CARTAO"]),
     observacoes: z.string().trim().max(500).optional(),
 
+    // CPF ou CNPJ de quem paga. Só é pedido a quem ainda não tem no perfil; a validação
+    // de verdade (dígitos, e PF vs PJ) fica no server action, que sabe o tipo da conta.
+    documento: z
+      .string()
+      .trim()
+      .transform(digitos)
+      .optional()
+      .transform((v) => (v ? v : undefined)),
+
     detalhesPosObra: z.string().trim().max(2000).optional(),
 
     // "" = sem preferência; a plataforma escolhe pela fila.

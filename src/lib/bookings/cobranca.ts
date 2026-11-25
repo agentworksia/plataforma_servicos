@@ -26,7 +26,7 @@ export async function criarCobrancaDoAceite(bookingId: string): Promise<void> {
       repasseProfissional: true,
       payment: { select: { id: true } },
       address: { select: { cidade: true } },
-      client: { select: { cpf: true, user: { select: { name: true, email: true } } } },
+      client: { select: { tipo: true, cpf: true, cnpj: true, user: { select: { name: true, email: true } } } },
       professional: { select: { asaasWalletId: true } },
     },
   });
@@ -49,7 +49,7 @@ export async function criarCobrancaDoAceite(bookingId: string): Promise<void> {
     pagador: {
       nome: booking.client.user.name ?? "Cliente",
       email: booking.client.user.email,
-      documento: booking.client.cpf ?? undefined,
+      documento: (booking.client.tipo === "PJ" ? booking.client.cnpj : booking.client.cpf) ?? undefined,
     },
     split: carteira ? [{ walletId: carteira, valorCentavos: booking.repasseProfissional }] : undefined,
   });

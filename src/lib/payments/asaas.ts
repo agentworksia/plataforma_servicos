@@ -29,6 +29,21 @@ function dataAsaas(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
+/**
+ * Dia do calendário em Brasília, não em UTC. Vencimento é data civil: depois das 21 h
+ * o `toISOString()` já devolve o dia seguinte, e a cobrança nasceria vencendo um dia
+ * além do combinado. Data de nascimento continua com `dataAsaas`, porque lá o valor
+ * guardado já é uma data, não um instante.
+ */
+function diaNoBrasil(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
+}
+
 function digitos(v: string): string {
   return v.replace(/\D/g, "");
 }
@@ -113,7 +128,7 @@ export class AsaasPaymentProvider implements PaymentProvider {
       customer,
       billingType: input.metodo === "PIX" ? "PIX" : "CREDIT_CARD",
       value: reais(input.valorCentavos),
-      dueDate: dataAsaas(hoje),
+      dueDate: diaNoBrasil(hoje),
       description: input.descricao,
       // Amarra a cobrança ao agendamento: é por aqui que o webhook reencontra o Booking
       // mesmo se o nosso registro de Payment tiver falhado.
@@ -216,7 +231,7 @@ export class AsaasPaymentProvider implements PaymentProvider {
         customer,
         billingType: input.metodo === "PIX" ? "PIX" : "CREDIT_CARD",
         value: reais(input.valorCentavos),
-        nextDueDate: dataAsaas(input.primeiroVencimento),
+        nextDueDate: diaNoBrasil(input.primeiroVencimento),
         cycle: "MONTHLY",
         description: input.descricao,
         externalReference: input.assinaturaId,

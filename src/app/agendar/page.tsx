@@ -26,9 +26,11 @@ export default async function AgendarPage({
 
   const cliente = await db.clientProfile.findUnique({
     where: { userId: session.user.id },
-    select: { id: true, addresses: { orderBy: { criadoEm: "desc" } } },
+    select: { id: true, tipo: true, cpf: true, cnpj: true, addresses: { orderBy: { criadoEm: "desc" } } },
   });
   const enderecos = cliente?.addresses ?? [];
+  const tipoPessoa = cliente?.tipo ?? "PF";
+  const documentoPendente = !(tipoPessoa === "PJ" ? cliente?.cnpj : cliente?.cpf);
   const profissionais = cliente ? await profissionaisJaAtenderam(cliente.id) : [];
 
   return (
@@ -47,6 +49,8 @@ export default async function AgendarPage({
             enderecos={enderecos}
             profissionais={profissionais}
             tipoInicial={ehTipoValido(tipo) ? tipo : "DIARIA_PADRAO"}
+            tipoPessoa={tipoPessoa}
+            documentoPendente={documentoPendente}
           />
         </div>
 
