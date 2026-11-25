@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { getSession, painelHref } from "@/lib/auth/dal";
 import { AuthCard } from "@/components/auth-card";
+import { CabecalhoCadastro } from "@/components/cabecalho-cadastro";
 import { PlanosResumo } from "@/components/planos-resumo";
 import { getSettingNumber } from "@/lib/settings";
 import { CadastroProfissionalForm } from "./cadastro-profissional-form";
@@ -25,10 +26,13 @@ export default async function CadastroProfissionalPage() {
 
   return (
     <AuthCard className="max-w-2xl">
-      <h1 className="titulo-secao text-xl text-areia-900">Cadastro de profissional</h1>
-      <p className="mt-1 text-sm text-areia-600">
-        Após o envio, sua conta fica <strong>em análise</strong>. Avisamos por e-mail quando for aprovada.
-      </p>
+      <CabecalhoCadastro
+        papel="profissional"
+        titulo="Criar conta para trabalhar como diarista"
+        descricao="Após o envio, sua conta fica em análise. Avisamos por e-mail quando for aprovada."
+        outroTexto="Veio contratar uma limpeza para a sua casa? Este cadastro não é o seu."
+        outroHref="/cadastro/cliente"
+      />
       <PlanosResumo taxaPct={taxaPct} className="mt-5" />
       <p className="mt-3 text-sm leading-relaxed text-areia-600">
         Você escolhe o plano depois da aprovação — nada é cobrado agora.

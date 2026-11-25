@@ -41,7 +41,7 @@ prisma/
 src/
   app/
     (marketing)/         landing e páginas informativas
-    (auth)/              login, cadastro
+    (auth)/              login, cadastro (ver "Cadastro: dois caminhos")
     (painel)/            área logada; layout faz requireUser, sub-layouts requireRole
       cliente/ profissional/ admin/
     agendar/             CTA público do fluxo de agendamento
@@ -82,10 +82,10 @@ Tokens em `src/app/globals.css`, não nas cores padrão do Tailwind:
 
 A paleta sai do logo — qualquer cor nova precisa sair dele também, não de escolha avulsa:
 
-- `mar-*` — azuis do logo. `mar-700` (#123e61) é o navy da marca e o botão primário;
-  `mar-400` (#549dcd) é o azul do risco e das estrelas.
-- `pedra-*` — neutros frios puxando para o azul; `pedra-50` é o fundo da página, `pedra-900` o texto.
-- `folha-*` — verde da folha do logo. Único acento: nota, numeração, destaque.
+- `marinho-*` — azuis do logo. `marinho-700` (#14355c) é o navy da marca e o botão primário;
+  `marinho-400` (#5580a8) é o azul de apoio.
+- `areia-*` — neutros quentes; `areia-50` é o fundo da página, `areia-900` o texto.
+- `laranja-*` — único acento: selo, destaque, aviso. Não há verde na paleta.
 - Raio por função: `rounded-botao` / `rounded-cartao` / `rounded-foto` — não um valor único para tudo.
 - Títulos usam `.titulo` / `.titulo-secao`, que acionam o eixo de largura da Archivo variável.
 - Sombra só no elemento elevado (cartão de preço); o resto estrutura com borda.
@@ -122,6 +122,12 @@ Regras de negócio que não são óbvias pelo código:
 - **Split, não retenção.** O Asaas credita a parte da profissional junto com o pagamento e não
   tem campo para segurar. O que protege a cliente é o estorno, que o Asaas reverte também no
   split. Por isso nenhum texto do site promete retenção — se for reescrever, não reintroduza.
+- **Cadastro: dois caminhos.** `/cadastro` é uma **tela de escolha**, não um formulário —
+  `/cadastro/cliente` e `/cadastro/profissional` é que têm os formulários. Antes `/cadastro`
+  era o formulário de cliente e o caminho da diarista era um link de rodapé: alguém preencheu
+  a conta errada. Não volte a apontar "Criar conta" direto para um dos dois. Os dois
+  formulários abrem com `CabecalhoCadastro` (selo do papel + link para trocar), e o preço
+  da mensalidade aparece antes do primeiro campo no da profissional.
 - **Mensalidade da profissional** (`lib/assinaturas/planos.ts`, fonte única dos valores):
   R$ 17,99/mês, ou R$ 14,99 × 12 no anual. O **anual só aceita cartão** — parcelar é coisa de
   cartão; no Pix as 12 vezes seriam 12 cobranças avulsas. `Plano.metodos` manda, e a server
