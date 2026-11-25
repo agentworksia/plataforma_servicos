@@ -8,6 +8,8 @@ import { LABEL_SERVICO, STATUS_BOOKING, STATUS_PAGAMENTO } from "@/lib/bookings/
 import { avaliarServico, cancelarAgendamento } from "@/lib/bookings/cliente-actions";
 import { ActionForm } from "@/components/action-form";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 
 export const metadata: Metadata = { title: "Agendamento" };
@@ -45,7 +47,8 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
       criadoEm: true,
       address: true,
       professional: { select: { user: { select: { name: true } } } },
-      payment: { select: { status: true, metodo: true, pixCopiaCola: true } },
+      pagamentoExpiraEm: true,
+      payment: { select: { status: true, metodo: true, pixCopiaCola: true, checkoutUrl: true } },
       offers: { where: { status: "PENDENTE" }, select: { id: true } },
       review: { select: { nota: true, comentario: true } },
     },
@@ -106,8 +109,32 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
           <Linha rotulo="Método">{b.payment?.metodo ?? "—"}</Linha>
           <Linha rotulo="Status">{b.payment ? STATUS_PAGAMENTO[b.payment.status] : "—"}</Linha>
         </div>
+        {b.status === "AGUARDANDO_PAGAMENTO" && b.payment?.checkoutUrl && (
+          <div className="mt-4 space-y-2">
+            <a
+              href={b.payment.checkoutUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants(), "w-full sm:w-auto")}
+            >
+              Pagar {formatBRL(b.valorTotal)}
+            </a>
+            {b.pagamentoExpiraEm && (
+              <p className="text-sm text-areia-600">
+                A profissional já aceitou e o horário está reservado para você até{" "}
+                <strong>
+                  {formatData(b.pagamentoExpiraEm)} às {minutosParaHora(b.pagamentoExpiraEm.getHours() * 60 + b.pagamentoExpiraEm.getMinutes())}
+                </strong>
+                . Depois disso ele volta para a fila.
+              </p>
+            )}
+          </div>
+        )}
         {b.payment?.pixCopiaCola && (
-          <p className="mt-3 break-all rounded bg-areia-100 p-2 text-xs text-areia-600">{b.payment.pixCopiaCola}</p>
+          <div className="mt-3">
+            <p className="text-sm text-areia-600">Ou copie o código Pix:</p>
+            <p className="mt-1 break-all rounded bg-areia-100 p-2 text-xs text-areia-600">{b.payment.pixCopiaCola}</p>
+          </div>
         )}
       </div>
 
