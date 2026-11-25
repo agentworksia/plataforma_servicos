@@ -238,30 +238,50 @@ Três defeitos só apareceram rodando, e foram corrigidos:
 
 ---
 
-## 5. Virada para produção
+## 5. Virada para produção — feita em 25/11/2026
 
-A conta de sandbox e a de produção são **separadas**: nada do que foi configurado numa vale
-na outra. Chave, webhook, token, split e chave Pix precisam ser refeitos.
+A conta de produção é **MEI**, e-mail `primediarias@gmail.com`. Estado no momento da virada:
 
-| # | O quê | Onde |
-|---|---|---|
-| 1 | Conta de produção com documentos aprovados | asaas.com |
-| 2 | **Habilitar split** (confirmação por SMS / Token App) | Integrações › Segurança |
-| 3 | **Cadastrar a chave Pix** de recebimento — sem ela não há copia-e-cola | Minha conta › Chaves Pix |
-| 4 | Gerar a chave de API de produção (`$aact_prod_…`) | Integrações › API |
-| 5 | Criar o webhook **v3**, `SEQUENTIALLY`, com token novo e os 7 eventos | Integrações › Webhooks |
-| 6 | Trocar `ASAAS_API_KEY`, `ASAAS_AMBIENTE=producao` e `ASAAS_WEBHOOK_TOKEN` **juntos** | Vercel › Environment Variables |
-| 7 | Redeploy — variável só vale no próximo build | Vercel |
-| 8 | Definir `ASSINATURA_COBRANCA_INICIO` para uma data real | /admin |
+```
+commercialInfo .. APPROVED
+documentation ... APPROVED
+general ......... APPROVED
+bankAccountInfo . PENDING   <- ainda falta
+chaves Pix ...... 1 (EVP, ACTIVE)
+split ........... Habilitado
+```
 
-**Trocar os três juntos.** `ASAAS_AMBIENTE=producao` com a chave de sandbox ainda no lugar
-derruba todas as cobranças; o contrário manda dinheiro real para o ambiente errado.
+O que foi feito:
 
-**Token do webhook novo.** O de sandbox não deve ser reaproveitado: ambientes diferentes,
-segredos diferentes.
+- webhook de produção criado — `8b60bc71-836a-4f8f-bae4-9a3a667d6509`, v3, `SEQUENTIALLY`,
+  `hasAuthToken: true`, os 7 eventos;
+- `ASAAS_API_KEY`, `ASAAS_AMBIENTE=producao` e `ASAAS_WEBHOOK_TOKEN` trocadas **na mesma
+  janela** na Vercel, todas como `sensitive`;
+- redeploy de produção, e depois dele:
 
-**Subcontas não migram.** Toda profissional aprovada no sandbox tem `asaasWalletId` que não
-existe em produção. Profissionais reais precisam ser aprovadas depois da virada.
+```
+webhook com o token novo ...... 200  {"recebido":true}
+webhook com o token de sandbox  401
+webhook sem token ............. 401
+```
 
-Depois do primeiro pagamento real, conferir no extrato do Asaas que o split creditou o valor
-de `repasseProfissional` na conta dela e a comissão na da plataforma.
+### O que ficou pendente na conta
+
+- **`bankAccountInfo: PENDING`.** Receber e dividir funciona; sacar o saldo da plataforma para
+  o banco, não. Completar em Minha Conta antes do primeiro repasse.
+- **Validação de saque via webhook: deixar DESABILITADA.** A opção "Ativar autorização de saque
+  para Splits de Pagamento" cancela o split quando a aplicação não responde, devolve o valor
+  para a conta de origem e **não dispara** `PAYMENT_SPLIT_CANCELLED`. Sem endpoint de
+  autorização, ligá-la quebra o repasse em silêncio.
+- **Whitelist de IPs: deixar vazia.** As funções da Vercel não têm IP de saída fixo; a
+  restrição devolveria `403` em todas as chamadas.
+
+### Antes de divulgar
+
+1. Nenhuma profissional cadastrada — um agendamento sem ninguém para aceitar não gera cobrança,
+   então não há risco de dinheiro, mas também não há serviço.
+2. `ASSINATURA_COBRANCA_INICIO` ainda é 2099-01-01.
+3. Primeiro pagamento real: conferir no extrato que o split creditou `repasseProfissional` na
+   conta dela e a comissão na da plataforma.
+4. `RESEND_API_KEY` e `SUPABASE_SECRET_KEY` estão marcadas como legíveis na Vercel
+   (`readable-secret`) — passar as duas para `sensitive`.
