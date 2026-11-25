@@ -129,6 +129,16 @@ export async function registrarMensalidadePaga(
     return;
   }
 
+  // Segunda trava, além da do webhook: estender o plano não é idempotente por
+  // natureza — rodar duas vezes daria dois meses por um pagamento. A trava de
+  // `webhook_eventos` já barra o reenvio, mas ela depende de o provedor repetir o
+  // mesmo id do evento, e isso é promessa dele, não nossa.
+  const jaRegistrada = await db.assinaturaCobranca.findUnique({
+    where: { providerId: cobrancaProviderId },
+    select: { status: true },
+  });
+  if (jaRegistrada?.status === "PAGO_RETIDO") return;
+
   // Soma um mês a partir do que for maior: hoje ou o fim do período já pago. Assim
   // pagar adiantado estende em vez de encurtar.
   const base = a.ativaAte && a.ativaAte > new Date() ? a.ativaAte : new Date();
