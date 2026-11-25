@@ -213,18 +213,55 @@ for baixo, conferência manual mensal resolve. Acima disso, vira relatório.
 
 ---
 
-## 4. Como testar antes de ligar em produção
+## 4. O teste de sandbox — feito em 25/11/2026
 
-1. `ASAAS_AMBIENTE=sandbox`, `PAYMENT_PROVIDER=asaas`, chave de sandbox.
-2. Cadastrar uma profissional de teste e **aprovar** — confira em `professional_profiles` que
-   `asaasWalletId` foi preenchido. Sem isso ela não entra na fila.
-3. Assinar o plano mensal no Pix e pagar o QR no sandbox. A assinatura deve virar `ATIVA`.
-4. Agendar um serviço como cliente. **Nenhuma cobrança deve ser criada ainda.**
-5. Aceitar a oferta como profissional. A cobrança nasce aqui, e o agendamento vai para
-   `AGUARDANDO_PAGAMENTO`.
-6. Pagar. O webhook deve mudar para `AGENDADO`. Confira no Asaas que o split aparece com o
-   valor de `repasseProfissional`.
-7. Reenviar o mesmo webhook pelo painel do Asaas: a resposta deve ser `{"repetido": true}` e
-   nada deve mudar no banco.
-8. Mandar um `POST` no webhook **sem** o header `asaas-access-token`: deve voltar `401`.
-9. Cancelar um agendamento pago e confirmar que o estorno reverte o split.
+O fluxo fechou ponta a ponta duas vezes, contra o site de produção ligado ao sandbox:
+
+cadastro → aprovação → **subconta Asaas criada automaticamente** → fila → aceite →
+**cobrança com split** → Pix pago → webhook → `AGENDADO`.
+
+- o `asaasWalletId` é preenchido na aprovação, sem intervenção;
+- o split saiu como `fixedValue: 136` em cima de R$ 160,00 — exatamente `repasseProfissional`;
+- reenvio do mesmo evento devolveu `{"recebido":true,"repetido":true}` sem reprocessar;
+- `POST` sem token e com token errado devolveram `401`.
+
+Três defeitos só apareceram rodando, e foram corrigidos:
+
+1. **O cliente nunca tinha CPF.** O Asaas aceita criar o cliente sem documento mas recusa a
+   cobrança. O aceite falhava e era desfeito, longe de quem poderia corrigir. O documento
+   passou a ser pedido no agendamento.
+2. **Pagar não agendava.** O webhook ficou com a lógica do fluxo antigo: marcava pago e
+   chamava a fila. Ninguém colocava o serviço em `AGENDADO`. Com duas ou mais profissionais
+   cadastradas, o pagamento ofereceria a outra pessoa um serviço já aceito e pago.
+3. **A cliente não tinha onde pagar.** A tela mostrava só o código Pix como texto, e nada
+   quando ele falta — o caso de cartão, e de qualquer Pix sem chave cadastrada no Asaas.
+
+---
+
+## 5. Virada para produção
+
+A conta de sandbox e a de produção são **separadas**: nada do que foi configurado numa vale
+na outra. Chave, webhook, token, split e chave Pix precisam ser refeitos.
+
+| # | O quê | Onde |
+|---|---|---|
+| 1 | Conta de produção com documentos aprovados | asaas.com |
+| 2 | **Habilitar split** (confirmação por SMS / Token App) | Integrações › Segurança |
+| 3 | **Cadastrar a chave Pix** de recebimento — sem ela não há copia-e-cola | Minha conta › Chaves Pix |
+| 4 | Gerar a chave de API de produção (`$aact_prod_…`) | Integrações › API |
+| 5 | Criar o webhook **v3**, `SEQUENTIALLY`, com token novo e os 7 eventos | Integrações › Webhooks |
+| 6 | Trocar `ASAAS_API_KEY`, `ASAAS_AMBIENTE=producao` e `ASAAS_WEBHOOK_TOKEN` **juntos** | Vercel › Environment Variables |
+| 7 | Redeploy — variável só vale no próximo build | Vercel |
+| 8 | Definir `ASSINATURA_COBRANCA_INICIO` para uma data real | /admin |
+
+**Trocar os três juntos.** `ASAAS_AMBIENTE=producao` com a chave de sandbox ainda no lugar
+derruba todas as cobranças; o contrário manda dinheiro real para o ambiente errado.
+
+**Token do webhook novo.** O de sandbox não deve ser reaproveitado: ambientes diferentes,
+segredos diferentes.
+
+**Subcontas não migram.** Toda profissional aprovada no sandbox tem `asaasWalletId` que não
+existe em produção. Profissionais reais precisam ser aprovadas depois da virada.
+
+Depois do primeiro pagamento real, conferir no extrato do Asaas que o split creditou o valor
+de `repasseProfissional` na conta dela e a comissão na da plataforma.
