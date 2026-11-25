@@ -88,7 +88,19 @@ Depois de subir, o endpoint respondia `200` a um `POST` anônimo: o provider `fa
 de falhar fechado. O `fake` passou a recusar — ele não tem origem real de webhook, então nada
 que chegue ali é legítimo.
 
-### 1.10 Rota de cron desprotegida
+### 1.10 Mensalidade reenviada estendia o plano duas vezes
+
+`registrarMensalidadePaga` somava um mês a `ativaAte` a cada execução. O `upsert` da
+cobrança já era idempotente, mas a extensão do plano não — um reenvio da confirmação daria
+dois meses por um pagamento.
+
+A trava de `webhook_eventos` barraria o reenvio, mas ela depende de o Asaas repetir o mesmo
+id do evento. Observando os eventos entregues, o id vem como `evt_<hash>&<n>` e **dois
+eventos distintos compartilharam o mesmo hash** — o discriminador é o sufixo. Não dá para
+apostar só nisso numa operação de dinheiro, então a função passou a conferir se a cobrança
+já está `PAGO_RETIDO` e sair cedo. Mesma defesa que `confirmarPagamentoDeServico` já tinha.
+
+### 1.11 Rota de cron desprotegida
 
 `/api/cron/cobrancas` devolve horário à fila e dispara cobrança. Protegida por `CRON_SECRET`
 com comparação em tempo constante e falha fechada.
@@ -101,9 +113,9 @@ com comparação em tempo constante e falha fechada.
 |---|---|---|
 | 1 | Abrir a conta Asaas e validar os documentos da empresa | asaas.com |
 | 2 | Gerar a chave de API de **sandbox** e testar tudo antes de produção | Asaas › Integrações › API |
-| 3 | Criar o webhook apontando para `https://primediarias.com.br/api/webhooks/pagamento` | Asaas › Integrações › Webhooks |
-| 4 | Definir o `authToken` do webhook (32+ caracteres, sem espaços, não pode ser a chave de API) | mesmo lugar |
-| 5 | Marcar o envio como **SEQUENTIALLY** | mesmo lugar |
+| 3 | ~~Criar o webhook~~ **feito** — `d8962da0-f81f-4097-8ca3-d58d701c6560` (sandbox) | Asaas › Integrações › Webhooks |
+| 4 | ~~Definir o `authToken`~~ **feito** — 48 caracteres, igual ao `.env` | mesmo lugar |
+| 5 | ~~Marcar o envio como SEQUENTIALLY~~ **feito** | mesmo lugar |
 | 6 | Colar as variáveis na Vercel | Vercel › Settings › Environment Variables |
 | 7 | Habilitar a conciliação: conferir mensalmente o extrato Asaas contra `payments` e `payouts` | — |
 
@@ -124,6 +136,18 @@ Gere os segredos com `openssl rand -hex 24` e **não** reaproveite o mesmo valor
 
 **Marque o webhook como SEQUENTIALLY.** Sem isso o Asaas pode entregar o evento de estorno
 antes do de confirmação, e o pagamento acabaria gravado como pago depois de estornado.
+
+**`apiVersion` não pode ser alterado depois.** O `PUT /v3/webhooks/{id}` aceita `name`, `url`,
+`sendType`, `enabled`, `interrupted`, `authToken` e `events` — a versão só existe na criação.
+Trocar de v2 para v3 exige apagar e recriar, pela API ou pelo painel.
+
+**O Asaas nunca devolve o `authToken`.** Um `GET` traz `hasAuthToken: true/false`; ler o campo
+`authToken` e encontrar vazio não significa que ele não está configurado.
+
+**Webhook de sandbox entregando em produção.** Enquanto `ASAAS_AMBIENTE=sandbox`, o site de
+produção está ligado ao sandbox do Asaas: cobranças criadas lá não são dinheiro real. Antes de
+abrir para clientes, trocar a chave, recriar o webhook na conta de produção e conferir que
+`ASAAS_AMBIENTE=producao` na Vercel.
 
 ---
 
