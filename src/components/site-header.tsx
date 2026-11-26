@@ -3,6 +3,7 @@ import { getSession, painelHref } from "@/lib/auth/dal";
 import { logoutAction } from "@/lib/auth/actions";
 import { buttonVariants } from "@/components/ui/button";
 import { Logo } from "@/components/marca";
+import { MenuMobile } from "@/components/menu-mobile";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -16,8 +17,11 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-areia-200 bg-areia-50/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-        <Logo />
+      <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4">
+        <div className="flex items-center gap-1">
+          <MenuMobile links={LINKS} />
+          <Logo />
+        </div>
 
         <nav className="hidden items-center gap-1 text-sm md:flex">
           {LINKS.map((l) => (
