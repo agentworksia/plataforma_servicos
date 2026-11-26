@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatData } from "@/lib/format";
+import { formatDiaLocal } from "@/lib/format";
 import { ORDEM_STATUS, STATUS_PROFISSIONAL } from "@/lib/professionals";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -88,7 +88,7 @@ export default async function AdminProfissionaisPage({
                       {cidades.length > 2 ? ` +${cidades.length - 2}` : ""}
                     </td>
                     <td className="py-3 pr-4 text-areia-600">{p._count.documentos}</td>
-                    <td className="py-3 pr-4 text-areia-600">{formatData(p.criadoEm)}</td>
+                    <td className="py-3 pr-4 text-areia-600">{formatDiaLocal(p.criadoEm)}</td>
                     <td className="py-3 pr-4">
                       <Badge cor={st.cor}>{st.label}</Badge>
                     </td>

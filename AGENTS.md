@@ -68,6 +68,14 @@ public/fotos/            fotos dos serviços (Unsplash, licença livre)
 ## Convenções
 
 - **Dinheiro é sempre `Int` em centavos** (BRL). Formatação em `src/lib/format.ts`.
+- **Duas espécies de data, e trocá-las desloca o dia.** O banco é UTC.
+  *Date-only* (`Booking.data`, `dataNascimento`, `ASSINATURA_COBRANCA_INICIO`) é gravada ao
+  meio-dia UTC por `dataDeInput` e formatada em **UTC** (`formatData`), senão o dia salta.
+  *Instante* (`criadoEm`, `pagoEm`, `ativaAte`, `pagamentoExpiraEm`, `concluidoEm`,
+  `liberadoEm`) é momento no tempo e se formata **no fuso de Brasília** —
+  `formatInstante` / `formatDiaLocal` / `formatDiaLocalCurto`. Um cadastro das 21 h de terça
+  formatado em UTC aparece como quarta-feira. E nunca use `getHours()` num instante: na
+  Vercel o servidor é UTC, então a hora sai 3 h adiantada.
 - Horários na agenda **e duração do serviço**: `Int` = minutos. Duração em minutos porque o
   dog walker vende meia hora — `formatDuracao()` traduz para "30 min" / "4 h" na tela.
 - Preço vem de `lib/pricing/tabela.ts`. `null` ali significa "não vendido nessa duração" e vira

@@ -11,7 +11,7 @@ import {
   LISTA_PLANOS,
   PLANOS,
 } from "@/lib/assinaturas";
-import { formatBRL, formatData } from "@/lib/format";
+import { formatBRL, formatData, formatDiaLocal } from "@/lib/format";
 import { EscolhaDePlano } from "./escolha-de-plano";
 import { Badge } from "@/components/ui/badge";
 import { ActionForm } from "@/components/action-form";
@@ -62,7 +62,7 @@ export default async function AssinaturaPage() {
 
         {assinatura?.ativaAte && (
           <p className="mt-4 text-sm text-areia-600">
-            Acesso pago até <strong>{formatData(assinatura.ativaAte)}</strong>.
+            Acesso pago até <strong>{formatDiaLocal(assinatura.ativaAte)}</strong>.
           </p>
         )}
 

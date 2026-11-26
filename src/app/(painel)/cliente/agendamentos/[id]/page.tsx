@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatDuracao, formatData, formatBRL, minutosParaHora } from "@/lib/format";
+import { formatDuracao, formatData, formatInstante, formatBRL, minutosParaHora } from "@/lib/format";
 import { LABEL_SERVICO, STATUS_BOOKING, STATUS_PAGAMENTO } from "@/lib/bookings/display";
 import { avaliarServico, cancelarAgendamento } from "@/lib/bookings/cliente-actions";
 import { ActionForm } from "@/components/action-form";
@@ -122,9 +122,7 @@ export default async function AgendamentoDetalhePage({ params }: { params: Promi
             {b.pagamentoExpiraEm && (
               <p className="text-sm text-areia-600">
                 A profissional já aceitou e o horário está reservado para você até{" "}
-                <strong>
-                  {formatData(b.pagamentoExpiraEm)} às {minutosParaHora(b.pagamentoExpiraEm.getHours() * 60 + b.pagamentoExpiraEm.getMinutes())}
-                </strong>
+                <strong>{formatInstante(b.pagamentoExpiraEm)}</strong>
                 . Depois disso ele volta para a fila.
               </p>
             )}

@@ -22,13 +22,53 @@ export function reaisParaCentavos(reais: number): number {
   return Math.round(reais * 100);
 }
 
-// Datas de serviço são date-only (sem hora). Formata sempre em UTC para não deslocar o dia.
+export const FUSO = "America/Sao_Paulo";
+
+// Há dois tipos de data aqui, e confundi-los desloca o dia:
+//
+//   date-only  — data do serviço, nascimento, início da cobrança. Gravada ao meio-dia UTC
+//                por `dataDeInput`, sem hora nenhuma. Formata em UTC, senão o dia salta.
+//   instante   — criadoEm, pagoEm, ativaAte, pagamentoExpiraEm. É um momento no tempo, e o
+//                banco guarda em UTC. Formata no fuso de Brasília, senão um cadastro das
+//                21h de terça aparece como quarta-feira.
+
+/** Date-only: data do serviço e afins. Ver a nota acima antes de usar num carimbo de tempo. */
 export function formatData(data: Date): string {
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: "UTC" }).format(data);
 }
 
 export function formatDataCurta(data: Date): string {
   return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" }).format(data);
+}
+
+/** Instante: só o dia, no horário de Brasília. */
+export function formatDiaLocal(instante: Date): string {
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: FUSO }).format(instante);
+}
+
+export function formatDiaLocalCurto(instante: Date): string {
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: FUSO,
+  }).format(instante);
+}
+
+/** Instante com hora, no horário de Brasília: "25/11/2026 às 21:06". */
+export function formatInstante(instante: Date): string {
+  const d = new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: FUSO,
+  }).format(instante);
+  const h = new Intl.DateTimeFormat("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: FUSO,
+  }).format(instante);
+  return `${d} às ${h}`;
 }
 
 /** "YYYY-MM-DD" -> Date ao meio-dia UTC (evita salto de dia por fuso). */

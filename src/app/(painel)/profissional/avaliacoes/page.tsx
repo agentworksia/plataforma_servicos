@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatData } from "@/lib/format";
+import { formatDiaLocal } from "@/lib/format";
 import { LABEL_SERVICO } from "@/lib/bookings/display";
 import { EmptyState } from "@/components/ui/empty-state";
 
@@ -41,7 +41,7 @@ export default async function AvaliacoesPage() {
                 <span className="font-medium text-areia-900">
                   {r.nota}/5 · {LABEL_SERVICO[r.booking.tipoServico] ?? r.booking.tipoServico}
                 </span>
-                <span className="text-areia-400">{formatData(r.criadoEm)}</span>
+                <span className="text-areia-400">{formatDiaLocal(r.criadoEm)}</span>
               </div>
               {r.comentario && <p className="mt-1 text-areia-700">&ldquo;{r.comentario}&rdquo;</p>}
             </li>

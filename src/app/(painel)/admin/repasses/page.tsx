@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatData, formatBRL } from "@/lib/format";
+import { formatData, formatDiaLocal, formatBRL } from "@/lib/format";
 import { STATUS_PAYOUT } from "@/lib/bookings/display";
 import { liberarElegiveis, liberarRepasse } from "@/lib/admin/payouts-actions";
 import { ActionForm } from "@/components/action-form";
@@ -53,7 +53,7 @@ export default async function AdminRepassesPage() {
                     {p.professional.user.name} · {formatBRL(p.valor)}
                   </div>
                   <div className="text-areia-500">
-                    {p.booking.tipoServico} em {formatData(p.booking.data)} · previsto {p.liberadoEm ? formatData(p.liberadoEm) : "—"}
+                    {p.booking.tipoServico} em {formatData(p.booking.data)} · previsto {p.liberadoEm ? formatDiaLocal(p.liberadoEm) : "—"}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

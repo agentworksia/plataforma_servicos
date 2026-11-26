@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
 import { BUCKET, urlAssinada, type BucketName } from "@/lib/storage";
-import { formatData } from "@/lib/format";
+import { formatData, formatInstante } from "@/lib/format";
 import { STATUS_PROFISSIONAL } from "@/lib/professionals";
 import { TIPOS_CHAVE_PIX, TIPOS_SERVICO } from "@/lib/validation/profissional";
 import { Badge } from "@/components/ui/badge";
@@ -77,7 +77,7 @@ export default async function ProfissionalDetalhePage({ params }: { params: Prom
           <Badge cor={st.cor}>{st.label}</Badge>
         </div>
         <p className="text-areia-600">
-          {p.user.email} · {p.user.telefone ?? "sem telefone"} · cadastro em {formatData(p.criadoEm)}
+          {p.user.email} · {p.user.telefone ?? "sem telefone"} · cadastro em {formatInstante(p.criadoEm)}
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export default async function ProfissionalDetalhePage({ params }: { params: Prom
         </p>
       )}
       {p.status === "APROVADA" && p.aprovadoEm && (
-        <p className="text-sm text-areia-500">Aprovada em {formatData(p.aprovadoEm)}.</p>
+        <p className="text-sm text-areia-500">Aprovada em {formatInstante(p.aprovadoEm)}.</p>
       )}
 
       <div className="rounded-xl border border-areia-200 p-5">

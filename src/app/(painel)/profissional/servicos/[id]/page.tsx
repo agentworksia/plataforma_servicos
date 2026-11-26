@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatDuracao, formatData, formatBRL, minutosParaHora } from "@/lib/format";
+import { formatDuracao, formatData, formatDiaLocal, formatInstante, formatBRL, minutosParaHora } from "@/lib/format";
 import { LABEL_SERVICO, STATUS_BOOKING } from "@/lib/bookings/display";
 import { concluirServico, iniciarServico } from "@/lib/professionals/servico-actions";
 import { ActionForm } from "@/components/action-form";
@@ -81,10 +81,10 @@ export default async function ServicoDetalhePage({ params }: { params: Promise<{
 
       {b.status === "CONCLUIDO" && (
         <div className="rounded-xl border border-areia-200 p-4 text-sm">
-          <p>Concluído em {b.concluidoEm ? formatData(b.concluidoEm) : "—"}.</p>
+          <p>Concluído em {b.concluidoEm ? formatInstante(b.concluidoEm) : "—"}.</p>
           {b.payout && (
             <p className="mt-1 text-areia-600">
-              Repasse de {formatBRL(b.payout.valor)} — {b.payout.status === "PAGO" ? "pago" : `previsto para ${b.payout.liberadoEm ? formatData(b.payout.liberadoEm) : "—"}`}.
+              Repasse de {formatBRL(b.payout.valor)} — {b.payout.status === "PAGO" ? "pago" : `previsto para ${b.payout.liberadoEm ? formatDiaLocal(b.payout.liberadoEm) : "—"}`}.
             </p>
           )}
           {b.review && (

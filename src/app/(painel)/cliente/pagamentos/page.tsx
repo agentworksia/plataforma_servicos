@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
-import { formatBRL, formatData, formatDataCurta } from "@/lib/format";
+import { formatBRL, formatData, formatDiaLocalCurto } from "@/lib/format";
 import { LABEL_SERVICO, STATUS_PAGAMENTO } from "@/lib/bookings/display";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -100,7 +100,7 @@ export default async function ClientePagamentosPage() {
                       <div className="text-areia-500">serviço em {formatData(p.booking.data)}</div>
                     </td>
                     <td className="numeros py-3 pr-4 text-areia-600">
-                      {p.pagoEm ? formatDataCurta(p.pagoEm) : "—"}
+                      {p.pagoEm ? formatDiaLocalCurto(p.pagoEm) : "—"}
                     </td>
                     <td className="py-3 pr-4 text-areia-600">{p.metodo === "PIX" ? "Pix" : "Cartão"}</td>
                     <td className="numeros py-3 pr-4 text-areia-900">
