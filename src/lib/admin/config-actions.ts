@@ -17,6 +17,11 @@ const precoSchema = z.object({
   id: z.string().min(1),
   valorReais: z.coerce.number().min(0).max(100000),
   multiplicador: z.coerce.number().min(0).max(10),
+  // Vazio = segue o Setting global. 0 e 100 são extremos legítimos (serviço todo da
+  // plataforma, ou sem comissão), mas acima de 100 a plataforma pagaria para trabalhar.
+  repassePct: z
+    .union([z.literal(""), z.coerce.number().min(0, "O repasse não pode ser negativo").max(100, "O repasse não pode passar de 100%")])
+    .transform((v) => (v === "" ? null : v)),
   ativo: z.coerce.boolean().default(false),
 });
 
@@ -26,6 +31,7 @@ export async function atualizarPreco(_prev: ConfigState, formData: FormData): Pr
     id: formData.get("id"),
     valorReais: formData.get("valorReais"),
     multiplicador: formData.get("multiplicador"),
+    repassePct: String(formData.get("repassePct") ?? "").trim(),
     ativo: formData.get("ativo") === "on",
   });
   if (!parsed.success) return { erro: parsed.error.issues[0]?.message ?? "Dados inválidos." };
@@ -35,6 +41,7 @@ export async function atualizarPreco(_prev: ConfigState, formData: FormData): Pr
     data: {
       valorBase: reaisParaCentavos(parsed.data.valorReais),
       multiplicador: parsed.data.multiplicador,
+      repassePct: parsed.data.repassePct,
       ativo: parsed.data.ativo,
     },
   });

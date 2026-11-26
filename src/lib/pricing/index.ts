@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { getSettingNumber } from "@/lib/settings";
 import { fatorDoDia } from "@/lib/pricing/tabela";
 import type { ServiceType } from "@/generated/prisma/enums";
+import type { Prisma } from "@/generated/prisma/client";
 
 export type CalcularPrecoInput = {
   tipoServico: ServiceType;
@@ -19,12 +20,15 @@ export type PrecoCalculado = {
   taxaPlataforma: number;
   valorTotal: number;
   repasseProfissional: number;
+  /** Quanto do total vai para a profissional, em %. */
+  repassePct: number;
   taxaPct: number;
 };
 
 /**
  * preço = valorBase(tipo, duração, região) × multiplicador × fator do dia + extras.
- * taxa da plataforma = X% (Setting TAXA_PLATAFORMA_PCT); repasse = total − taxa.
+ * repasse = total × `PricingRule.repassePct`, ou o complemento de
+ * Setting.TAXA_PLATAFORMA_PCT quando a regra não define o seu; taxa = total − repasse.
  *
  * O fator do dia é recalculado aqui, no servidor, e não vem do formulário: é o que
  * impede alguém de agendar um passeio de sábado pagando preço de terça.
@@ -53,16 +57,35 @@ export async function calcularPreco(input: CalcularPrecoInput): Promise<PrecoCal
     : [];
   const valorExtras = extras.reduce((soma, e) => soma + e.valor, 0);
 
-  const taxaPct = await getSettingNumber("TAXA_PLATAFORMA_PCT", 15);
   const valorTotal = valorServico + valorExtras;
-  const taxaPlataforma = Math.round(valorTotal * (taxaPct / 100));
+  const repassePct = await repassePctDaRegra(regra.repassePct);
+
+  // Arredonda o repasse, e não a taxa: é o repasse que vai no split do Asaas, então
+  // ele tem de ser o número exato. A taxa fica com o resto, e total = taxa + repasse
+  // continua fechando ao centavo.
+  const repasseProfissional = Math.round(valorTotal * (repassePct / 100));
+  const taxaPlataforma = valorTotal - repasseProfissional;
 
   return {
     valorServico,
     valorExtras,
     taxaPlataforma,
     valorTotal,
-    repasseProfissional: valorTotal - taxaPlataforma,
-    taxaPct,
+    repasseProfissional,
+    repassePct,
+    taxaPct: arredonda2(100 - repassePct),
   };
+}
+
+const arredonda2 = (n: number) => Math.round(n * 100) / 100;
+
+/**
+ * Repasse da regra, ou o complemento da taxa global quando a regra não tem o seu.
+ * Deixar `null` por padrão mantém a tabela inteira seguindo o Setting, e o admin
+ * só precisa preencher onde a margem for diferente.
+ */
+export async function repassePctDaRegra(daRegra: Prisma.Decimal | null): Promise<number> {
+  if (daRegra !== null) return arredonda2(Number(daRegra));
+  const taxaPct = await getSettingNumber("TAXA_PLATAFORMA_PCT", 15);
+  return arredonda2(100 - taxaPct);
 }

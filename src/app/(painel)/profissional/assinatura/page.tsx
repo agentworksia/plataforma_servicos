@@ -40,8 +40,9 @@ export default async function AssinaturaPage() {
         <h1 className="titulo-secao text-2xl text-marinho-900">Seu plano</h1>
         <p className="mt-2 max-w-2xl leading-relaxed text-areia-600">
           A mensalidade é o que mantém seu perfil recebendo ofertas. O valor do serviço continua
-          sendo seu: a plataforma fica com {taxaPct}% de cada diária, e o resto cai direto na sua conta
-          assim que a cliente paga.
+          sendo seu: a comissão padrão da plataforma é {taxaPct}% de cada diária — alguns tipos de
+          serviço e regiões têm percentual próprio, e cada oferta mostra quanto você recebe antes
+          de aceitar. O resto cai direto na sua conta assim que a cliente paga.
         </p>
       </header>
 

@@ -41,8 +41,9 @@ export function PlanosResumo({ taxaPct, className }: { taxaPct: number; classNam
       </div>
 
       <p className="mt-4 text-sm leading-relaxed text-areia-700">
-        Além da mensalidade, a plataforma fica com <strong>{taxaPct}%</strong> de cada serviço. O
-        resto é seu e cai na sua conta quando a cliente paga.
+        Além da mensalidade, a comissão padrão da plataforma é <strong>{taxaPct}%</strong> de cada
+        serviço — alguns tipos e regiões têm percentual próprio. O resto é seu, e você vê quanto
+        vai receber em cada oferta antes de aceitar.
       </p>
     </section>
   );

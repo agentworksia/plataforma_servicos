@@ -73,6 +73,14 @@ public/fotos/            fotos dos serviços (Unsplash, licença livre)
 - Preço vem de `lib/pricing/tabela.ts`. `null` ali significa "não vendido nessa duração" e vira
   orçamento — é assim que pós-obra de 8 h sai da tabela. O seed grava o preço de praça já
   calculado em `valorBase` com `multiplicador` 1, para o que o admin edita ser o que o cliente vê.
+- **Repasse é por regra de preço** (`PricingRule.repassePct`), editável em `/admin/precos`:
+  praça e tipo de serviço têm margens diferentes. `null` segue `Setting.TAXA_PLATAFORMA_PCT`,
+  então a tabela inteira nasce no padrão e o admin só preenche a exceção. O percentual é o da
+  **profissional**, não o da plataforma — a tela mostra o complemento ao lado enquanto se digita,
+  justamente para ninguém digitar 15 pensando em comissão. `calcularPreco` arredonda o repasse e
+  dá o resto à taxa, porque é o repasse que vai no split do Asaas; `taxa + repasse == total`
+  sempre. Mudar o percentual não mexe em serviço já agendado: `Booking` guarda os dois valores
+  em centavos no momento do agendamento, e a cobrança lê de lá.
 - Validação de entrada **sempre no backend** (server action / route handler), mesmo com validação no client.
 - Sem escopo extra sem alinhar: telas de feature ainda não construídas mostram estado vazio explicando o que falta.
 

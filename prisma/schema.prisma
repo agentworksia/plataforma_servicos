@@ -321,6 +321,9 @@ model PricingRule {
   serviceAreaId String
   valorBase     Int
   multiplicador Decimal     @default(1) @db.Decimal(4, 2)
+  /// Quanto do total vai para a profissional, em %. Null = usa Setting.TAXA_PLATAFORMA_PCT.
+  /// Fica por regra porque praça e tipo de serviço têm margens diferentes.
+  repassePct    Decimal?    @db.Decimal(5, 2)
   ativo         Boolean     @default(true)
 
   criadoEm     DateTime @default(now())
