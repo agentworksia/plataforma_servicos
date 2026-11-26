@@ -71,7 +71,7 @@ export default function HomePage() {
           <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-14 lg:py-24">
             <div>
               <h1 className="titulo entra max-w-xl text-4xl text-white sm:text-5xl lg:text-6xl">
-                Você abre a porta. A gente responde por quem entra.
+                Você escolhe quem entra. A gente mostra quem é.
               </h1>
               <p
                 className="entra mt-6 max-w-lg text-lg leading-relaxed text-marinho-100"

@@ -81,6 +81,11 @@ export function CadastroClienteForm() {
       </div>
 
       <div className="space-y-1.5">
+        <p className="rounded-botao border border-areia-200 bg-areia-50 p-3 text-sm leading-relaxed text-areia-700">
+          As diaristas são <strong>profissionais autônomas</strong>, não funcionárias da plataforma.
+          O serviço é contratado entre você e ela; a plataforma faz a ponte, organiza a agenda e
+          cuida do pagamento.
+        </p>
         <label className="flex items-start gap-2 text-sm text-areia-700">
           <input type="checkbox" name="aceiteTermos" className="mt-1" />
           <span>

@@ -12,7 +12,11 @@ export default async function SejaProfissionalPage() {
 
   return (
     <article>
-      <h1 className="titulo text-3xl text-marinho-900">Trabalhe como diarista na plataforma</h1>
+      {/* "na plataforma" soava a emprego. Ela trabalha por conta própria e recebe os
+          serviços por aqui — a diferença é o que mantém a relação sem vínculo. */}
+      <h1 className="titulo text-3xl text-marinho-900">
+        Trabalhe por conta própria e receba serviços de limpeza
+      </h1>
       <p className="mt-4 text-areia-700">
         Você define onde atende, o que faz e quando está disponível. A plataforma leva os serviços até você,
         cuida do pagamento do cliente e faz o repasse após a conclusão.
@@ -23,6 +27,7 @@ export default async function SejaProfissionalPage() {
         <li>• Você escolhe as cidades que quer atender, no Paraná ou no litoral de Santa Catarina.</li>
         <li>• Agenda com disponibilidade recorrente e bloqueios pontuais.</li>
         <li>• Receba ofertas e aceite só o que couber na sua rotina.</li>
+        <li>• Sem exclusividade e sem vínculo: a plataforma não é sua empregadora.</li>
       </ul>
 
       {/* O preço aparece antes do cadastro de propósito: ela manda documento e foto para

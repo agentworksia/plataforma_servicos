@@ -256,6 +256,14 @@ export function CadastroProfissionalForm({ regioes }: { regioes: Regiao[] }) {
       </section>
 
       <section className="space-y-2">
+        {/* Visível no formulário, e não só dentro dos termos: é aqui que a profissional
+            decide entrar, e é a hora de ela saber que o contrato não é com a plataforma. */}
+        <p className="rounded-botao border border-areia-200 bg-areia-50 p-3 text-sm leading-relaxed text-areia-700">
+          <strong>Você trabalha por conta própria.</strong> A plataforma não é sua empregadora: ela
+          leva serviços até você e cuida do pagamento. Quem contrata é a cliente. Você escolhe as
+          cidades, a sua agenda e quais serviços aceita, sem exclusividade — e responde pelos seus
+          próprios impostos.
+        </p>
         <label className="flex items-start gap-2 text-sm text-areia-700">
           <input type="checkbox" name="aceiteTermos" className="mt-1" />
           <span>

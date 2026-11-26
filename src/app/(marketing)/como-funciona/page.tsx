@@ -27,6 +27,10 @@ export default function ComoFuncionaPage() {
         e a disponibilidade na agenda. O cadastro passa por aprovação manual. Depois de aprovada, ela recebe
         ofertas de serviço e aceita ou recusa cada uma dentro de um prazo.
       </p>
+      <p className="mt-2 text-areia-700">
+        As diaristas são autônomas e não têm vínculo com a plataforma: o serviço é contratado entre a
+        cliente e a profissional. A plataforma aproxima as duas, organiza a agenda e cuida do pagamento.
+      </p>
 
       <p className="mt-8 text-sm text-areia-500">
         Página informativa — o conteúdo final será revisado com o cliente.
