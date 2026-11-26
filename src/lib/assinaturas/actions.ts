@@ -6,7 +6,9 @@ import { db } from "@/lib/db";
 import { requireRole } from "@/lib/auth/dal";
 import { cancelarPlano, contratarPlano, metodoAceito, PLANOS } from "@/lib/assinaturas";
 
-export type AssinaturaState = { erro?: string; ok?: string } | undefined;
+export type AssinaturaState =
+  | { erro?: string; ok?: string; checkoutUrl?: string; pixCopiaCola?: string }
+  | undefined;
 
 const escolhaSchema = z.object({
   plano: z.enum(["MENSAL", "ANUAL"]),
@@ -39,8 +41,9 @@ export async function assinarPlano(
     return { erro: `O plano ${PLANOS[plano].nome} é pago só no cartão de crédito.` };
   }
 
+  let cobranca: { checkoutUrl?: string; pixCopiaCola?: string };
   try {
-    await contratarPlano(professionalId, plano, metodo);
+    cobranca = await contratarPlano(professionalId, plano, metodo);
   } catch (err) {
     console.error("[assinatura] contratação falhou", err);
     return { erro: "Não consegui gerar a cobrança agora. Tente de novo em instantes." };
@@ -48,7 +51,13 @@ export async function assinarPlano(
 
   revalidatePath("/profissional/assinatura");
   revalidatePath("/profissional");
-  return { ok: "Cobrança gerada. Conclua o pagamento para liberar as ofertas." };
+  // Devolve o link junto: no celular o cartão "Situação", que mostra a cobrança em aberto,
+  // fica duas rolagens acima de quem acabou de apertar o botão.
+  return {
+    ok: "Cobrança gerada. Conclua o pagamento para liberar as ofertas.",
+    checkoutUrl: cobranca.checkoutUrl,
+    pixCopiaCola: cobranca.pixCopiaCola,
+  };
 }
 
 export async function cancelarAssinatura(
